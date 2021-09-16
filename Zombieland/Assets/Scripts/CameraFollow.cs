@@ -4,19 +4,20 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform player;
-    private Vector3 offset;
-   
-    [Range(0f,5f)]public float smoothSpeed;
-    
+    public Transform Player;
+    private Vector3 _offset;
+
+    [Range(0f, 5f)]
+    public float SmoothSpeed;
+
     // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
-        offset = transform.position-player.position;   
+        _offset = transform.position - Player.position;
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    private void LateUpdate()
     {
         CameraFollowPlayer();
 
@@ -24,14 +25,14 @@ public class CameraFollow : MonoBehaviour
     }
     private void CameraFollowPlayer()
     {
-        Vector3 wantedPosition = player.position + offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, smoothSpeed * Time.deltaTime);
+        Vector3 wantedPosition = Player.position + _offset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, SmoothSpeed * Time.deltaTime);
 
         transform.position = smoothedPosition;
-        
+
     }
-  
-    
-   
-     
+
+
+
+
 }
