@@ -98,5 +98,6 @@ public class PlayerMovement : MonoBehaviour
     {
         HealthText.text = $"Health: {_health}";
     }
+   
 
 }
