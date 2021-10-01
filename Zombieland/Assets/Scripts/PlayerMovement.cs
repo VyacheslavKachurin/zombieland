@@ -1,33 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
+using System;
 public class PlayerMovement : MonoBehaviour
 {
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
-    [SerializeField] private LayerMask _aimLayerMask;
 
+    public TextMeshProUGUI HealthText;
+    
     private float _horizontal;
     private float _vertical;
     private float _velocityZ;
     private float _velocityX;
     private float _dampTime = 0.1f;
     private Vector3 _direction;
-
+    public Vector3 Destination;
     private Animator _animator;
     private Camera _camera;
     public Crosshair Crosshair;
+    private int _health = 1;
+    public static bool IsDead = false;
+
+   
     private void Awake()
     {
+        
+        UpdateHealth();
         _camera = Camera.main;
         _animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        Move();
-        AimTowardsMouse();
+        if (!IsDead)
+        {
+            Move();
+            AimTowardsMouse();
+        }
     }
     private void Move()
     {
@@ -46,17 +57,56 @@ public class PlayerMovement : MonoBehaviour
     private void AimTowardsMouse()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _aimLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
-            var destination = hitInfo.point;
+            Destination = hitInfo.point;
 
-            Crosshair.Aim(destination);
+            Crosshair.Aim(Destination);
 
-            destination.y = transform.position.y;
-            Vector3 lookDirection = destination - transform.position;
+            Destination.y = transform.position.y;
+            Vector3 lookDirection = Destination - transform.position;
             lookDirection.Normalize();
 
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
     }
+    public void TakeDamage()
+    {
+        if (_health == 0)
+        {
+            return;
+        }
+        _health--;
+        UpdateHealth();
+        if ( _health > 0)
+        {
+            _animator.SetTrigger("GetHit");
+            
+
+        }
+        if (_health == 0)
+        {
+            Die();
+        }
+
+    }
+    private void Die()
+    {
+        if (!IsDead)
+        {
+            IsDead = true;
+            _animator.SetTrigger("Die");
+         
+        }
+    }
+    private void UpdateHealth()
+    {
+        HealthText.text = $"Health: {_health}";
+    }
+    private void TestingOnPlayerKilled(object sender,EventArgs e)
+    {
+        Debug.Log("Player died");
+    }
+   
+
 }
