@@ -9,7 +9,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _movementSpeed;
 
     public TextMeshProUGUI HealthText;
-    
+
+    public delegate void Coordinates(Vector3 coordinates);
+    public static event Coordinates OnAimMoved;
+
     private float _horizontal;
     private float _vertical;
     private float _velocityZ;
@@ -19,14 +22,11 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 Destination;
     private Animator _animator;
     private Camera _camera;
-    public Crosshair Crosshair;
     private int _health = 1;
     public static bool IsDead = false;
 
-   
     private void Awake()
     {
-        
         UpdateHealth();
         _camera = Camera.main;
         _animator = GetComponent<Animator>();
@@ -61,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Destination = hitInfo.point;
 
-            Crosshair.Aim(Destination);
+            OnAimMoved(Destination);
 
             Destination.y = transform.position.y;
             Vector3 lookDirection = Destination - transform.position;
@@ -78,10 +78,10 @@ public class PlayerMovement : MonoBehaviour
         }
         _health--;
         UpdateHealth();
-        if ( _health > 0)
+        if (_health > 0)
         {
             _animator.SetTrigger("GetHit");
-            
+
 
         }
         if (_health == 0)
@@ -96,17 +96,17 @@ public class PlayerMovement : MonoBehaviour
         {
             IsDead = true;
             _animator.SetTrigger("Die");
-         
+
         }
     }
     private void UpdateHealth()
     {
         HealthText.text = $"Health: {_health}";
     }
-    private void TestingOnPlayerKilled(object sender,EventArgs e)
+    private void TestingOnPlayerKilled(object sender, EventArgs e)
     {
         Debug.Log("Player died");
     }
-   
+
 
 }
