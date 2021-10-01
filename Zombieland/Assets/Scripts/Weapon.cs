@@ -16,6 +16,7 @@ public class Weapon : MonoBehaviour
     private bool _isReloading = false;
     private Coroutine _reloadingCoroutine;
     private Animator _animator;
+    public ParticleSystem MuzzleFlash;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,11 +41,12 @@ public class Weapon : MonoBehaviour
         {
             if (CurrentAmmo > 0)
             {
+                MuzzleFlash.Play();
                 CurrentAmmo--;
                 Vector3 target = PlayerMovement.Destination;
                 target.y = GunPoint.position.y;
                 Vector3 aim = target - GunPoint.position;
-                GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, transform.rotation);
+                GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, Quaternion.LookRotation(aim));
                 bulletPrefab.GetComponent<Rigidbody>().velocity = aim.normalized * Speed;
                 yield return new WaitForSeconds(FiringPeriod);
             }

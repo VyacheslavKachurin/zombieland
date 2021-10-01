@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
    
     private void Awake()
     {
-        
+       
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -71,5 +71,6 @@ public class Enemy : MonoBehaviour
     {
         _player.TakeDamage();
     }
+ 
    
 }

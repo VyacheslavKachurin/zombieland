@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    private void Update()
+    {
+        Destroy(gameObject, 1);
+    }
     // Start is called before the first frame update
     private void OnCollisionEnter(Collision collision)
     {

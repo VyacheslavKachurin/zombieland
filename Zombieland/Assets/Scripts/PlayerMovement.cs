@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 public class PlayerMovement : MonoBehaviour
 {
     [Range(0f, 10f)]
@@ -19,10 +20,13 @@ public class PlayerMovement : MonoBehaviour
     private Animator _animator;
     private Camera _camera;
     public Crosshair Crosshair;
-    private int _health = 3;
+    private int _health = 1;
     public static bool IsDead = false;
+
+   
     private void Awake()
     {
+        
         UpdateHealth();
         _camera = Camera.main;
         _animator = GetComponent<Animator>();
@@ -91,12 +95,17 @@ public class PlayerMovement : MonoBehaviour
         if (!IsDead)
         {
             IsDead = true;
-            _animator.SetTrigger("Die");  
+            _animator.SetTrigger("Die");
+         
         }
     }
     private void UpdateHealth()
     {
         HealthText.text = $"Health: {_health}";
+    }
+    private void TestingOnPlayerKilled(object sender,EventArgs e)
+    {
+        Debug.Log("Player died");
     }
    
 
