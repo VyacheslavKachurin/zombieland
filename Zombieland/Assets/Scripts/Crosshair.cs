@@ -20,6 +20,7 @@ public class Crosshair : MonoBehaviour
     {
         transform.position = new Vector3(target.x, target.y + _offset, target.z);
         Cursor.SetCursor(CursorTexture, _hotSpot, CursorMode.Auto);
+        
 
         OnCrosshairMoved?.Invoke(transform.position);
     }

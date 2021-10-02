@@ -36,5 +36,7 @@ public class Level01 : MonoBehaviour
         PlayerMovement.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
         _crosshair.OnCrosshairMoved += _cameraFollow.GetCrosshairPosition;
         _cameraFollow.SetOffset(_playerMovement.transform.position);
+
+        
     }
 }

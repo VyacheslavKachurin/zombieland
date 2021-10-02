@@ -67,10 +67,12 @@ public class PlayerMovement : MonoBehaviour
             OnAimMoved(Destination);
 
             Destination.y = transform.position.y;
+            
             Vector3 lookDirection = Destination - transform.position;
             lookDirection.Normalize();
 
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+            
         }
     }
     public void TakeDamage()
@@ -107,5 +109,6 @@ public class PlayerMovement : MonoBehaviour
         // HealthText.text = $"Health: {_health}";
         Debug.Log("Im hit");
     }
+   
   
 }
