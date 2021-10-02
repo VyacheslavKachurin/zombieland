@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class Crosshair : MonoBehaviour
 {
-    public Texture2D CursorTexture;
+    public event Action<Vector3> OnCrosshairMoved;
+
+    [SerializeField]private Texture2D CursorTexture;
 
     private float _offset = 0.1f;
     private Vector2 _hotSpot;
@@ -18,6 +20,8 @@ public class Crosshair : MonoBehaviour
     {
         transform.position = new Vector3(target.x, target.y + _offset, target.z);
         Cursor.SetCursor(CursorTexture, _hotSpot, CursorMode.Auto);
+
+        OnCrosshairMoved?.Invoke(transform.position);
     }
 
 }

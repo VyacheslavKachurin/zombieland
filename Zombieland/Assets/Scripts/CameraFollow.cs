@@ -8,31 +8,39 @@ public class CameraFollow : MonoBehaviour
     [Range(0f, 10f)] [SerializeField] private float _radius;
 
     private Vector3 _offset;
-
-    public Transform Player;
-    public Transform Crosshair;
-
-    private void Awake()
-    {
-        _offset = transform.position - Player.position;
-    }
+    private Vector3 _playerPosition;
+    private Vector3 _crosshairPosition;
 
     private void LateUpdate()
     {
-        CameraFollowCrosshair();
+        CameraFollowCrosshair(_playerPosition, _crosshairPosition);
     }
 
-    private void CameraFollowCrosshair()
+    public void CameraFollowCrosshair(Vector3 playerPosition, Vector3 crosshairPosition)
     {
+
         Vector3 clampedTarget = new Vector3(
-            Mathf.Clamp(Crosshair.position.x, Player.position.x - _radius, Player.position.x + _radius), // X position
-            Player.position.y,
-            Mathf.Clamp(Crosshair.position.z, Player.position.z - _radius, Player.position.z + _radius) // Y position
+            Mathf.Clamp(crosshairPosition.x, playerPosition.x - _radius, playerPosition.x + _radius), // X position
+            playerPosition.y,
+            Mathf.Clamp(crosshairPosition.z, playerPosition.z - _radius, playerPosition.z + _radius) // Z position
             );
-        Vector3 middle = (Player.position + clampedTarget) / 2;
+        Vector3 middle = (playerPosition + clampedTarget) / 2;
         Vector3 wantedPosition = middle + _offset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, SmoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
+
+    }
+    public void SetOffset(Vector3 playerPosition)
+    {
+        _offset = transform.position - playerPosition;
+    }
+    public void GetPlayerPosition(Vector3 playerPosition)
+    {
+        _playerPosition = playerPosition;
+    }
+    public void GetCrosshairPosition(Vector3 crosshairPosition)
+    {
+        _crosshairPosition = crosshairPosition;
     }
 
 }

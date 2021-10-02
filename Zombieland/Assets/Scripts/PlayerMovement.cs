@@ -5,13 +5,11 @@ using TMPro;
 using System;
 public class PlayerMovement : MonoBehaviour
 {
+    public static event Action<Vector3> OnAimMoved;
+    public static event Action<Vector3> OnPlayerMoved;
+
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
-
-    public TextMeshProUGUI HealthText;
-
-    public delegate void Coordinates(Vector3 coordinates);
-    public static event Coordinates OnAimMoved;
 
     private float _horizontal;
     private float _vertical;
@@ -25,15 +23,17 @@ public class PlayerMovement : MonoBehaviour
     private int _health = 1;
     public static bool IsDead = false;
 
-    private void Awake()
+    private void Start()
     {
         UpdateHealth();
         _camera = Camera.main;
+        
         _animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+
         if (!IsDead)
         {
             Move();
@@ -53,6 +53,9 @@ public class PlayerMovement : MonoBehaviour
 
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
+
+        OnPlayerMoved?.Invoke(transform.position);
+
     }
     private void AimTowardsMouse()
     {
@@ -101,12 +104,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void UpdateHealth()
     {
-        HealthText.text = $"Health: {_health}";
+        // HealthText.text = $"Health: {_health}";
+        Debug.Log("Im hit");
     }
-    private void TestingOnPlayerKilled(object sender, EventArgs e)
-    {
-        Debug.Log("Player died");
-    }
-
-
+  
 }
