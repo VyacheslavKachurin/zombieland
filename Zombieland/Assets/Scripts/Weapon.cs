@@ -17,6 +17,7 @@ public class Weapon : MonoBehaviour
     private Coroutine _reloadingCoroutine;
     private Animator _animator;
     public ParticleSystem MuzzleFlash;
+    private Vector3 _destination;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +44,8 @@ public class Weapon : MonoBehaviour
             {
                 MuzzleFlash.Play();
                 CurrentAmmo--;
-                Vector3 target = PlayerMovement.Destination;
+                //   Vector3 target = PlayerMovement.Destination;
+                Vector3 target = _destination;
                 target.y = GunPoint.position.y;
                 Vector3 aim = target - GunPoint.position;
                 GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, Quaternion.LookRotation(aim));
@@ -73,5 +75,9 @@ public class Weapon : MonoBehaviour
             yield return null;
         }
         StopCoroutine(_reloadingCoroutine);
+    }
+    public void TakeMousePosition(Vector3 mousePosition)
+    {
+        _destination = mousePosition;
     }
 }

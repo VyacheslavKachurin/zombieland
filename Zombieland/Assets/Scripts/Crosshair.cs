@@ -24,5 +24,6 @@ public class Crosshair : MonoBehaviour
 
         OnCrosshairMoved?.Invoke(transform.position);
     }
+ 
 
 }

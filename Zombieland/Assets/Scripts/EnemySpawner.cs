@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject Enemy;
+    [SerializeField] private GameObject _enemy;
     private float _spawnRate=2f;
     private float _spawnDistance = 20f;
     private float _range;
     private Vector3 _spawnPosition;
-    public GameObject Plane;
+    private GameObject _plane;
     private Transform _player;
 
     // Start is called before the first frame update
     void Awake()
     {
-        _range = Plane.GetComponent<MeshCollider>().bounds.size.x/2;
+        _plane = GameObject.Find("Plane");
+        _range = _plane.GetComponent<MeshCollider>().bounds.size.x/2;
         InvokeRepeating(nameof(SpawnEnemy),0.1f,_spawnRate);
     }
 
@@ -30,7 +31,7 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemy()
     {
 
-        Instantiate(Enemy,GetRandomPosition() , Quaternion.identity);
+        Instantiate(_enemy,GetRandomPosition() , Quaternion.identity);
     }
     private Vector3 GetRandomPosition()
     {

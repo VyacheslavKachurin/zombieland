@@ -21,11 +21,14 @@ public class PlayerMovement : MonoBehaviour
     private Animator _animator;
     private Camera _camera;
     private int _health = 1;
+    private Vector3 _mousePosition;
+
     public static bool IsDead = false;
+    
 
     private void Start()
     {
-        UpdateHealth();
+      //  UpdateHealth();
         _camera = Camera.main;
         
         _animator = GetComponent<Animator>();
@@ -42,8 +45,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Move()
     {
-        _horizontal = Input.GetAxisRaw("Horizontal");
-        _vertical = Input.GetAxisRaw("Vertical");
+       // _horizontal = Input.GetAxisRaw("Horizontal");
+        //_vertical = Input.GetAxisRaw("Vertical");
 
         _direction = new Vector3(_horizontal, 0, _vertical);
         transform.Translate(_direction.normalized * _movementSpeed * Time.deltaTime, Space.World);
@@ -59,21 +62,22 @@ public class PlayerMovement : MonoBehaviour
     }
     private void AimTowardsMouse()
     {
-        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-        {
-            Destination = hitInfo.point;
+       // Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+       // if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+       // {
+           // Destination = hitInfo.point;
 
-            OnAimMoved(Destination);
+        // OnAimMoved(Destination);
 
-            Destination.y = transform.position.y;
-            
-            Vector3 lookDirection = Destination - transform.position;
+        // Destination.y = transform.position.y;
+
+        // Vector3 lookDirection = Destination - transform.position;
+        Vector3 lookDirection = _mousePosition - transform.position;
             lookDirection.Normalize();
 
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
             
-        }
+       // }
     }
     public void TakeDamage()
     {
@@ -108,6 +112,15 @@ public class PlayerMovement : MonoBehaviour
     {
         // HealthText.text = $"Health: {_health}";
         Debug.Log("Im hit");
+    }
+    public void ReceiveAxis(float horizontal,float vertical)
+    {
+        _horizontal = horizontal;
+        _vertical = vertical;
+    }
+    public void ReceiveMouse(Vector3 mousePosition)
+    {
+        _mousePosition = mousePosition;
     }
    
   
