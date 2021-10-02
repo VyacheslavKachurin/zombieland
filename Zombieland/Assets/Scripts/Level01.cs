@@ -13,30 +13,24 @@ public class Level01 : MonoBehaviour
     private void Start()
     {
         Initialize();
-      
-
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     private void Initialize()
     {
         _playerMovement = Instantiate(_playerMovement, Vector3.zero, Quaternion.identity);
         _cameraFollow = Instantiate(
-            _cameraFollow, 
-            _cameraFollow.transform.position, 
+            _cameraFollow,
+            _cameraFollow.transform.position,
             _cameraFollow.transform.rotation);
 
         _cameraFollow.SetOffset(_playerMovement.transform.position);
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
 
-        PlayerMovement.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
+        _playerMovement.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
         _crosshair.OnCrosshairMoved += _cameraFollow.GetCrosshairPosition;
         _cameraFollow.SetOffset(_playerMovement.transform.position);
+        _playerMovement.OnAimMoved += _crosshair.Aim;
 
-        
+
     }
 }

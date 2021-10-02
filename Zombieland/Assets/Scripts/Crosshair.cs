@@ -14,7 +14,7 @@ public class Crosshair : MonoBehaviour
     private void Awake()
     {
         _hotSpot = new Vector2(CursorTexture.width / 2, CursorTexture.height / 2);
-        PlayerMovement.OnAimMoved += Aim;
+       
     }
     public void Aim(Vector3 target)
     {

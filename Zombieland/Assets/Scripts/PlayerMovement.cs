@@ -5,8 +5,8 @@ using TMPro;
 using System;
 public class PlayerMovement : MonoBehaviour
 {
-    public static event Action<Vector3> OnAimMoved;
-    public static event Action<Vector3> OnPlayerMoved;
+    public event Action<Vector3> OnAimMoved;
+    public event Action<Vector3> OnPlayerMoved;
 
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
