@@ -6,12 +6,13 @@ public class InputController : MonoBehaviour
 {
     public event Action<Vector3> OnMouseMoved;
     public event Action<float, float> OnAxisMoved;
+
     private float _horizontal;
     private float _vertical;
     private Camera _camera;
     private Vector3 _destination;
 
-    void Start()
+    private void Start()
     {
         _camera = Camera.main;
     }
@@ -36,7 +37,7 @@ public class InputController : MonoBehaviour
             _destination = hitInfo.point;
             _destination.y = transform.position.y;
 
-            OnMouseMoved?.Invoke(_destination);          
+            OnMouseMoved?.Invoke(_destination);
         }
     }
 }

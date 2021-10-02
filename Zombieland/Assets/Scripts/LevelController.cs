@@ -20,7 +20,7 @@ public class LevelController : MonoBehaviour
     private void Initialize()
     {
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
-        
+
         _cameraFollow = Instantiate(
             _cameraFollow,
             _cameraFollow.transform.position,
@@ -33,21 +33,15 @@ public class LevelController : MonoBehaviour
 
         _playerMovement = Instantiate(_playerMovement, Vector3.zero, Quaternion.identity);
         _playerMovement.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
+        _playerMovement.OnPlayerDeath += _enemySpawner.StopSpawning;
 
         //fix (GetComponentInChildren) because its too deep
         _weapon = _playerMovement.GetComponentInChildren<Weapon>();
 
-
-
-
-
-        _inputController =Instantiate(_inputController, Vector3.zero, Quaternion.identity);
+        _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnAxisMoved += _playerMovement.ReceiveAxis;
         _inputController.OnMouseMoved += _playerMovement.ReceiveMouse;
         _inputController.OnMouseMoved += _crosshair.Aim;
         _inputController.OnMouseMoved += _weapon.TakeMousePosition;
-
-
-
     }
 }

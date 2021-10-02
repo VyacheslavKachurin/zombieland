@@ -11,9 +11,10 @@ public class EnemySpawner : MonoBehaviour
     private Vector3 _spawnPosition;
     private GameObject _plane;
     private Transform _player;
+    private bool _isPaused=false;
 
     // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
         _plane = GameObject.Find("Plane");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x/2;
@@ -21,17 +22,16 @@ public class EnemySpawner : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (PlayerMovement.IsDead)
-        {
-            Destroy(gameObject);
-        }
+      
     }
     private void SpawnEnemy()
     {
-
-        Instantiate(_enemy,GetRandomPosition() , Quaternion.identity);
+        if (!_isPaused)
+        {
+            Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
+        }
     }
     private Vector3 GetRandomPosition()
     {
@@ -48,5 +48,9 @@ public class EnemySpawner : MonoBehaviour
         {
             return GetRandomPosition();
         }
+    }
+    public void StopSpawning(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

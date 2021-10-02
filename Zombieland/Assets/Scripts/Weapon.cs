@@ -19,13 +19,13 @@ public class Weapon : MonoBehaviour
     public ParticleSystem MuzzleFlash;
     private Vector3 _destination;
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _animator = PlayerMovement.GetComponent<Animator>();   
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0)&&!_isReloading)
         {

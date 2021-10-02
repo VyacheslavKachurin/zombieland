@@ -21,11 +21,7 @@ public class Enemy : MonoBehaviour
     }
     private void Update()
     {
-        if (PlayerMovement.IsDead&&!_isDead)
-        {
-            _isDead = true;
-            Die();
-        }
+     
         _player = FindObjectOfType<PlayerMovement>();
         if (_navMeshAgent.enabled)
         {

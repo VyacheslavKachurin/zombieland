@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public event Action<Vector3> OnAimMoved;
     public event Action<Vector3> OnPlayerMoved;
+    public event Action<bool> OnPlayerDeath;
 
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
@@ -17,27 +18,25 @@ public class PlayerMovement : MonoBehaviour
     private float _velocityX;
     private float _dampTime = 0.1f;
     private Vector3 _direction;
-    public Vector3 Destination;
     private Animator _animator;
     private Camera _camera;
     private int _health = 1;
     private Vector3 _mousePosition;
+    private bool _isDead = false;
 
-    public static bool IsDead = false;
-    
 
     private void Start()
     {
-      //  UpdateHealth();
+        //  UpdateHealth();
         _camera = Camera.main;
-        
+
         _animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
 
-        if (!IsDead)
+        if (!_isDead)
         {
             Move();
             AimTowardsMouse();
@@ -45,9 +44,6 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Move()
     {
-       // _horizontal = Input.GetAxisRaw("Horizontal");
-        //_vertical = Input.GetAxisRaw("Vertical");
-
         _direction = new Vector3(_horizontal, 0, _vertical);
         transform.Translate(_direction.normalized * _movementSpeed * Time.deltaTime, Space.World);
 
@@ -62,22 +58,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void AimTowardsMouse()
     {
-       // Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-       // if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-       // {
-           // Destination = hitInfo.point;
-
-        // OnAimMoved(Destination);
-
-        // Destination.y = transform.position.y;
-
-        // Vector3 lookDirection = Destination - transform.position;
         Vector3 lookDirection = _mousePosition - transform.position;
-            lookDirection.Normalize();
+        lookDirection.Normalize();
 
-            transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            
-       // }
+        transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
     }
     public void TakeDamage()
     {
@@ -101,10 +85,12 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Die()
     {
-        if (!IsDead)
+        if (!_isDead)
         {
-            IsDead = true;
+            _isDead = true;
             _animator.SetTrigger("Die");
+
+            OnPlayerDeath?.Invoke(_isDead);
 
         }
     }
@@ -113,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         // HealthText.text = $"Health: {_health}";
         Debug.Log("Im hit");
     }
-    public void ReceiveAxis(float horizontal,float vertical)
+    public void ReceiveAxis(float horizontal, float vertical)
     {
         _horizontal = horizontal;
         _vertical = vertical;
@@ -122,6 +108,6 @@ public class PlayerMovement : MonoBehaviour
     {
         _mousePosition = mousePosition;
     }
-   
-  
+
+
 }
