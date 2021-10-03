@@ -7,7 +7,7 @@ public class Weapon : MonoBehaviour
     public GameObject Bullet;
     public Transform GunPoint;
     public float Speed = 20f;
-    public PlayerMovement PlayerMovement;
+    public Player PlayerMovement;
     private Coroutine _shootingCoroutine;
     public float FiringPeriod = 0.15f;
     public int CurrentAmmo = 30;
@@ -44,7 +44,7 @@ public class Weapon : MonoBehaviour
             {
                 MuzzleFlash.Play();
                 CurrentAmmo--;
-                //   Vector3 target = PlayerMovement.Destination;
+               
                 Vector3 target = _destination;
                 target.y = GunPoint.position.y;
                 Vector3 aim = target - GunPoint.position;

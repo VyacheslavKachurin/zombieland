@@ -8,12 +8,12 @@ public class Enemy : MonoBehaviour
 
     private NavMeshAgent _navMeshAgent;
     private int _health = 5;
-    private PlayerMovement _player;
+    private Player _player;
     private float _attackRange = 1f;
     private Animator _animator;
     private bool _isDead = false;
    
-    private void Awake()
+    private void Start()
     {
        
         _animator = GetComponent<Animator>();
@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
      
-        _player = FindObjectOfType<PlayerMovement>();
+        _player = FindObjectOfType<Player>();
         if (_navMeshAgent.enabled)
         {
             _navMeshAgent.SetDestination(_player.transform.position);
@@ -63,10 +63,7 @@ public class Enemy : MonoBehaviour
     {
         _navMeshAgent.enabled = true;
     }
-    private void AttackHit()
-    {
-        _player.TakeDamage();
-    }
+ 
  
    
 }

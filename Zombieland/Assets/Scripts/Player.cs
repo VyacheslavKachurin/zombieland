@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public event Action<Vector3> OnAimMoved;
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
+    public event Action<float> OnPlayerGotAttacked;
 
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
@@ -19,17 +20,15 @@ public class PlayerMovement : MonoBehaviour
     private float _dampTime = 0.1f;
     private Vector3 _direction;
     private Animator _animator;
-    private Camera _camera;
-    private int _health = 1;
+    private float _health = 100;
     private Vector3 _mousePosition;
     private bool _isDead = false;
+
+    private float _damageAmount = 20;//testing
 
 
     private void Start()
     {
-        //  UpdateHealth();
-        _camera = Camera.main;
-
         _animator = GetComponent<Animator>();
     }
 
@@ -63,24 +62,22 @@ public class PlayerMovement : MonoBehaviour
 
         transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
     }
-    public void TakeDamage()
+    private void TakeDamage()
     {
-        if (_health == 0)
-        {
-            return;
-        }
-        _health--;
-        UpdateHealth();
         if (_health > 0)
         {
-            _animator.SetTrigger("GetHit");
-
-
+            _health -= _damageAmount;
+            OnPlayerGotAttacked(_damageAmount);
+            if (_health <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                _animator.SetTrigger("GetHit");               
+            }
         }
-        if (_health == 0)
-        {
-            Die();
-        }
+        
 
     }
     private void Die()
@@ -94,11 +91,6 @@ public class PlayerMovement : MonoBehaviour
 
         }
     }
-    private void UpdateHealth()
-    {
-        // HealthText.text = $"Health: {_health}";
-        Debug.Log("Im hit");
-    }
     public void ReceiveAxis(float horizontal, float vertical)
     {
         _horizontal = horizontal;
@@ -107,6 +99,13 @@ public class PlayerMovement : MonoBehaviour
     public void ReceiveMouse(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("HitCollider"))
+        {
+            TakeDamage();
+        }
     }
 
 
