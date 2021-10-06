@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
     {
         Destroy(gameObject, 1);
     }
-    // Start is called before the first frame update
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Enemy")

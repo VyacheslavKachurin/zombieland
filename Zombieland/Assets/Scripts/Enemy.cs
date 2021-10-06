@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using System;
 public class Enemy : MonoBehaviour
 {
+    public event Action<float> OnEnemyGotAttacked;
 
     private NavMeshAgent _navMeshAgent;
     private int _health = 5;
@@ -12,7 +13,10 @@ public class Enemy : MonoBehaviour
     private float _attackRange = 1f;
     private Animator _animator;
     private bool _isDead = false;
-   
+    private GameObject _enemyHealthBar;
+    private Vector3 _offset=new Vector3(0f,2.46f,0f);
+    private float _damageAmount=20f;
+
     private void Start()
     {
        
@@ -31,6 +35,7 @@ public class Enemy : MonoBehaviour
         {
             Attack();
         }
+        UpdateHealthBarPosition();
     }
 
     private void Attack()
@@ -42,14 +47,19 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (_health != 0)
+        if (_health > 0)
         {
             _health--;
-            Debug.Log("Im hurt");
+            if (_health == 0)
+            {
+                Die();
+            }
+            OnEnemyGotAttacked(_damageAmount);
+         
         }
         else
         {
-            Debug.Log("eeeew");
+           
             Die();
         }
     }
@@ -58,11 +68,25 @@ public class Enemy : MonoBehaviour
         _animator.SetTrigger("Die");
         _navMeshAgent.enabled=false;
         Destroy(gameObject, 3f);
+        Destroy(_enemyHealthBar) ;
     }
     private void AttackComplete()
     {
         _navMeshAgent.enabled = true;
     }
+    public void GetHealthBar(GameObject enemyHealthBar)
+    {
+        _enemyHealthBar = enemyHealthBar;
+    }
+    private void UpdateHealthBarPosition()
+    {
+        if (_enemyHealthBar != null)
+        {
+            _enemyHealthBar.transform.position = Camera.main.WorldToScreenPoint(_offset + transform.position);
+        }
+        
+    }
+
  
  
    

@@ -10,6 +10,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private Crosshair _crosshair;
     [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private HUD _HUD;
+    [SerializeField] private Canvas _enemyCanvas;
 
     private Weapon _weapon;
 
@@ -20,7 +21,9 @@ public class LevelController : MonoBehaviour
 
     private void Initialize()
     {
+        _enemyCanvas = Instantiate(_enemyCanvas);
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
+        _enemySpawner.SetCanvas(_enemyCanvas);
 
         _cameraFollow = Instantiate(
             _cameraFollow,

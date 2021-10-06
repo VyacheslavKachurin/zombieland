@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _enemy;
+    [SerializeField] private GameObject _enemyHealthBar;
     private float _spawnRate=2f;
     private float _spawnDistance = 20f;
     private float _range;
@@ -12,6 +13,8 @@ public class EnemySpawner : MonoBehaviour
     private GameObject _plane;
     private Transform _player;
     private bool _isPaused=false;
+    private Canvas _enemyCanvas;
+
 
     // Start is called before the first frame update
     private void Awake()
@@ -30,7 +33,12 @@ public class EnemySpawner : MonoBehaviour
     {
         if (!_isPaused)
         {
-            Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
+           GameObject enemyInstance= Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
+            GameObject enemyHealthBarInstance=Instantiate(_enemyHealthBar);
+            enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
+            enemyInstance.GetComponent<Enemy>().GetHealthBar(enemyHealthBarInstance);
+            enemyInstance.GetComponent<Enemy>().OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
+           
         }
     }
     private Vector3 GetRandomPosition()
@@ -52,5 +60,9 @@ public class EnemySpawner : MonoBehaviour
     public void StopSpawning(bool isPaused)
     {
         _isPaused = isPaused;
+    }
+    public void SetCanvas(Canvas canvas)
+    {
+        _enemyCanvas = canvas;
     }
 }
