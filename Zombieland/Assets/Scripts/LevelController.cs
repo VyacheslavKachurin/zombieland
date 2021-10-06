@@ -52,6 +52,7 @@ public class LevelController : MonoBehaviour
 
         _HUD = Instantiate(_HUD);
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
+        _weapon.OnBulletAmountChanged += _HUD.UpdateBullets;
 
     }
 }

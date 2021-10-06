@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class Weapon : MonoBehaviour
 {
+    public event Action<int> OnBulletAmountChanged;
     public GameObject Bullet;
     public Transform GunPoint;
     public float Speed = 20f;
@@ -44,7 +45,7 @@ public class Weapon : MonoBehaviour
             {
                 MuzzleFlash.Play();
                 CurrentAmmo--;
-               
+                OnBulletAmountChanged(CurrentAmmo);
                 Vector3 target = _destination;
                 target.y = GunPoint.position.y;
                 Vector3 aim = target - GunPoint.position;
@@ -64,10 +65,11 @@ public class Weapon : MonoBehaviour
         _animator.SetTrigger("Reloading");
         _isReloading = true;
         StopCoroutine(_shootingCoroutine);
-        Debug.Log("Reloading");
+
         yield return new WaitForSeconds(ReloadingTime);
         CurrentAmmo = MaxAmmo;
-        Debug.Log("Reloaded");
+        
+        OnBulletAmountChanged(CurrentAmmo);
         _isReloading = false;
         if (Input.GetMouseButton(0))
         {
