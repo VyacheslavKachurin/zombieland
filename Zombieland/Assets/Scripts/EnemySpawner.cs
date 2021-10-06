@@ -35,6 +35,7 @@ public class EnemySpawner : MonoBehaviour
         {
            GameObject enemyInstance= Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
             GameObject enemyHealthBarInstance=Instantiate(_enemyHealthBar);
+            enemyHealthBarInstance.SetActive(false);
             enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
             enemyInstance.GetComponent<Enemy>().GetHealthBar(enemyHealthBarInstance);
             enemyInstance.GetComponent<Enemy>().OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;

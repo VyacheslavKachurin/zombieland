@@ -83,6 +83,13 @@ public class Enemy : MonoBehaviour
         if (_enemyHealthBar != null)
         {
             _enemyHealthBar.transform.position = Camera.main.WorldToScreenPoint(_offset + transform.position);
+            
+
+            // avoid checking every frame, do it only once
+            if (!_enemyHealthBar.activeInHierarchy)
+            {
+                _enemyHealthBar.SetActive(true);
+            }
         }
         
     }

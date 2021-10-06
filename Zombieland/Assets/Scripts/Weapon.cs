@@ -11,7 +11,7 @@ public class Weapon : MonoBehaviour
     private Coroutine _shootingCoroutine;
     public float FiringPeriod = 0.15f;
     public int CurrentAmmo = 30;
-    public float ReloadingTime = 3.09f;
+    public float ReloadingTime = 1.5f;
     public int MaxAmmo = 30;
     private bool _isReloading = false;
     private Coroutine _reloadingCoroutine;
