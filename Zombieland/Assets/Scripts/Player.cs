@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     private float _health = 100;
     private Vector3 _mousePosition;
     private bool _isDead = false;
+    private bool _isPaused = false;
 
     private float _damageAmount = 20;//testing
 
@@ -35,7 +36,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
 
-        if (!_isDead)
+        if (!_isDead&&!_isPaused)
         {
             Move();
             AimTowardsMouse();
@@ -106,6 +107,11 @@ public class Player : MonoBehaviour
         {
             TakeDamage();
         }
+    }
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
+        _animator.enabled = !isPaused;
     }
 
 

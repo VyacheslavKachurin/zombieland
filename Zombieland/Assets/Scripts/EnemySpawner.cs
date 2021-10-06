@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
+    public event Action<bool> OnGamePaused;
+
     [SerializeField] private GameObject _enemy;
     [SerializeField] private GameObject _enemyHealthBar;
     private float _spawnRate=2f;
@@ -16,7 +20,6 @@ public class EnemySpawner : MonoBehaviour
     private Canvas _enemyCanvas;
 
 
-    // Start is called before the first frame update
     private void Awake()
     {
         _plane = GameObject.Find("Plane");
@@ -24,7 +27,6 @@ public class EnemySpawner : MonoBehaviour
         InvokeRepeating(nameof(SpawnEnemy),0.1f,_spawnRate);
     }
 
-    // Update is called once per frame
     private void Update()
     {
       
@@ -35,6 +37,7 @@ public class EnemySpawner : MonoBehaviour
         {
            GameObject enemyInstance= Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
             GameObject enemyHealthBarInstance=Instantiate(_enemyHealthBar);
+            OnGamePaused += enemyInstance.GetComponent<Enemy>().PauseGame;
             enemyHealthBarInstance.SetActive(false);
             enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
             enemyInstance.GetComponent<Enemy>().GetHealthBar(enemyHealthBarInstance);
@@ -65,5 +68,10 @@ public class EnemySpawner : MonoBehaviour
     public void SetCanvas(Canvas canvas)
     {
         _enemyCanvas = canvas;
+    }
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
+        OnGamePaused(isPaused);
     }
 }

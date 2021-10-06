@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     private GameObject _enemyHealthBar;
     private Vector3 _offset=new Vector3(0f,2.46f,0f);
     private float _damageAmount=20f;
+    private bool _isPaused = false;
 
     private void Start()
     {
@@ -25,17 +26,24 @@ public class Enemy : MonoBehaviour
     }
     private void Update()
     {
-     
-        _player = FindObjectOfType<Player>();
-        if (_navMeshAgent.enabled)
-        {
-            _navMeshAgent.SetDestination(_player.transform.position);
-        }
-        if (Vector3.Distance(transform.position, _player.transform.position)<=_attackRange)
-        {
-            Attack();
-        }
+        Move();
         UpdateHealthBarPosition();
+    }
+
+    private void Move()
+    {
+        if (!_isPaused)
+        {
+            _player = FindObjectOfType<Player>();
+            if (_navMeshAgent.enabled)
+            {
+                _navMeshAgent.SetDestination(_player.transform.position);
+            }
+            if (Vector3.Distance(transform.position, _player.transform.position) <= _attackRange)
+            {
+                Attack();
+            }
+        }
     }
 
     private void Attack()
@@ -92,6 +100,15 @@ public class Enemy : MonoBehaviour
             }
         }
         
+    }
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.enabled = !isPaused;
+            _animator.enabled = !isPaused;
+        }
     }
 
  

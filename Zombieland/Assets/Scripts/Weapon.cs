@@ -19,6 +19,7 @@ public class Weapon : MonoBehaviour
     private Animator _animator;
     public ParticleSystem MuzzleFlash;
     private Vector3 _destination;
+    private bool _isPaused=false;
     // Start is called before the first frame update
     private void Start()
     {
@@ -32,14 +33,17 @@ public class Weapon : MonoBehaviour
         {
            _shootingCoroutine= StartCoroutine(Shoot());
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0)&&!_isPaused)
         {
-            StopCoroutine(_shootingCoroutine);
+            if (_shootingCoroutine != null)
+            {
+                StopCoroutine(_shootingCoroutine);
+            }
         }
     }
     private IEnumerator Shoot()
     {       
-        while (true)
+        while (true&&!_isPaused)
         {
             if (CurrentAmmo > 0)
             {
@@ -62,24 +66,31 @@ public class Weapon : MonoBehaviour
     }
     private IEnumerator Reload()
     {
-        _animator.SetTrigger("Reloading");
-        _isReloading = true;
-        StopCoroutine(_shootingCoroutine);
-
-        yield return new WaitForSeconds(ReloadingTime);
-        CurrentAmmo = MaxAmmo;
-        
-        OnBulletAmountChanged(CurrentAmmo);
-        _isReloading = false;
-        if (Input.GetMouseButton(0))
+        if (!_isPaused)
         {
-            _shootingCoroutine=StartCoroutine(Shoot());
-            yield return null;
+            _animator.SetTrigger("Reloading");
+            _isReloading = true;
+            StopCoroutine(_shootingCoroutine);
+
+            yield return new WaitForSeconds(ReloadingTime);
+            CurrentAmmo = MaxAmmo;
+
+            OnBulletAmountChanged(CurrentAmmo);
+            _isReloading = false;
+            if (Input.GetMouseButton(0))
+            {
+                _shootingCoroutine = StartCoroutine(Shoot());
+                yield return null;
+            }
+            StopCoroutine(_reloadingCoroutine);
         }
-        StopCoroutine(_reloadingCoroutine);
     }
     public void TakeMousePosition(Vector3 mousePosition)
     {
         _destination = mousePosition;
+    }
+    public void PauseGame(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }

@@ -3,15 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 public class HUD : MonoBehaviour
 {
+    public Button ContinueButton; //Action and UnityAction issues
+    [SerializeField] private GameObject _pausePanel;
     [SerializeField] private Slider _healthSlider;
     [SerializeField] private Slider _armorSlider;
     [SerializeField] private TextMeshProUGUI _bulletText;
+    private bool _isPaused=false;
+
+    private void Start()
+    {
+        
+    }
     public void UpdateHealth(float health)
     {
         _healthSlider.value -= health;
-       
     }
     public void UpdateArmor(float armor)
     {
@@ -26,5 +34,33 @@ public class HUD : MonoBehaviour
     {
         _bulletText.text = $"{bullets}";
     }
+    public void PauseGame(bool isPaused)
+    {
+        _pausePanel.SetActive(isPaused);
+    }
+    public void GameOver(bool isDead)
+    {
+        ContinueButton.interactable = false;
+        _pausePanel.SetActive(isDead);       
+    }
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void Exit()
+    {
+        Debug.Log("Exit");
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void ShowSettings()
+    {
+        Debug.Log("Show Settings");
+    }
+
+
+
 
 }
