@@ -7,15 +7,18 @@ using UnityEngine.SceneManagement;
 public class HUD : MonoBehaviour
 {
     public Button ContinueButton; //Action and UnityAction issues
+
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private Slider _healthSlider;
     [SerializeField] private Slider _armorSlider;
     [SerializeField] private TextMeshProUGUI _bulletText;
+    [SerializeField] private Animator _animator;
+    
     private bool _isPaused=false;
 
     private void Start()
     {
-        
+     
     }
     public void UpdateHealth(float health)
     {
@@ -36,7 +39,15 @@ public class HUD : MonoBehaviour
     }
     public void PauseGame(bool isPaused)
     {
-        _pausePanel.SetActive(isPaused);
+        //_pausePanel.SetActive(isPaused);
+        if (isPaused)
+        {
+            _animator.SetTrigger("Pause");
+        }
+        else
+        {
+            _animator.SetTrigger("Continue");
+        }
     }
     public void GameOver(bool isDead)
     {
@@ -59,8 +70,4 @@ public class HUD : MonoBehaviour
     {
         Debug.Log("Show Settings");
     }
-
-
-
-
 }

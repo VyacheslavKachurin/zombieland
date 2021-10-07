@@ -4,7 +4,9 @@ using UnityEngine;
 using System;
 public class Weapon : MonoBehaviour
 {
+    public event Action<bool> OnGamePaused;
     public event Action<int> OnBulletAmountChanged;
+
     public GameObject Bullet;
     public Transform GunPoint;
     public float Speed = 20f;
@@ -55,6 +57,8 @@ public class Weapon : MonoBehaviour
                 Vector3 aim = target - GunPoint.position;
                 GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, Quaternion.LookRotation(aim));
                 bulletPrefab.GetComponent<Rigidbody>().velocity = aim.normalized * Speed;
+                OnGamePaused+=bulletPrefab.GetComponent<Bullet>().PauseGame;
+
                 yield return new WaitForSeconds(FiringPeriod);
             }
             else
@@ -92,5 +96,6 @@ public class Weapon : MonoBehaviour
     public void PauseGame(bool isPaused)
     {
         _isPaused = isPaused;
+        OnGamePaused?.Invoke(isPaused);
     }
 }

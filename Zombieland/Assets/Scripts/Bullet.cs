@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    private Rigidbody _rigidbody;
+    private Vector3 _storedVelocity;
+    private void Start()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
     private void Update()
     {
         Destroy(gameObject, 1);
@@ -16,5 +22,20 @@ public class Bullet : MonoBehaviour
             collision.gameObject.GetComponent<Enemy>().TakeDamage();
         }
         Destroy(gameObject);
+    }
+    public void PauseGame(bool isPaused)
+    {
+        if (_rigidbody != null)
+        {
+            if (isPaused)
+            {
+                _storedVelocity = _rigidbody.velocity;
+            }
+            else
+            {
+                _rigidbody.velocity = _storedVelocity;
+            }
+        }
+
     }
 }
