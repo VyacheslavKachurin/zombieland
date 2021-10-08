@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private GameObject _mainMenuPanel;
+    [SerializeField] private GameObject _settingsPanel;
    public void ExitGame()
     {
         Debug.Log("Exit the game");

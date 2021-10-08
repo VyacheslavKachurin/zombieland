@@ -76,7 +76,7 @@ public class LevelController : MonoBehaviour
     }
     public void PauseGame()
     {
-        Debug.Log("level controller");
+        
         _isGamePaused = !_isGamePaused;       
         OnGamePaused?.Invoke(_isGamePaused);
     }

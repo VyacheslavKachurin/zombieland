@@ -60,8 +60,10 @@ public class Player : MonoBehaviour
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();
-
-        transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        if (lookDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        }
     }
     private void TakeDamage()
     {
