@@ -15,7 +15,8 @@ public class MainMenu : MonoBehaviour
     }
     public void ShowSettings()
     {
-        Debug.Log("Settings");
+        _mainMenuPanel.SetActive(false);
+        _settingsPanel.SetActive(true);
     }
     public void ShowLevels()
     {
@@ -24,6 +25,11 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadScene(1);
+    }
+    public void HideSettings()
+    {
+        _mainMenuPanel.SetActive(true);
+        _settingsPanel.SetActive(false);
     }
    
 }
