@@ -39,7 +39,7 @@ public class HUD : MonoBehaviour
     }
     public void PauseGame(bool isPaused)
     {
-        //_pausePanel.SetActive(isPaused);
+        _pausePanel.SetActive(isPaused);
         if (isPaused)
         {
             _animator.SetTrigger("Pause");

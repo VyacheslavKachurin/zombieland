@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public event Action<bool> OnGamePaused;
+    //public event Action<bool> OnGamePaused;
 
     [SerializeField] private GameObject _enemy;
     [SerializeField] private GameObject _enemyHealthBar;
@@ -16,7 +16,7 @@ public class EnemySpawner : MonoBehaviour
     private Vector3 _spawnPosition;
     private GameObject _plane;
     private Transform _player;
-    private bool _isPaused=false;
+  //  private bool _isPaused=false;
     private Canvas _enemyCanvas;
 
 
@@ -33,11 +33,11 @@ public class EnemySpawner : MonoBehaviour
     }
     private void SpawnEnemy()
     {
-        if (!_isPaused)
+      //  if (!_isPaused)
         {
            GameObject enemyInstance= Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
             GameObject enemyHealthBarInstance=Instantiate(_enemyHealthBar);
-            OnGamePaused += enemyInstance.GetComponent<Enemy>().PauseGame;
+           // OnGamePaused += enemyInstance.GetComponent<Enemy>().PauseGame;
             enemyHealthBarInstance.SetActive(false);
             enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
             enemyInstance.GetComponent<Enemy>().GetHealthBar(enemyHealthBarInstance);
@@ -63,7 +63,7 @@ public class EnemySpawner : MonoBehaviour
     }
     public void StopSpawning(bool isPaused)
     {
-        _isPaused = isPaused;
+     //   _isPaused = isPaused;
     }
     public void SetCanvas(Canvas canvas)
     {
@@ -71,7 +71,7 @@ public class EnemySpawner : MonoBehaviour
     }
     public void PauseGame(bool isPaused)
     {
-        _isPaused = isPaused;
-        OnGamePaused(isPaused);
+      //  _isPaused = isPaused;
+      //  OnGamePaused(isPaused);
     }
 }

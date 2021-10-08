@@ -23,19 +23,5 @@ public class Bullet : MonoBehaviour
         }
         Destroy(gameObject);
     }
-    public void PauseGame(bool isPaused)
-    {
-        if (_rigidbody != null)
-        {
-            if (isPaused)
-            {
-                _storedVelocity = _rigidbody.velocity;
-            }
-            else
-            {
-                _rigidbody.velocity = _storedVelocity;
-            }
-        }
-
-    }
+    
 }

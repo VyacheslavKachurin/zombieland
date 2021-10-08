@@ -35,7 +35,7 @@ public class LevelController : MonoBehaviour
         _enemyCanvas = Instantiate(_enemyCanvas);
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
         _enemySpawner.SetCanvas(_enemyCanvas);
-        OnGamePaused += _enemySpawner.PauseGame;
+      
 
         _cameraFollow = Instantiate(
             _cameraFollow,
@@ -43,7 +43,7 @@ public class LevelController : MonoBehaviour
             _cameraFollow.transform.rotation);
 
         _cameraFollow.SetOffset(_player.transform.position);
-        OnGamePaused += _cameraFollow.PauseGame;
+     
 
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
         _crosshair.OnCrosshairMoved += _cameraFollow.GetCrosshairPosition;
@@ -53,11 +53,11 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
         _player.OnPlayerDeath += _enemySpawner.StopSpawning;
         _player.OnPlayerDeath += GameOver;
-        OnGamePaused += _player.PauseGame;
+     
        
         //fix (GetComponentInChildren) because its too deep
         _weapon = _player.GetComponentInChildren<Weapon>();
-        OnGamePaused += _weapon.PauseGame;
+   
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnAxisMoved += _player.ReceiveAxis;
@@ -76,8 +76,14 @@ public class LevelController : MonoBehaviour
     }
     public void PauseGame()
     {
-        
-        _isGamePaused = !_isGamePaused;       
+        _isGamePaused = !_isGamePaused;
+        if (_isGamePaused)
+        Time.timeScale = 0;
+        else
+        {
+            Time.timeScale = 1;
+        }
+             
         OnGamePaused?.Invoke(_isGamePaused);
     }
     public void GameOver(bool isGamePaused)

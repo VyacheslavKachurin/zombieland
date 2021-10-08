@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 public class Weapon : MonoBehaviour
 {
-    public event Action<bool> OnGamePaused;
+
     public event Action<int> OnBulletAmountChanged;
 
     public GameObject Bullet;
@@ -21,8 +21,7 @@ public class Weapon : MonoBehaviour
     private Animator _animator;
     public ParticleSystem MuzzleFlash;
     private Vector3 _destination;
-    private bool _isPaused=false;
-    // Start is called before the first frame update
+
     private void Start()
     {
         _animator = PlayerMovement.GetComponent<Animator>();   
@@ -35,7 +34,7 @@ public class Weapon : MonoBehaviour
         {
            _shootingCoroutine= StartCoroutine(Shoot());
         }
-        if (Input.GetMouseButtonUp(0)&&!_isPaused)
+        if (Input.GetMouseButtonUp(0)/*&&!_isPaused*/)
         {
             if (_shootingCoroutine != null)
             {
@@ -45,7 +44,7 @@ public class Weapon : MonoBehaviour
     }
     private IEnumerator Shoot()
     {       
-        while (true&&!_isPaused)
+        while (true)
         {
             if (CurrentAmmo > 0)
             {
@@ -57,7 +56,7 @@ public class Weapon : MonoBehaviour
                 Vector3 aim = target - GunPoint.position;
                 GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, Quaternion.LookRotation(aim));
                 bulletPrefab.GetComponent<Rigidbody>().velocity = aim.normalized * Speed;
-                OnGamePaused+=bulletPrefab.GetComponent<Bullet>().PauseGame;
+
 
                 yield return new WaitForSeconds(FiringPeriod);
             }
@@ -70,8 +69,6 @@ public class Weapon : MonoBehaviour
     }
     private IEnumerator Reload()
     {
-        if (!_isPaused)
-        {
             _animator.SetTrigger("Reloading");
             _isReloading = true;
             StopCoroutine(_shootingCoroutine);
@@ -87,15 +84,10 @@ public class Weapon : MonoBehaviour
                 yield return null;
             }
             StopCoroutine(_reloadingCoroutine);
-        }
     }
     public void TakeMousePosition(Vector3 mousePosition)
     {
         _destination = mousePosition;
     }
-    public void PauseGame(bool isPaused)
-    {
-        _isPaused = isPaused;
-        OnGamePaused?.Invoke(isPaused);
-    }
+
 }

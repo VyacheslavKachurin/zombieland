@@ -14,13 +14,13 @@ public class Enemy : MonoBehaviour
     private Animator _animator;
     private bool _isDead = false;
     private GameObject _enemyHealthBar;
-    private Vector3 _offset=new Vector3(0f,2.46f,0f);
-    private float _damageAmount=20f;
-    private bool _isPaused = false;
+    private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
+    private float _damageAmount = 20f;
+
 
     private void Start()
     {
-       
+
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -32,17 +32,14 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
-        if (!_isPaused)
+        _player = FindObjectOfType<Player>();
+        if (_navMeshAgent.enabled)
         {
-            _player = FindObjectOfType<Player>();
-            if (_navMeshAgent.enabled)
-            {
-                _navMeshAgent.SetDestination(_player.transform.position);
-            }
-            if (Vector3.Distance(transform.position, _player.transform.position) <= _attackRange)
-            {
-                Attack();
-            }
+            _navMeshAgent.SetDestination(_player.transform.position);
+        }
+        if (Vector3.Distance(transform.position, _player.transform.position) <= _attackRange)
+        {
+            Attack();
         }
     }
 
@@ -50,7 +47,6 @@ public class Enemy : MonoBehaviour
     {
         _animator.SetTrigger("Attack");
         _navMeshAgent.enabled = false;
-
     }
 
     public void TakeDamage()
@@ -63,20 +59,20 @@ public class Enemy : MonoBehaviour
                 Die();
             }
             OnEnemyGotAttacked(_damageAmount);
-         
+
         }
         else
         {
-           
+
             Die();
         }
     }
     private void Die()
     {
         _animator.SetTrigger("Die");
-        _navMeshAgent.enabled=false;
+        _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
-        Destroy(_enemyHealthBar) ;
+        Destroy(_enemyHealthBar);
     }
     private void AttackComplete()
     {
@@ -91,7 +87,7 @@ public class Enemy : MonoBehaviour
         if (_enemyHealthBar != null)
         {
             _enemyHealthBar.transform.position = Camera.main.WorldToScreenPoint(_offset + transform.position);
-            
+
 
             // avoid checking every frame, do it only once
             if (!_enemyHealthBar.activeInHierarchy)
@@ -99,19 +95,10 @@ public class Enemy : MonoBehaviour
                 _enemyHealthBar.SetActive(true);
             }
         }
-        
-    }
-    public void PauseGame(bool isPaused)
-    {
-        _isPaused = isPaused;
-        if (_navMeshAgent != null)
-        {
-            _navMeshAgent.enabled = !isPaused;
-            _animator.enabled = !isPaused;
-        }
+
     }
 
- 
- 
-   
+
+
+
 }
