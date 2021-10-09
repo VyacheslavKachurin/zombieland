@@ -5,7 +5,6 @@ using TMPro;
 using System;
 public class Player : MonoBehaviour
 {
-    public event Action<Vector3> OnAimMoved;
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
@@ -35,6 +34,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        
 
         if (!_isDead)
         {

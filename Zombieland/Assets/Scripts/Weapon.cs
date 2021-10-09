@@ -30,11 +30,11 @@ public class Weapon : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)&&!_isReloading)
+        if (Input.GetButtonDown("Fire1")&&!_isReloading)
         {
            _shootingCoroutine= StartCoroutine(Shoot());
         }
-        if (Input.GetMouseButtonUp(0)/*&&!_isPaused*/)
+        if (Input.GetButtonUp("Fire1")/*&&!_isPaused*/)
         {
             if (_shootingCoroutine != null)
             {
@@ -55,7 +55,7 @@ public class Weapon : MonoBehaviour
                 target.y = GunPoint.position.y;
                 Vector3 aim = target - GunPoint.position;
                 GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, Quaternion.LookRotation(aim));
-                bulletPrefab.GetComponent<Rigidbody>().velocity = aim.normalized * Speed;
+                bulletPrefab.GetComponent<Bullet>().SetVelocity(aim.normalized * Speed);
 
 
                 yield return new WaitForSeconds(FiringPeriod);
@@ -78,7 +78,7 @@ public class Weapon : MonoBehaviour
 
             OnBulletAmountChanged(CurrentAmmo);
             _isReloading = false;
-            if (Input.GetMouseButton(0))
+            if (Input.GetButton("Fire1"))
             {
                 _shootingCoroutine = StartCoroutine(Shoot());
                 yield return null;

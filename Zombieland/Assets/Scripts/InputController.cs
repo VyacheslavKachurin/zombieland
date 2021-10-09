@@ -17,11 +17,9 @@ public class InputController : MonoBehaviour
         _camera = Camera.main;
     }
     private void Update()
-    {
-        
+    {   
             ReadKeyBoardInput();
             ReadMouseInput();
-        
     }
 
     private void ReadKeyBoardInput()
@@ -41,6 +39,8 @@ public class InputController : MonoBehaviour
 
             OnMouseMoved?.Invoke(_destination);
         }
+
+       
     }
  
 }

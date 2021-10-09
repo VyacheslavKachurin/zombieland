@@ -13,12 +13,14 @@ public class HUD : MonoBehaviour
     [SerializeField] private Slider _armorSlider;
     [SerializeField] private TextMeshProUGUI _bulletText;
     [SerializeField] private Animator _animator;
-    
-    private bool _isPaused=false;
+
+    [SerializeField] private Button _restartButton;
+    [SerializeField] private Button _mainMenuButton;
+    [SerializeField] private Button _exitButton;
 
     private void Start()
     {
-     
+        AssignButtons();
     }
     public void UpdateHealth(float health)
     {
@@ -61,6 +63,7 @@ public class HUD : MonoBehaviour
     public void Exit()
     {
         Debug.Log("Exit");
+        Application.Quit();
     }
     public void MainMenu()
     {
@@ -69,5 +72,11 @@ public class HUD : MonoBehaviour
     public void ShowSettings()
     {
         Debug.Log("Show Settings");
+    }
+    public void AssignButtons()
+    {
+        _restartButton.onClick.AddListener(Restart);
+        _mainMenuButton.onClick.AddListener(MainMenu);
+        _exitButton.onClick.AddListener(Exit);
     }
 }

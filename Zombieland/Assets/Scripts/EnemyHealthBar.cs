@@ -11,7 +11,6 @@ public class EnemyHealthBar : MonoBehaviour
     {
         _slider = GetComponent<Slider>();
     }
-
     public void UpdateHealth(float damageAmount)
     {
         _slider.value -= damageAmount;

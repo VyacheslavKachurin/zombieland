@@ -19,19 +19,22 @@ public class LevelController : MonoBehaviour
     private bool _isGameOver;
     private void Start()
     {
-        _isGamePaused = false;
+        
         Initialize();
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)&&!_isGameOver)
         {
-            PauseGame();
+            TogglePause();
         }
     }
 
     private void Initialize()
     {
+        _isGamePaused = false;
+        Time.timeScale = 1;
+
         _enemyCanvas = Instantiate(_enemyCanvas);
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
         _enemySpawner.SetCanvas(_enemyCanvas);
@@ -51,8 +54,9 @@ public class LevelController : MonoBehaviour
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         _player.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
-        _player.OnPlayerDeath += _enemySpawner.StopSpawning;
+        _player.OnPlayerDeath += _enemySpawner.StopSpawning; //take care of bool
         _player.OnPlayerDeath += GameOver;
+        _player.OnPlayerMoved += _enemySpawner.GetPlayerPosition;
      
        
         //fix (GetComponentInChildren) because its too deep
@@ -67,14 +71,14 @@ public class LevelController : MonoBehaviour
 
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
-        _HUD.ContinueButton.onClick.AddListener(this.PauseGame); //Action and UnityAction issues
+        _HUD.ContinueButton.onClick.AddListener(this.TogglePause); //Action and UnityAction issues
         _player.OnPlayerDeath += _HUD.GameOver;
 
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
         _weapon.OnBulletAmountChanged += _HUD.UpdateBullets;
 
     }
-    public void PauseGame()
+    public void TogglePause()
     {
         _isGamePaused = !_isGamePaused;
         if (_isGamePaused)
@@ -88,7 +92,7 @@ public class LevelController : MonoBehaviour
     }
     public void GameOver(bool isGamePaused)
     {
-        PauseGame();
+        TogglePause();
         _isGameOver = isGamePaused;
     }
 }

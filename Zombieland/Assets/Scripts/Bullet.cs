@@ -5,16 +5,16 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private Rigidbody _rigidbody;
-    private Vector3 _storedVelocity;
     private void Start()
+    {      
+        Destroy(gameObject, 1);
+       
+    }
+    public void SetVelocity(Vector3 velocity)
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.velocity = velocity;
     }
-    private void Update()
-    {
-        Destroy(gameObject, 1);
-    }
-    
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Enemy")
@@ -23,5 +23,5 @@ public class Bullet : MonoBehaviour
         }
         Destroy(gameObject);
     }
-    
+
 }

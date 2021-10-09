@@ -8,7 +8,16 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject _mainMenuPanel;
     [SerializeField] private GameObject _settingsPanel;
-   public void ExitGame()
+
+    [SerializeField] private Button _playButton;
+    [SerializeField] private Button _settingsButton;
+    [SerializeField] private Button _exitButton;
+    [SerializeField] private Button _backButton;
+    private void Start()
+    {
+        Initialize();
+    }
+    public void ExitGame()
     {
         Debug.Log("Exit the game");
         Application.Quit();
@@ -31,5 +40,12 @@ public class MainMenu : MonoBehaviour
         _mainMenuPanel.SetActive(true);
         _settingsPanel.SetActive(false);
     }
-   
+    private void Initialize()
+    {
+        _playButton.onClick.AddListener(PlayGame);
+        _settingsButton.onClick.AddListener(ShowSettings);
+        _exitButton.onClick.AddListener(ExitGame);
+        _backButton.onClick.AddListener(HideSettings);
+    }
+
 }

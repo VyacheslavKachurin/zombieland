@@ -10,18 +10,13 @@ public class CameraFollow : MonoBehaviour
     private Vector3 _offset;
     private Vector3 _playerPosition;
     private Vector3 _crosshairPosition;
-    private bool _isPaused = false;
 
     private void LateUpdate()
     {
         CameraFollowCrosshair(_playerPosition, _crosshairPosition);
     }
-
     public void CameraFollowCrosshair(Vector3 playerPosition, Vector3 crosshairPosition)
     {
-        if (!_isPaused)
-        {
-
             Vector3 clampedTarget = new Vector3(
                 Mathf.Clamp(crosshairPosition.x, playerPosition.x - _radius, playerPosition.x + _radius), // X position
                 playerPosition.y,
@@ -31,7 +26,7 @@ public class CameraFollow : MonoBehaviour
             Vector3 wantedPosition = middle + _offset;
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, SmoothSpeed * Time.deltaTime);
             transform.position = smoothedPosition;
-        }
+        
 
     }
     public void SetOffset(Vector3 playerPosition)
@@ -45,10 +40,6 @@ public class CameraFollow : MonoBehaviour
     public void GetCrosshairPosition(Vector3 crosshairPosition)
     {
         _crosshairPosition = crosshairPosition;
-    }
-    public void PauseGame(bool isPaused)
-    {
-        _isPaused = isPaused;
     }
 
 }

@@ -9,18 +9,15 @@ public class Enemy : MonoBehaviour
 
     private NavMeshAgent _navMeshAgent;
     private int _health = 5;
-    private Player _player;
     private float _attackRange = 1f;
     private Animator _animator;
-    private bool _isDead = false;
     private GameObject _enemyHealthBar;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
     private float _damageAmount = 20f;
 
-
+    private Vector3 _playerPosition;
     private void Start()
     {
-
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -32,12 +29,13 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
-        _player = FindObjectOfType<Player>();
+       // _player = FindObjectOfType<Player>();
         if (_navMeshAgent.enabled)
         {
-            _navMeshAgent.SetDestination(_player.transform.position);
+            //navMeshAgent.SetDestination(_player.transform.position);
+            _navMeshAgent.SetDestination(_playerPosition);
         }
-        if (Vector3.Distance(transform.position, _player.transform.position) <= _attackRange)
+        if (Vector3.Distance(transform.position, _playerPosition) <= _attackRange)
         {
             Attack();
         }
@@ -59,11 +57,9 @@ public class Enemy : MonoBehaviour
                 Die();
             }
             OnEnemyGotAttacked(_damageAmount);
-
         }
         else
         {
-
             Die();
         }
     }
@@ -88,7 +84,6 @@ public class Enemy : MonoBehaviour
         {
             _enemyHealthBar.transform.position = Camera.main.WorldToScreenPoint(_offset + transform.position);
 
-
             // avoid checking every frame, do it only once
             if (!_enemyHealthBar.activeInHierarchy)
             {
@@ -97,8 +92,8 @@ public class Enemy : MonoBehaviour
         }
 
     }
-
-
-
-
+    public void GetPlayerPosition(Vector3 position)
+    {
+        _playerPosition = position;
+    }
 }
