@@ -15,19 +15,18 @@ public class CameraFollow : MonoBehaviour
     {
         CameraFollowCrosshair(_playerPosition, _crosshairPosition);
     }
-
     public void CameraFollowCrosshair(Vector3 playerPosition, Vector3 crosshairPosition)
     {
-
-        Vector3 clampedTarget = new Vector3(
-            Mathf.Clamp(crosshairPosition.x, playerPosition.x - _radius, playerPosition.x + _radius), // X position
-            playerPosition.y,
-            Mathf.Clamp(crosshairPosition.z, playerPosition.z - _radius, playerPosition.z + _radius) // Z position
-            );
-        Vector3 middle = (playerPosition + clampedTarget) / 2;
-        Vector3 wantedPosition = middle + _offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, SmoothSpeed * Time.deltaTime);
-        transform.position = smoothedPosition;
+            Vector3 clampedTarget = new Vector3(
+                Mathf.Clamp(crosshairPosition.x, playerPosition.x - _radius, playerPosition.x + _radius), // X position
+                playerPosition.y,
+                Mathf.Clamp(crosshairPosition.z, playerPosition.z - _radius, playerPosition.z + _radius) // Z position
+                );
+            Vector3 middle = (playerPosition + clampedTarget) / 2;
+            Vector3 wantedPosition = middle + _offset;
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, SmoothSpeed * Time.deltaTime);
+            transform.position = smoothedPosition;
+        
 
     }
     public void SetOffset(Vector3 playerPosition)

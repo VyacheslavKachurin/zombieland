@@ -9,40 +9,40 @@ public class Enemy : MonoBehaviour
 
     private NavMeshAgent _navMeshAgent;
     private int _health = 5;
-    private Player _player;
     private float _attackRange = 1f;
     private Animator _animator;
-    private bool _isDead = false;
     private GameObject _enemyHealthBar;
-    private Vector3 _offset=new Vector3(0f,2.46f,0f);
-    private float _damageAmount=20f;
+    private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
+    private float _damageAmount = 20f;
 
+    private Vector3 _playerPosition;
     private void Start()
     {
-       
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     private void Update()
     {
-     
-        _player = FindObjectOfType<Player>();
+        Move();
+        UpdateHealthBarPosition();
+    }
+
+    private void Move()
+    {
         if (_navMeshAgent.enabled)
         {
-            _navMeshAgent.SetDestination(_player.transform.position);
+            _navMeshAgent.SetDestination(_playerPosition);
         }
-        if (Vector3.Distance(transform.position, _player.transform.position)<=_attackRange)
+        if (Vector3.Distance(transform.position, _playerPosition) <= _attackRange)
         {
             Attack();
         }
-        UpdateHealthBarPosition();
     }
 
     private void Attack()
     {
         _animator.SetTrigger("Attack");
         _navMeshAgent.enabled = false;
-
     }
 
     public void TakeDamage()
@@ -55,20 +55,18 @@ public class Enemy : MonoBehaviour
                 Die();
             }
             OnEnemyGotAttacked(_damageAmount);
-         
         }
         else
         {
-           
             Die();
         }
     }
     private void Die()
     {
         _animator.SetTrigger("Die");
-        _navMeshAgent.enabled=false;
+        _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
-        Destroy(_enemyHealthBar) ;
+        Destroy(_enemyHealthBar);
     }
     private void AttackComplete()
     {
@@ -83,7 +81,6 @@ public class Enemy : MonoBehaviour
         if (_enemyHealthBar != null)
         {
             _enemyHealthBar.transform.position = Camera.main.WorldToScreenPoint(_offset + transform.position);
-            
 
             // avoid checking every frame, do it only once
             if (!_enemyHealthBar.activeInHierarchy)
@@ -91,10 +88,10 @@ public class Enemy : MonoBehaviour
                 _enemyHealthBar.SetActive(true);
             }
         }
-        
-    }
 
- 
- 
-   
+    }
+    public void GetPlayerPosition(Vector3 position)
+    {
+        _playerPosition = position;
+    }
 }

@@ -5,7 +5,6 @@ using TMPro;
 using System;
 public class Player : MonoBehaviour
 {
-    public event Action<Vector3> OnAimMoved;
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
@@ -24,6 +23,7 @@ public class Player : MonoBehaviour
     private Vector3 _mousePosition;
     private bool _isDead = false;
 
+
     private float _damageAmount = 20;//testing
 
 
@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        
 
         if (!_isDead)
         {
@@ -59,8 +60,10 @@ public class Player : MonoBehaviour
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();
-
-        transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        if (lookDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        }
     }
     private void TakeDamage()
     {
@@ -107,6 +110,7 @@ public class Player : MonoBehaviour
             TakeDamage();
         }
     }
+
 
 
 }
