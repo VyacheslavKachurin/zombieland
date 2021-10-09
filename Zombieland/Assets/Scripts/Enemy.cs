@@ -29,10 +29,8 @@ public class Enemy : MonoBehaviour
 
     private void Move()
     {
-       // _player = FindObjectOfType<Player>();
         if (_navMeshAgent.enabled)
         {
-            //navMeshAgent.SetDestination(_player.transform.position);
             _navMeshAgent.SetDestination(_playerPosition);
         }
         if (Vector3.Distance(transform.position, _playerPosition) <= _attackRange)
