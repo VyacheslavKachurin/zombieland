@@ -56,10 +56,12 @@ public class WeaponHolder : MonoBehaviour
            
         }
         OnWeaponChanged?.Invoke(ChooseWeapon());
+        //add weapon change animation event
 
     }
     private IWeapon ChooseWeapon()
     {
+        
         return _weapons[_selectedWeapon].GetComponent<IWeapon>();
     } 
 }

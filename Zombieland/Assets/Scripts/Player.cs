@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
+    public event Action<int> OnBulletsAmountChanged;
 
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
+        
     }
 
     private void Update()
@@ -109,6 +111,8 @@ public class Player : MonoBehaviour
     public void ReceiveShootingInput(bool isShooting)
     {
         _currentWeapon.Shoot(isShooting);
+       
+       // _animator.SetBool("isShooting",isShooting);
     }
     public void ReceiveScroolWheelInput(bool input)
     {
@@ -117,5 +121,25 @@ public class Player : MonoBehaviour
     private void GetWeapon(IWeapon weapon)
     {
         _currentWeapon = weapon;
+        weapon.OnWeaponReload += ReloadAnimation;
+        weapon.OnBulletAmountChanged += UpdateBullets;
     }
+    private void ReloadAnimation()
+    {
+        _animator.SetTrigger("Reloading");
+    }
+    public void ReceiveReloadInput()
+    {
+        _currentWeapon.Reload();
+    }
+    public IWeapon GetCurrentWeapon()
+    {
+        return _currentWeapon;
+    }
+    public void UpdateBullets(int bullets)
+    {
+        OnBulletsAmountChanged?.Invoke(bullets);
+    }
+  
+  
 }

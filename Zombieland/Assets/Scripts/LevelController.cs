@@ -69,6 +69,7 @@ public class LevelController : MonoBehaviour
         _inputController.OnMouseMoved += _crosshair.Aim;
         _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
         _inputController.OnShootingInput += _player.ReceiveShootingInput;
+        _inputController.OnReloadPressed += _player.ReceiveReloadInput;
 
         // _inputController.OnMouseMoved += _weapon.TakeMousePosition;
 
@@ -78,6 +79,7 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _HUD.GameOver;
 
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
+        _player.OnBulletsAmountChanged += _HUD.UpdateBullets;
       //  _weapon.OnBulletAmountChanged += _HUD.UpdateBullets;
 
     }

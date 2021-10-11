@@ -8,7 +8,7 @@ public class InputController : MonoBehaviour
     public event Action<float, float> OnAxisMoved;
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
-
+    public event Action OnReloadPressed;
     private float _horizontal;
     private float _vertical;
     private Camera _camera;
@@ -24,6 +24,7 @@ public class InputController : MonoBehaviour
         ReadMouseInput();
         ReadShootInput();
         SwitchWeaponInput();
+        ReloadInput();
     }
 
     private void ReadAxisInput()
@@ -66,6 +67,13 @@ public class InputController : MonoBehaviour
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             OnScrollWheelSwitched?.Invoke(false);
+        }
+    }
+    private void ReloadInput()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            OnReloadPressed();
         }
     }
 }
