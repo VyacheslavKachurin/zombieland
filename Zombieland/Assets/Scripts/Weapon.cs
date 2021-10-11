@@ -50,12 +50,12 @@ public class Weapon : MonoBehaviour
             {
                 MuzzleFlash.Play();
                 CurrentAmmo--;
-                OnBulletAmountChanged(CurrentAmmo);
+              //  OnBulletAmountChanged(CurrentAmmo);
                 Vector3 target = _destination;
                 target.y = GunPoint.position.y;
                 Vector3 aim = target - GunPoint.position;
                 GameObject bulletPrefab = Instantiate(Bullet, GunPoint.position, Quaternion.LookRotation(aim));
-                bulletPrefab.GetComponent<Bullet>().SetVelocity(aim.normalized * Speed);
+             //   bulletPrefab.GetComponent<Bullet>().SetVelocity(aim.normalized * Speed);
 
 
                 yield return new WaitForSeconds(FiringPeriod);
@@ -76,7 +76,7 @@ public class Weapon : MonoBehaviour
             yield return new WaitForSeconds(ReloadingTime);
             CurrentAmmo = MaxAmmo;
 
-            OnBulletAmountChanged(CurrentAmmo);
+            //OnBulletAmountChanged(CurrentAmmo);
             _isReloading = false;
             if (Input.GetButton("Fire1"))
             {
@@ -89,5 +89,4 @@ public class Weapon : MonoBehaviour
     {
         _destination = mousePosition;
     }
-
 }

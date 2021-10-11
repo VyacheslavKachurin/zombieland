@@ -14,7 +14,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private HUD _HUD;
     [SerializeField] private Canvas _enemyCanvas;
 
-    private Weapon _weapon;
+  //  private Weapon _weapon;
     private bool _isGamePaused;
     private bool _isGameOver;
     private void Start()
@@ -60,14 +60,17 @@ public class LevelController : MonoBehaviour
      
        
         //fix (GetComponentInChildren) because its too deep
-        _weapon = _player.GetComponentInChildren<Weapon>();
+      // _weapon = _player.GetComponentInChildren<Weapon>();
    
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnAxisMoved += _player.ReceiveAxis;
         _inputController.OnMouseMoved += _player.ReceiveMouse;
         _inputController.OnMouseMoved += _crosshair.Aim;
-        _inputController.OnMouseMoved += _weapon.TakeMousePosition;
+        _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
+        _inputController.OnShootingInput += _player.ReceiveShootingInput;
+
+        // _inputController.OnMouseMoved += _weapon.TakeMousePosition;
 
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
@@ -75,7 +78,7 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _HUD.GameOver;
 
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
-        _weapon.OnBulletAmountChanged += _HUD.UpdateBullets;
+      //  _weapon.OnBulletAmountChanged += _HUD.UpdateBullets;
 
     }
     public void TogglePause()

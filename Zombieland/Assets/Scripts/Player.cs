@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
 
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
+    [SerializeField] private WeaponHolder _weaponHolder;
+
 
     private float _horizontal;
     private float _vertical;
@@ -23,19 +25,17 @@ public class Player : MonoBehaviour
     private Vector3 _mousePosition;
     private bool _isDead = false;
 
-
     private float _damageAmount = 20;//testing
-
+    private IWeapon _currentWeapon;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
+        _weaponHolder.OnWeaponChanged += GetWeapon;
     }
 
     private void Update()
-    {
-        
-
+    {  
         if (!_isDead)
         {
             Move();
@@ -54,7 +54,6 @@ public class Player : MonoBehaviour
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
         OnPlayerMoved?.Invoke(transform.position);
-
     }
     private void AimTowardsMouse()
     {
@@ -79,9 +78,7 @@ public class Player : MonoBehaviour
             {
                 _animator.SetTrigger("GetHit");               
             }
-        }
-        
-
+        }        
     }
     private void Die()
     {
@@ -91,7 +88,6 @@ public class Player : MonoBehaviour
             _animator.SetTrigger("Die");
 
             OnPlayerDeath?.Invoke(_isDead);
-
         }
     }
     public void ReceiveAxis(float horizontal, float vertical)
@@ -110,7 +106,16 @@ public class Player : MonoBehaviour
             TakeDamage();
         }
     }
-
-
-
+    public void ReceiveShootingInput(bool isShooting)
+    {
+        _currentWeapon.Shoot(isShooting);
+    }
+    public void ReceiveScroolWheelInput(bool input)
+    {
+        _weaponHolder.ChangeWeapon(input);
+    }
+    private void GetWeapon(IWeapon weapon)
+    {
+        _currentWeapon = weapon;
+    }
 }
