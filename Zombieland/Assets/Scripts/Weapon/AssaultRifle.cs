@@ -5,12 +5,22 @@ using System;
 
 public class AssaultRifle : MonoBehaviour,IWeapon
 {
-    public event Action<int> OnBulletAmountChanged;
     public event Action OnWeaponReload;
+    public event Action<int> OnBulletsAmountChanged
+    {
+        add { 
+            _onBulletsAmountChanged += value; 
+            _onBulletsAmountChanged(_maxBulletAmount);
+        }
+        remove { _onBulletsAmountChanged -= value; }
+    }
 
+    private event Action<int> _onBulletsAmountChanged;
+   
     [SerializeField] private Bullet _bullet;
     [SerializeField] private Transform _gunPoint;
     [SerializeField] private ParticleSystem _muzzleFlash;
+    [SerializeField] private Sprite _weaponIcon;
 
     private float _bulletVelocity = 20f;
     private float _firingRate = 0.15f;
@@ -25,6 +35,11 @@ public class AssaultRifle : MonoBehaviour,IWeapon
     public void Start()
     {
         _currentBulletsAmount = _maxBulletAmount;
+    }
+    public void OnEnable()
+    {
+        // OnBulletsAmountChanged?.Invoke(_currentBulletsAmount);     
+        _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
     }
     public void Shoot(bool isShooting)
     {
@@ -52,12 +67,12 @@ public class AssaultRifle : MonoBehaviour,IWeapon
 
                 _currentBulletsAmount--;
 
-                OnBulletAmountChanged?.Invoke(_currentBulletsAmount);
+                //  OnBulletsAmountChanged?.Invoke(_currentBulletsAmount);
+                _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
                 //invoke onBulletAmountChanged for UI;
 
-                Bullet bulletInstance = Instantiate(_bullet, _gunPoint.position, _gunPoint.rotation);
-                bulletInstance.SetVelocity(_bulletVelocity);
+                CreateShot();
                 yield return new WaitForSeconds(_firingRate);
             }
             else
@@ -67,6 +82,13 @@ public class AssaultRifle : MonoBehaviour,IWeapon
             }
         }
     }
+
+    private void CreateShot()
+    {
+        Bullet bulletInstance = Instantiate(_bullet, _gunPoint.position, _gunPoint.rotation);
+        bulletInstance.SetVelocity(_bulletVelocity);
+    }
+
     private IEnumerator Reloading()
     {
         OnWeaponReload?.Invoke();
@@ -76,7 +98,11 @@ public class AssaultRifle : MonoBehaviour,IWeapon
 
         yield return new WaitForSeconds(_reloadingRate);
         _currentBulletsAmount = _maxBulletAmount;
-        OnBulletAmountChanged(_currentBulletsAmount);
+
+        //   OnBulletsAmountChanged?.Invoke(_currentBulletsAmount);
+
+        _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
+
         _isReloading = false;
         Debug.Log("Reloaded");
         
@@ -92,5 +118,13 @@ public class AssaultRifle : MonoBehaviour,IWeapon
     {
         _reloadingCoroutine = StartCoroutine(Reloading());
     }
-     
+    public Sprite ReturnIcon()
+    {
+        return _weaponIcon;
+    }
+
+    public Sprite WeaponIcon()
+    {
+        return _weaponIcon;
+    }
 }

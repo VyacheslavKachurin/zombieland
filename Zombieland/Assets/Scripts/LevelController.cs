@@ -17,10 +17,11 @@ public class LevelController : MonoBehaviour
   //  private Weapon _weapon;
     private bool _isGamePaused;
     private bool _isGameOver;
-    private void Start()
+    private void Awake()
     {
         
         Initialize();
+ 
     }
     private void Update()
     {
@@ -57,11 +58,11 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _enemySpawner.StopSpawning; //take care of bool
         _player.OnPlayerDeath += GameOver;
         _player.OnPlayerMoved += _enemySpawner.GetPlayerPosition;
-     
-       
+        
+
         //fix (GetComponentInChildren) because its too deep
-      // _weapon = _player.GetComponentInChildren<Weapon>();
-   
+        // _weapon = _player.GetComponentInChildren<Weapon>();
+
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnAxisMoved += _player.ReceiveAxis;
@@ -77,11 +78,18 @@ public class LevelController : MonoBehaviour
         OnGamePaused += _HUD.PauseGame;
         _HUD.ContinueButton.onClick.AddListener(this.TogglePause); //Action and UnityAction issues
         _player.OnPlayerDeath += _HUD.GameOver;
+        _player.OnWeaponChanged += AssignWeapon;
+   
 
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
-        _player.OnBulletsAmountChanged += _HUD.UpdateBullets;
-      //  _weapon.OnBulletAmountChanged += _HUD.UpdateBullets;
+        //  _player.OnBulletsAmountChanged += _HUD.UpdateBullets;
+      //  StartCoroutine(Subscribe());
 
+    }
+    private IEnumerator Subscribe()
+    {
+        yield return new WaitForSeconds(0.1f);
+       // _player.GetCurrentWeapon().OnBulletsAmountChanged += _HUD.UpdateBullets;
     }
     public void TogglePause()
     {
@@ -99,5 +107,13 @@ public class LevelController : MonoBehaviour
     {
         TogglePause();
         _isGameOver = isGamePaused;
+    }
+    public void AssignWeapon(IWeapon currentWeapon)
+    {
+        currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
+        _HUD.UpdateImage(currentWeapon.WeaponIcon());
+       
+        Debug.Log("weapon assigned");
+
     }
 }

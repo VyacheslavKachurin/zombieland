@@ -6,7 +6,12 @@ using UnityEngine;
 public class GrenadeLauncher : MonoBehaviour,IWeapon
 {
     public event Action OnWeaponReload;
-    public event Action<int> OnBulletAmountChanged;
+    public event Action<int> OnBulletsAmountChanged;
+
+    public int BulletsAmount()
+    {
+        throw new NotImplementedException();
+    }
 
     public void Reload()
     {
@@ -16,6 +21,11 @@ public class GrenadeLauncher : MonoBehaviour,IWeapon
     public void Shoot(bool isShooting)
     {
         Debug.Log("GrenadeLauncher");
+    }
+
+    public Sprite WeaponIcon()
+    {
+        throw new NotImplementedException();
     }
 
 

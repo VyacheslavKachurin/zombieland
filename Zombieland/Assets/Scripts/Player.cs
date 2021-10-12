@@ -9,6 +9,9 @@ public class Player : MonoBehaviour
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<int> OnBulletsAmountChanged;
+    public event Action<IWeapon> OnWeaponChanged;
+
+    public event Action<int> BulletsTest;
 
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
@@ -29,15 +32,16 @@ public class Player : MonoBehaviour
     private float _damageAmount = 20;//testing
     private IWeapon _currentWeapon;
 
+
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
-        
     }
 
     private void Update()
-    {  
+    {
         if (!_isDead)
         {
             Move();
@@ -78,9 +82,9 @@ public class Player : MonoBehaviour
             }
             else
             {
-                _animator.SetTrigger("GetHit");               
+                _animator.SetTrigger("GetHit");
             }
-        }        
+        }
     }
     private void Die()
     {
@@ -111,8 +115,8 @@ public class Player : MonoBehaviour
     public void ReceiveShootingInput(bool isShooting)
     {
         _currentWeapon.Shoot(isShooting);
-       
-       // _animator.SetBool("isShooting",isShooting);
+
+        // _animator.SetBool("isShooting",isShooting);
     }
     public void ReceiveScroolWheelInput(bool input)
     {
@@ -121,8 +125,8 @@ public class Player : MonoBehaviour
     private void GetWeapon(IWeapon weapon)
     {
         _currentWeapon = weapon;
-        weapon.OnWeaponReload += ReloadAnimation;
-        weapon.OnBulletAmountChanged += UpdateBullets;
+        OnWeaponChanged(PassWeapon());
+       // weapon.OnBulletsAmountChanged += UpdateBullets;
     }
     private void ReloadAnimation()
     {
@@ -132,14 +136,13 @@ public class Player : MonoBehaviour
     {
         _currentWeapon.Reload();
     }
-    public IWeapon GetCurrentWeapon()
+    public IWeapon PassWeapon()
     {
         return _currentWeapon;
     }
-    public void UpdateBullets(int bullets)
-    {
-        OnBulletsAmountChanged?.Invoke(bullets);
-    }
+
+    
+
   
   
 }

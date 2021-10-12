@@ -5,10 +5,12 @@ using System;
 
 public interface IWeapon
 {
-    public event Action<int> OnBulletAmountChanged;
+    public event Action<int> OnBulletsAmountChanged;
     public event Action OnWeaponReload;
     void Shoot(bool isShooting);
     void Reload();
+    public Sprite WeaponIcon();
+   // int BulletsAmount();
 
      
     

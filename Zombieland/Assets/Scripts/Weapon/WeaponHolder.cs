@@ -6,9 +6,11 @@ using UnityEngine;
 public class WeaponHolder : MonoBehaviour
 {
     public event Action<IWeapon> OnWeaponChanged;
+
+    [SerializeField] private List<GameObject> _weapons = new List<GameObject>();
+   
     private int _selectedWeapon;
-    private List<GameObject> _weapons = new List<GameObject>();
-    // Start is called before the first frame update
+   
     private void Start()
     {
         Initialize();
@@ -16,13 +18,7 @@ public class WeaponHolder : MonoBehaviour
     private void Initialize()
     {
         _selectedWeapon = 0;
-       
-        
-       foreach(Transform weapon in transform)
-        {
-            _weapons.Add(weapon.gameObject);
-            _weapons[_selectedWeapon].SetActive(true);          
-        }
+        _weapons[_selectedWeapon].SetActive(true);
         OnWeaponChanged?.Invoke(ChooseWeapon());
     }
     public void ChangeWeapon(bool input)
@@ -57,11 +53,9 @@ public class WeaponHolder : MonoBehaviour
         }
         OnWeaponChanged?.Invoke(ChooseWeapon());
         //add weapon change animation event
-
     }
     private IWeapon ChooseWeapon()
     {
-        
         return _weapons[_selectedWeapon].GetComponent<IWeapon>();
     } 
 }

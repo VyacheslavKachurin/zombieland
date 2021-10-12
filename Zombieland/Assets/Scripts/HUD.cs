@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
+
 public class HUD : MonoBehaviour
 {
     public Button ContinueButton; //Action and UnityAction issues
@@ -13,6 +15,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private Slider _armorSlider;
     [SerializeField] private TextMeshProUGUI _bulletText;
     [SerializeField] private Animator _animator;
+    [SerializeField] private Image _weaponIcon;
 
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _mainMenuButton;
@@ -78,5 +81,10 @@ public class HUD : MonoBehaviour
         _restartButton.onClick.AddListener(Restart);
         _mainMenuButton.onClick.AddListener(MainMenu);
         _exitButton.onClick.AddListener(Exit);
+    }
+
+    public void UpdateImage(Sprite sprite)
+    {
+        _weaponIcon.sprite = sprite;
     }
 }
