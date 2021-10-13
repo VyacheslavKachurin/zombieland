@@ -29,6 +29,7 @@ public class Weapon : MonoBehaviour,IWeapon
     private int _maxBulletAmount=5;
     private bool _isReloading=false;
     private bool _isShooting;
+    private Vector3 _aimPosition;
  
     private Coroutine _shootingCoroutine;
     private Coroutine _reloadingCoroutine;
@@ -67,7 +68,8 @@ public class Weapon : MonoBehaviour,IWeapon
 
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
-                CreateShot();
+                CreateShot(_aimPosition);
+
                 if (_currentBulletsAmount == 0)
                 {
                     _reloadingCoroutine=StartCoroutine(Reloading());
@@ -83,10 +85,14 @@ public class Weapon : MonoBehaviour,IWeapon
         }
     }
 
-    private void CreateShot()
+    private void CreateShot(Vector3 aim)
     {
-        Bullet bulletInstance = Instantiate(_bullet, _gunPoint.position, _gunPoint.rotation);
-        bulletInstance.SetVelocity(_bulletVelocity);
+        aim.y = _gunPoint.position.y;
+        Vector3 target =aim-_gunPoint.position;
+       
+        Debug.DrawRay(_gunPoint.position, target,Color.yellow,5);
+        Bullet bulletInstance = Instantiate(_bullet, _gunPoint.position, Quaternion.LookRotation(target));
+        bulletInstance.SetVelocity(target.normalized*_bulletVelocity);
     }
 
     private IEnumerator Reloading()
@@ -123,5 +129,9 @@ public class Weapon : MonoBehaviour,IWeapon
     public Sprite WeaponIcon()
     {
         return _weaponIcon;
+    }
+    public void ReceiveAim(Vector3 aim)
+    {
+        _aimPosition = aim;
     }
 }

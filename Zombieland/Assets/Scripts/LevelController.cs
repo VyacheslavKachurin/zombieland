@@ -62,13 +62,13 @@ public class LevelController : MonoBehaviour
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnAxisMoved += _player.ReceiveAxis;
-        _inputController.OnMouseMoved += _player.ReceiveMouse;
+         _inputController.OnMouseMoved += _player.ReceiveMouse;       
         _inputController.OnMouseMoved += _crosshair.Aim;
         _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
         _inputController.OnShootingInput += _player.ReceiveShootingInput;
         _inputController.OnReloadPressed += _player.ReceiveReloadInput;
 
-        // _inputController.OnMouseMoved += _weapon.TakeMousePosition;
+       
 
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
@@ -101,6 +101,8 @@ public class LevelController : MonoBehaviour
     {
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
         currentWeapon.OnWeaponReload += _crosshair.ChangeCursor;
+        //_crosshair.OnCrosshairMoved += currentWeapon.ReceiveAim;
+        _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
 
     }

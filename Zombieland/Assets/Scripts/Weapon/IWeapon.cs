@@ -9,6 +9,7 @@ public interface IWeapon
     public event Action<bool> OnWeaponReload;
     void Shoot(bool isShooting);
     void Reload();
+    void ReceiveAim(Vector3 aim);
     public Sprite WeaponIcon();
 
 }
