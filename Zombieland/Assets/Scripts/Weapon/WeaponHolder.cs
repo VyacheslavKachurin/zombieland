@@ -21,6 +21,7 @@ public class WeaponHolder : MonoBehaviour
         _weapons[_selectedWeapon].SetActive(true);
         OnWeaponChanged?.Invoke(ChooseWeapon());
     }
+
     public void ChangeWeapon(bool input)
     {
         int previousSelectedWeapon = _selectedWeapon;
@@ -54,6 +55,7 @@ public class WeaponHolder : MonoBehaviour
         OnWeaponChanged?.Invoke(ChooseWeapon());
         //add weapon change animation event
     }
+
     private IWeapon ChooseWeapon()
     {
         return _weapons[_selectedWeapon].GetComponent<IWeapon>();

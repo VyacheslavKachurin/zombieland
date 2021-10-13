@@ -10,24 +10,24 @@ public class Player : MonoBehaviour
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
-    public event Action<int> BulletsTest;
-
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
     [SerializeField] private WeaponHolder _weaponHolder;
 
     private float _horizontal;
     private float _vertical;
+    private Vector3 _direction;
     private float _velocityZ;
     private float _velocityX;
-    private float _dampTime = 0.1f;
-    private Vector3 _direction;
-    private Animator _animator;
-    private float _health = 100;
     private Vector3 _mousePosition;
-    private bool _isDead = false;
 
-    private float _damageAmount = 20;//testing
+    private float _dampTime = 0.1f;
+    private Animator _animator;
+
+    private float _health = 100;
+    private bool _isDead = false;
+    private float _damageAmount = 20;//move to enemy script
+
     private IWeapon _currentWeapon;
 
     private void Start()
@@ -95,14 +95,49 @@ public class Player : MonoBehaviour
             OnPlayerDeath?.Invoke(_isDead);
         }
     }
+
     public void ReceiveAxis(float horizontal, float vertical)
     {
         _horizontal = horizontal;
         _vertical = vertical;
     }
+
     public void ReceiveMouse(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
+    }
+
+    public void ReceiveShootingInput(bool isShooting)
+    {
+        _currentWeapon.Shoot(isShooting);
+    }
+
+    public void ReceiveScroolWheelInput(bool input)
+    {
+        _weaponHolder.ChangeWeapon(input);
+    }
+
+    private void GetWeapon(IWeapon weapon)
+    {
+        _currentWeapon = weapon;
+        OnWeaponChanged(PassWeapon());
+        _currentWeapon.OnWeaponReload += ReloadAnimation;
+    }
+
+    private void ReloadAnimation(bool isReloading)
+    {
+        if (isReloading)
+            _animator.SetTrigger("Reloading");
+    }
+
+    public void ReceiveReloadInput()
+    {
+        _currentWeapon.Reload();
+    }
+
+    public IWeapon PassWeapon()
+    {
+        return _currentWeapon;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -110,33 +145,6 @@ public class Player : MonoBehaviour
         {
             TakeDamage();
         }
-    }
-    public void ReceiveShootingInput(bool isShooting)
-    {
-        _currentWeapon.Shoot(isShooting);
-    }
-    public void ReceiveScroolWheelInput(bool input)
-    {
-        _weaponHolder.ChangeWeapon(input);
-    }
-    private void GetWeapon(IWeapon weapon)
-    {
-        _currentWeapon = weapon;
-        OnWeaponChanged(PassWeapon());
-        _currentWeapon.OnWeaponReload += ReloadAnimation;
-    }
-    private void ReloadAnimation(bool isReloading)
-    {
-        if(isReloading)
-        _animator.SetTrigger("Reloading");
-    }
-    public void ReceiveReloadInput()
-    {
-        _currentWeapon.Reload();
-    }
-    public IWeapon PassWeapon()
-    {
-        return _currentWeapon;
     }
 
 
