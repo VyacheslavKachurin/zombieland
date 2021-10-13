@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class AssaultRifle : MonoBehaviour,IWeapon
+public class Weapon : MonoBehaviour,IWeapon
 {
-    public event Action OnWeaponReload;
+    public event Action<bool> OnWeaponReload;
     public event Action<int> OnBulletsAmountChanged
     {
         add { 
@@ -37,8 +37,7 @@ public class AssaultRifle : MonoBehaviour,IWeapon
         _currentBulletsAmount = _maxBulletAmount;
     }
     public void OnEnable()
-    {
-        // OnBulletsAmountChanged?.Invoke(_currentBulletsAmount);     
+    { 
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
     }
     public void Shoot(bool isShooting)
@@ -52,7 +51,6 @@ public class AssaultRifle : MonoBehaviour,IWeapon
             else
             {
                 StopCoroutine(_shootingCoroutine);
-                Debug.Log("stopped");
             }
         
     }
@@ -67,12 +65,14 @@ public class AssaultRifle : MonoBehaviour,IWeapon
 
                 _currentBulletsAmount--;
 
-                //  OnBulletsAmountChanged?.Invoke(_currentBulletsAmount);
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
-                //invoke onBulletAmountChanged for UI;
-
                 CreateShot();
+                if (_currentBulletsAmount == 0)
+                {
+                    _reloadingCoroutine=StartCoroutine(Reloading());
+                   
+                }
                 yield return new WaitForSeconds(_firingRate);
             }
             else
@@ -91,21 +91,18 @@ public class AssaultRifle : MonoBehaviour,IWeapon
 
     private IEnumerator Reloading()
     {
-        OnWeaponReload?.Invoke();
-
         StopCoroutine(_shootingCoroutine);
         _isReloading = true;
+        OnWeaponReload?.Invoke(_isReloading);
 
         yield return new WaitForSeconds(_reloadingRate);
         _currentBulletsAmount = _maxBulletAmount;
 
-        //   OnBulletsAmountChanged?.Invoke(_currentBulletsAmount);
-
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
         _isReloading = false;
-        Debug.Log("Reloaded");
-        
+        OnWeaponReload?.Invoke(_isReloading);
+
         if (_isShooting)
         {
             _shootingCoroutine = StartCoroutine(Shooting());

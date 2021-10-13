@@ -8,6 +8,19 @@ public class GrenadeLauncher : MonoBehaviour,IWeapon
     public event Action OnWeaponReload;
     public event Action<int> OnBulletsAmountChanged;
 
+    event Action<bool> IWeapon.OnWeaponReload
+    {
+        add
+        {
+            throw new NotImplementedException();
+        }
+
+        remove
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public int BulletsAmount()
     {
         throw new NotImplementedException();

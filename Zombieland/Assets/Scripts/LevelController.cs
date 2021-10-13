@@ -58,10 +58,6 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _enemySpawner.StopSpawning; //take care of bool
         _player.OnPlayerDeath += GameOver;
         _player.OnPlayerMoved += _enemySpawner.GetPlayerPosition;
-        
-
-        //fix (GetComponentInChildren) because its too deep
-        // _weapon = _player.GetComponentInChildren<Weapon>();
 
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
@@ -77,20 +73,13 @@ public class LevelController : MonoBehaviour
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
         _HUD.ContinueButton.onClick.AddListener(this.TogglePause); //Action and UnityAction issues
+
         _player.OnPlayerDeath += _HUD.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
-   
-
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
-        //  _player.OnBulletsAmountChanged += _HUD.UpdateBullets;
-      //  StartCoroutine(Subscribe());
+  
+    }
 
-    }
-    private IEnumerator Subscribe()
-    {
-        yield return new WaitForSeconds(0.1f);
-       // _player.GetCurrentWeapon().OnBulletsAmountChanged += _HUD.UpdateBullets;
-    }
     public void TogglePause()
     {
         _isGamePaused = !_isGamePaused;
@@ -111,9 +100,8 @@ public class LevelController : MonoBehaviour
     public void AssignWeapon(IWeapon currentWeapon)
     {
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
+        currentWeapon.OnWeaponReload += _crosshair.ChangeCursor;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
-       
-        Debug.Log("weapon assigned");
 
     }
 }

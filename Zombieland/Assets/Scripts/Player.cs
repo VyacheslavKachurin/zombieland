@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
-    public event Action<int> OnBulletsAmountChanged;
     public event Action<IWeapon> OnWeaponChanged;
 
     public event Action<int> BulletsTest;
@@ -16,7 +15,6 @@ public class Player : MonoBehaviour
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
     [SerializeField] private WeaponHolder _weaponHolder;
-
 
     private float _horizontal;
     private float _vertical;
@@ -31,8 +29,6 @@ public class Player : MonoBehaviour
 
     private float _damageAmount = 20;//testing
     private IWeapon _currentWeapon;
-
-
 
     private void Start()
     {
@@ -115,8 +111,6 @@ public class Player : MonoBehaviour
     public void ReceiveShootingInput(bool isShooting)
     {
         _currentWeapon.Shoot(isShooting);
-
-        // _animator.SetBool("isShooting",isShooting);
     }
     public void ReceiveScroolWheelInput(bool input)
     {
@@ -126,10 +120,11 @@ public class Player : MonoBehaviour
     {
         _currentWeapon = weapon;
         OnWeaponChanged(PassWeapon());
-       // weapon.OnBulletsAmountChanged += UpdateBullets;
+        _currentWeapon.OnWeaponReload += ReloadAnimation;
     }
-    private void ReloadAnimation()
+    private void ReloadAnimation(bool isReloading)
     {
+        if(isReloading)
         _animator.SetTrigger("Reloading");
     }
     public void ReceiveReloadInput()
@@ -141,8 +136,8 @@ public class Player : MonoBehaviour
         return _currentWeapon;
     }
 
-    
 
-  
-  
+
+
+
 }

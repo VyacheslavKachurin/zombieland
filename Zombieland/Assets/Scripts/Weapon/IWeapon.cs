@@ -6,13 +6,9 @@ using System;
 public interface IWeapon
 {
     public event Action<int> OnBulletsAmountChanged;
-    public event Action OnWeaponReload;
+    public event Action<bool> OnWeaponReload;
     void Shoot(bool isShooting);
     void Reload();
     public Sprite WeaponIcon();
-   // int BulletsAmount();
-
-     
-    
 
 }
