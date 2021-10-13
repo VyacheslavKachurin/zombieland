@@ -17,33 +17,34 @@ public class Weapon : MonoBehaviour,IWeapon
 
     private event Action<int> _onBulletsAmountChanged;
    
-    [SerializeField] private Bullet _bullet;
     [SerializeField] private Transform _gunPoint;
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private Sprite _weaponIcon;
+    [SerializeField] private int _maxBulletAmount;
+    [SerializeField]private float _firingRate = 0.15f;
 
-    private float _bulletVelocity = 20f;
-    private float _firingRate = 0.15f;
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
+
+
     private int _currentBulletsAmount;
-    private int _maxBulletAmount=5;
     private bool _isReloading=false;
     private bool _isShooting;
     private Vector3 _aimPosition;
+    private IShootingType _shootingModule;
  
     private Coroutine _shootingCoroutine;
     private Coroutine _reloadingCoroutine;
-    public void Start()
+    public void Awake()
     {
+        _shootingModule = GetComponent<IShootingType>();
         _currentBulletsAmount = _maxBulletAmount;
     }
     public void OnEnable()
-    { 
+    {
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
     }
     public void Shoot(bool isShooting)
-    {
-       
+    {     
             _isShooting = isShooting;
             if (_isShooting&&!_isReloading)
             {
@@ -52,8 +53,7 @@ public class Weapon : MonoBehaviour,IWeapon
             else
             {
                 StopCoroutine(_shootingCoroutine);
-            }
-        
+            }       
     }
     private IEnumerator Shooting()
     {
@@ -68,12 +68,11 @@ public class Weapon : MonoBehaviour,IWeapon
 
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
-                CreateShot(_aimPosition);
+                _shootingModule.CreateShot(_aimPosition,_gunPoint.position);
 
                 if (_currentBulletsAmount == 0)
                 {
-                    _reloadingCoroutine=StartCoroutine(Reloading());
-                   
+                    _reloadingCoroutine=StartCoroutine(Reloading());                   
                 }
                 yield return new WaitForSeconds(_firingRate);
             }
@@ -84,17 +83,6 @@ public class Weapon : MonoBehaviour,IWeapon
             }
         }
     }
-
-    private void CreateShot(Vector3 aim)
-    {
-        aim.y = _gunPoint.position.y;
-        Vector3 target =aim-_gunPoint.position;
-       
-        Debug.DrawRay(_gunPoint.position, target,Color.yellow,5);
-        Bullet bulletInstance = Instantiate(_bullet, _gunPoint.position, Quaternion.LookRotation(target));
-        bulletInstance.SetVelocity(target.normalized*_bulletVelocity);
-    }
-
     private IEnumerator Reloading()
     {
         StopCoroutine(_shootingCoroutine);
@@ -133,5 +121,9 @@ public class Weapon : MonoBehaviour,IWeapon
     public void ReceiveAim(Vector3 aim)
     {
         _aimPosition = aim;
+    }
+    public int ReturnBulletsAmount()
+    {
+        return _currentBulletsAmount;
     }
 }

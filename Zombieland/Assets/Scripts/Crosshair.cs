@@ -6,8 +6,10 @@ public class Crosshair : MonoBehaviour
 {
     public event Action<Vector3> OnCrosshairMoved;
 
-    [SerializeField] private Texture2D _aimTexture;
+    [SerializeField] private Texture2D _whiteCrosshair;
     [SerializeField] private Texture2D _reloadingTexture;
+    [SerializeField] private Texture2D _redCrosshair;
+    private Texture2D sprite;
 
     private float _offset = 0.1f;
     private Vector2 _hotSpot;
@@ -24,10 +26,10 @@ public class Crosshair : MonoBehaviour
     }
     public void ChangeCursor(bool isReloading)
     {
-        Texture2D sprite;
+       
         if (!isReloading)
         {
-             sprite = _aimTexture;
+             sprite = _whiteCrosshair;
         }
         else
         {
@@ -35,5 +37,5 @@ public class Crosshair : MonoBehaviour
         }
         _hotSpot = new Vector2(sprite.width / 2, sprite.height / 2); //different sprite size
         Cursor.SetCursor(sprite, _hotSpot, CursorMode.Auto);
-    }
+    } 
 }

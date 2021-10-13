@@ -11,5 +11,6 @@ public interface IWeapon
     void Reload();
     void ReceiveAim(Vector3 aim);
     public Sprite WeaponIcon();
+    public int ReturnBulletsAmount();
 
 }

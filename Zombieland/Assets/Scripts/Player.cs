@@ -61,6 +61,9 @@ public class Player : MonoBehaviour
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();
+
+        lookDirection.y = transform.position.y;// avoid player tilting around/on X axis
+
         if (lookDirection != Vector3.zero)
         {
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);

@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 public class InputController : MonoBehaviour
 {
+    [SerializeField] private LayerMask _layerMask;
+
     public event Action<Vector3> OnMouseMoved;
     public event Action<float, float> OnAxisMoved;
     public event Action<bool> OnShootingInput;
@@ -14,6 +16,7 @@ public class InputController : MonoBehaviour
     private Camera _camera;
     private Vector3 _destination;
     private bool _isShooting;
+    private bool _isReloading;
     private void Start()
     {
         _camera = Camera.main;
@@ -37,10 +40,10 @@ public class InputController : MonoBehaviour
     private void ReadMouseInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
         {
             _destination = hitInfo.point;
-            _destination.y = transform.position.y;
+            //  _destination.y = transform.position.y; leave it for future           
 
             OnMouseMoved?.Invoke(_destination);
         }
@@ -60,6 +63,10 @@ public class InputController : MonoBehaviour
     }
     private void SwitchWeaponInput()
     {
+        if (_isReloading)
+        {
+            return;
+        }
        if(Input.GetAxis("Mouse ScrollWheel") > 0)
         {
             OnScrollWheelSwitched?.Invoke(true);
@@ -75,5 +82,9 @@ public class InputController : MonoBehaviour
         {
             OnReloadPressed();
         }
+    }
+    public void IsWeaponReloading(bool isReloading)
+    {
+        _isReloading = isReloading;
     }
 }
