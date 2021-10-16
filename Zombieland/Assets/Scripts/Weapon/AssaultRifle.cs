@@ -6,10 +6,10 @@ public class AssaultRifle : MonoBehaviour,IShootingType
 {
     [SerializeField] private Bullet _bullet;
     [SerializeField] private float _bulletVelocity;
-    public void CreateShot(Vector3 aim,Vector3 gunPointPosition)
+    public void CreateShot(Vector3 target,Vector3 gunPointPosition)
     {
-        Vector3 target = aim - gunPointPosition;
+        Vector3 direction = target - gunPointPosition;
         Bullet bulletInstance = Instantiate(_bullet, gunPointPosition, Quaternion.LookRotation(target));
-        bulletInstance.SetVelocity(target.normalized * _bulletVelocity);
+        bulletInstance.SetVelocity(direction.normalized * _bulletVelocity);
     }
 }

@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
         if (!_isDead)
         {
             Move();
-            AimTowardsMouse();
+            LookAtTarget();
         }
     }
     private void Move()
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
 
         OnPlayerMoved?.Invoke(transform.position);
     }
-    private void AimTowardsMouse()
+    private void LookAtTarget()
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();

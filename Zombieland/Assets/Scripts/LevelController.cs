@@ -99,14 +99,18 @@ public class LevelController : MonoBehaviour
     }
     public void AssignWeapon(IWeapon currentWeapon)
     {
-       
+       //add unsubscriptions 
+
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;      
         currentWeapon.OnWeaponReload += _crosshair.ChangeCursor;
         currentWeapon.OnWeaponReload += _inputController.IsWeaponReloading;
         _HUD.UpdateBullets(currentWeapon.ReturnBulletsAmount());
 
         _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
-        _HUD.UpdateImage(currentWeapon.WeaponIcon());
+
+        //move sprites to HUD and send string from weapon to hud to change its image
+        _HUD.UpdateImage(currentWeapon.WeaponIcon()); 
+
 
     }
 }

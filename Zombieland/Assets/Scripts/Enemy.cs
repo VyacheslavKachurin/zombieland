@@ -25,10 +25,6 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         Move();
         UpdateHealthBarPosition();
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _navMeshAgent.enabled = false;
-        }
     }
 
     private void Move()
