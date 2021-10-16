@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    private int _damageAmount = 20;
     private Rigidbody _rigidbody;
     private void Start()
     {      
@@ -20,7 +21,7 @@ public class Bullet : MonoBehaviour
         IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            damageable.TakeDamage();
+            damageable.TakeDamage(_damageAmount);
         }
         Destroy(gameObject);
     }

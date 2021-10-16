@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour,IDamageable
 {
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [Range(0f, 10f)]
     [SerializeField] private float _movementSpeed;
     [SerializeField] private WeaponHolder _weaponHolder;
+    
 
     private float _horizontal;
     private float _vertical;
@@ -23,8 +24,9 @@ public class Player : MonoBehaviour
 
     private float _dampTime = 0.1f;
     private Animator _animator;
+    private CharacterStats _characterStats;
 
-    private float _health = 100;
+    private float _currentHealth;
     private bool _isDead = false;
     private float _damageAmount = 20;//move to enemy script
 
@@ -34,6 +36,7 @@ public class Player : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
+        AssignStats();
     }
 
     private void Update()
@@ -69,13 +72,14 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
     }
-    private void TakeDamage()
+    public void TakeDamage(float damageAmount)
     {
-        if (_health > 0)
+        if (_currentHealth > 0)
         {
-            _health -= _damageAmount;
+           _damageAmount= _characterStats.CalculateDamage(20);
+            _currentHealth -= _damageAmount;
             OnPlayerGotAttacked(_damageAmount);
-            if (_health <= 0)
+            if (_currentHealth <= 0)
             {
                 Die();
             }
@@ -139,16 +143,14 @@ public class Player : MonoBehaviour
     {
         return _currentWeapon;
     }
-    private void OnTriggerEnter(Collider other)
+    private void AssignStats()
     {
-        if (other.CompareTag("HitCollider"))
-        {
-            TakeDamage();
-        }
+        _characterStats = GetComponent<CharacterStats>();
+        _currentHealth = _characterStats.MaxHealth.GetValue();
+        // receives max speed
+        //reloading speed
+        //recoil
+        //critical hit possibility
     }
-
-
-
-
 
 }

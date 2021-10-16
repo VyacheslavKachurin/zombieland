@@ -7,28 +7,30 @@ public class Enemy : MonoBehaviour,IDamageable
 {
     public event Action<float> OnEnemyGotAttacked;
 
+    [SerializeField] private HitCollider _hitCollider;
     private NavMeshAgent _navMeshAgent;
-    private int _health = 5;
+    private float _currentHealth;
     private float _attackRange = 1f;
+
+   
     private Animator _animator;
     private GameObject _enemyHealthBar;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
-    private float _damageAmount = 20f;
 
     private Vector3 _playerPosition;
+
+    private CharacterStats _characterStats;
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        AssignStats();
+
     }
     private void Update()
     {
         Move();
         UpdateHealthBarPosition();
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _navMeshAgent.enabled = false;
-        }
     }
 
     private void Move()
@@ -49,16 +51,18 @@ public class Enemy : MonoBehaviour,IDamageable
         _navMeshAgent.enabled = false;
     }
 
-    public void TakeDamage()
+    public void TakeDamage(float damageAmount)
     {
-        if (_health > 0)
+        if (_currentHealth > 0)
         {
-            _health--;
-            if (_health == 0)
+            damageAmount = _characterStats.CalculateDamage(damageAmount);
+            _currentHealth -= damageAmount;
+            Debug.Log(_currentHealth);
+            if (_currentHealth <= 0)
             {
                 Die();
             }
-            OnEnemyGotAttacked(_damageAmount);
+            OnEnemyGotAttacked(damageAmount);
         }
         else
         {
@@ -97,5 +101,11 @@ public class Enemy : MonoBehaviour,IDamageable
     public void GetPlayerPosition(Vector3 position)
     {
         _playerPosition = position;
+    }
+    private void AssignStats()
+    {
+        _characterStats = GetComponent<CharacterStats>();
+        _currentHealth = _characterStats.MaxHealth.GetValue();
+        _hitCollider.DamageAmount = _characterStats.damage.GetValue();
     }
 }
