@@ -107,5 +107,6 @@ public class Enemy : MonoBehaviour,IDamageable
         _characterStats = GetComponent<CharacterStats>();
         _currentHealth = _characterStats.MaxHealth.GetValue();
         _hitCollider.DamageAmount = _characterStats.damage.GetValue();
+        _navMeshAgent.speed = _characterStats.movementSpeed.GetValue();
     }
 }

@@ -10,8 +10,7 @@ public class Player : MonoBehaviour,IDamageable
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
-    [Range(0f, 10f)]
-    [SerializeField] private float _movementSpeed;
+
     [SerializeField] private WeaponHolder _weaponHolder;
     
 
@@ -28,7 +27,8 @@ public class Player : MonoBehaviour,IDamageable
 
     private float _currentHealth;
     private bool _isDead = false;
-    private float _damageAmount = 20;//move to enemy script
+    private float _damageAmount;
+    private float _movementSpeed;
 
     private IWeapon _currentWeapon;
 
@@ -147,10 +147,10 @@ public class Player : MonoBehaviour,IDamageable
     {
         _characterStats = GetComponent<CharacterStats>();
         _currentHealth = _characterStats.MaxHealth.GetValue();
-        // receives max speed
-        //reloading speed
-        //recoil
-        //critical hit possibility
+        _movementSpeed = _characterStats.movementSpeed.GetValue();
+        //reloading speed (modifier : default weapon speed* 0.9)
+        //recoil (same as reloading)
+        //critical hit possibility (default*1.1)
     }
 
 }
