@@ -4,16 +4,16 @@ public class CharacterStats : MonoBehaviour
 {
     // should I turn them into properties?
 
-    public Stat damage;
+    public Stat Damage;
     public Stat MaxHealth;
-    public Stat armor;
-    public Stat movementSpeed;
-    public Stat healthRecoveringSpeed;
-    public Stat criticalHitChance;
+    public Stat Armor;
+    public Stat MovementSpeed;
+    public Stat HealthRecoveringSpeed;
+    public Stat CriticalHitChance;
 
     public float CalculateDamage(float receivedDamage)
     {
-        receivedDamage -= armor.GetValue();
+        receivedDamage -= Armor.GetValue();
         receivedDamage = Mathf.Clamp(receivedDamage, 0, int.MaxValue);
         return receivedDamage;
     }

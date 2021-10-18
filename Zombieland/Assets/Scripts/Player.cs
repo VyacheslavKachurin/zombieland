@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-public class Player : MonoBehaviour,IDamageable
+public class Player : MonoBehaviour, IDamageable
 {
+    public static CharacterStats CharacterStats;
+    public static Player PlayerInstance;
+
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
-
     [SerializeField] private WeaponHolder _weaponHolder;
-    
+
 
     private float _horizontal;
     private float _vertical;
@@ -34,8 +36,11 @@ public class Player : MonoBehaviour,IDamageable
 
     private void Start()
     {
+        PlayerInstance = this;
+
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
+
         AssignStats();
     }
 
@@ -76,7 +81,7 @@ public class Player : MonoBehaviour,IDamageable
     {
         if (_currentHealth > 0)
         {
-           _damageAmount= _characterStats.CalculateDamage(20);
+            _damageAmount = _characterStats.CalculateDamage(20);
             _currentHealth -= _damageAmount;
             OnPlayerGotAttacked(_damageAmount);
             if (_currentHealth <= 0)
@@ -143,11 +148,12 @@ public class Player : MonoBehaviour,IDamageable
     {
         return _currentWeapon;
     }
-    private void AssignStats()
+    public void AssignStats()
     {
         _characterStats = GetComponent<CharacterStats>();
+        CharacterStats = _characterStats;
         _currentHealth = _characterStats.MaxHealth.GetValue();
-        _movementSpeed = _characterStats.movementSpeed.GetValue();
+        _movementSpeed = _characterStats.MovementSpeed.GetValue();
         //reloading speed (modifier : default weapon speed* 0.9)
         //recoil (same as reloading)
         //critical hit possibility (default*1.1)

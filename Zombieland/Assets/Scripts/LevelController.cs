@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 public class LevelController : MonoBehaviour
 {
-    public event Action<bool> OnGamePaused; 
+    public event Action<bool> OnGamePaused;
 
     [SerializeField] private Player _player;
     [SerializeField] private InputController _inputController;
@@ -14,18 +14,20 @@ public class LevelController : MonoBehaviour
     [SerializeField] private HUD _HUD;
     [SerializeField] private Canvas _enemyCanvas;
 
-  //  private Weapon _weapon;
+    private LevelSystem _levelSystem;
+
+    //  private Weapon _weapon;
     private bool _isGamePaused;
     private bool _isGameOver;
     private void Awake()
     {
-        
+
         Initialize();
- 
+
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)&&!_isGameOver)
+        if (Input.GetKeyDown(KeyCode.Escape) && !_isGameOver)
         {
             TogglePause();
         }
@@ -39,7 +41,7 @@ public class LevelController : MonoBehaviour
         _enemyCanvas = Instantiate(_enemyCanvas);
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
         _enemySpawner.SetCanvas(_enemyCanvas);
-      
+
 
         _cameraFollow = Instantiate(
             _cameraFollow,
@@ -47,11 +49,11 @@ public class LevelController : MonoBehaviour
             _cameraFollow.transform.rotation);
 
         _cameraFollow.SetOffset(_player.transform.position);
-     
+
 
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
         _crosshair.OnCrosshairMoved += _cameraFollow.GetCrosshairPosition;
-       
+
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
         _player.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
@@ -62,34 +64,48 @@ public class LevelController : MonoBehaviour
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnAxisMoved += _player.ReceiveAxis;
-         _inputController.OnMouseMoved += _player.ReceiveMouse;       
+        _inputController.OnMouseMoved += _player.ReceiveMouse;
         _inputController.OnMouseMoved += _crosshair.Aim;
         _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
         _inputController.OnShootingInput += _player.ReceiveShootingInput;
         _inputController.OnReloadPressed += _player.ReceiveReloadInput;
 
-       
+
 
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
         _HUD.ContinueButton.onClick.AddListener(this.TogglePause); //Action and UnityAction issues
+        _inputController.OnInventoryButtonPressed += _HUD.ToggleInventoryPanel;
 
         _player.OnPlayerDeath += _HUD.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
-  
-    }
+        _player.GetComponent<CharacterStats>().MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
+        AssignLevelSystem();
+
+
+    }
+    private void AssignLevelSystem()
+    {
+        _levelSystem = new LevelSystem();
+        _levelSystem.OnExperienceGained += _HUD.UpdateExperienceBar;
+        _levelSystem.OnLevelUp += _HUD.UpdateLevelText;
+    }
     public void TogglePause()
     {
         _isGamePaused = !_isGamePaused;
         if (_isGamePaused)
-        Time.timeScale = 0;
+        {
+            Time.timeScale = 0;
+            _player.enabled = !_isGamePaused;
+        }
         else
         {
             Time.timeScale = 1;
+            _player.enabled = !_isGamePaused;
         }
-             
+
         OnGamePaused?.Invoke(_isGamePaused);
     }
     public void GameOver(bool isGamePaused)
@@ -99,14 +115,15 @@ public class LevelController : MonoBehaviour
     }
     public void AssignWeapon(IWeapon currentWeapon)
     {
-       
-        currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;      
+
+        currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
         currentWeapon.OnWeaponReload += _crosshair.ChangeCursor;
         currentWeapon.OnWeaponReload += _inputController.IsWeaponReloading;
         _HUD.UpdateBullets(currentWeapon.ReturnBulletsAmount());
 
         _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
+
 
     }
 }

@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour,IDamageable
     private float _currentHealth;
     private float _attackRange = 1f;
 
-   
+    private CapsuleCollider _capsuleCollider; 
     private Animator _animator;
     private GameObject _enemyHealthBar;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
@@ -20,12 +20,14 @@ public class Enemy : MonoBehaviour,IDamageable
     private Vector3 _playerPosition;
 
     private CharacterStats _characterStats;
+    private int experience =100; //move to stats??
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         AssignStats();
-
+        _capsuleCollider = GetComponent<CapsuleCollider>();
     }
     private void Update()
     {
@@ -57,7 +59,6 @@ public class Enemy : MonoBehaviour,IDamageable
         {
             damageAmount = _characterStats.CalculateDamage(damageAmount);
             _currentHealth -= damageAmount;
-            Debug.Log(_currentHealth);
             if (_currentHealth <= 0)
             {
                 Die();
@@ -71,10 +72,14 @@ public class Enemy : MonoBehaviour,IDamageable
     }
     private void Die()
     {
+        _capsuleCollider.enabled = false;
         _animator.SetTrigger("Die");
         _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
+        LevelSystem.LevelSystemInstance.AddExperience(experience);
+
+
     }
     private void AttackComplete()
     {
@@ -106,7 +111,7 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         _characterStats = GetComponent<CharacterStats>();
         _currentHealth = _characterStats.MaxHealth.GetValue();
-        _hitCollider.DamageAmount = _characterStats.damage.GetValue();
-        _navMeshAgent.speed = _characterStats.movementSpeed.GetValue();
+        _hitCollider.DamageAmount = _characterStats.Damage.GetValue();
+        _navMeshAgent.speed = _characterStats.MovementSpeed.GetValue();
     }
 }

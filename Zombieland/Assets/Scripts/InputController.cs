@@ -11,6 +11,8 @@ public class InputController : MonoBehaviour
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
+    public event Action OnInventoryButtonPressed;
+
     private float _horizontal;
     private float _vertical;
     private Camera _camera;
@@ -28,6 +30,8 @@ public class InputController : MonoBehaviour
         ReadShootInput();
         SwitchWeaponInput();
         ReloadInput();
+
+        InventoryButtonInput();
     }
 
     private void ReadAxisInput()
@@ -86,5 +90,12 @@ public class InputController : MonoBehaviour
     public void IsWeaponReloading(bool isReloading)
     {
         _isReloading = isReloading;
+    }
+    public void InventoryButtonInput()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            OnInventoryButtonPressed();
+        }
     }
 }
