@@ -13,13 +13,14 @@ public class Bullet : MonoBehaviour
     public void SetVelocity(Vector3 velocity)
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _rigidbody.velocity = velocity;
+        _rigidbody.velocity =velocity;
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        var damageable = collision.gameObject.GetComponent<IDamageable>();
+        if (damageable != null)
         {
-            collision.gameObject.GetComponent<Enemy>().TakeDamage();
+            damageable.TakeDamage();
         }
         Destroy(gameObject);
     }
