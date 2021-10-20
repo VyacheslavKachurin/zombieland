@@ -16,7 +16,6 @@ public class LevelController : MonoBehaviour
 
     private LevelSystem _levelSystem;
 
-    //  private Weapon _weapon;
     private bool _isGamePaused;
     private bool _isGameOver;
     private void Awake()
@@ -69,6 +68,7 @@ public class LevelController : MonoBehaviour
         _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
         _inputController.OnShootingInput += _player.ReceiveShootingInput;
         _inputController.OnReloadPressed += _player.ReceiveReloadInput;
+        _inputController.OnInventoryButtonPressed += TogglePause;
 
 
 

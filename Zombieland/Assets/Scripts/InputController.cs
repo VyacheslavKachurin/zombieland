@@ -31,7 +31,7 @@ public class InputController : MonoBehaviour
         SwitchWeaponInput();
         ReloadInput();
 
-        InventoryButtonInput();
+        UpgradeButtonInput();
     }
 
     private void ReadAxisInput()
@@ -41,6 +41,7 @@ public class InputController : MonoBehaviour
 
         OnAxisMoved?.Invoke(_horizontal, _vertical);
     }
+
     private void ReadMouseInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
@@ -91,9 +92,9 @@ public class InputController : MonoBehaviour
     {
         _isReloading = isReloading;
     }
-    public void InventoryButtonInput()
+    public void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.U))
         {
             OnInventoryButtonPressed();
         }
