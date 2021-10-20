@@ -19,14 +19,12 @@ public class Enemy : MonoBehaviour,IDamageable
 
     private Vector3 _playerPosition;
 
-    private CharacterStats _characterStats;
     private int experience =100; //move to stats??
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
-        AssignStats();
         _capsuleCollider = GetComponent<CapsuleCollider>();
     }
     private void Update()
@@ -57,7 +55,6 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         if (_currentHealth > 0)
         {
-            damageAmount = _characterStats.CalculateDamage(damageAmount);
             _currentHealth -= damageAmount;
             if (_currentHealth <= 0)
             {
@@ -77,7 +74,6 @@ public class Enemy : MonoBehaviour,IDamageable
         _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
-        LevelSystem.LevelSystemInstance.AddExperience(experience);
 
 
     }
@@ -107,11 +103,5 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         _playerPosition = position;
     }
-    private void AssignStats()
-    {
-        _characterStats = GetComponent<CharacterStats>();
-        _currentHealth = _characterStats.MaxHealth.GetValue();
-        _hitCollider.DamageAmount = _characterStats.Damage.GetValue();
-        _navMeshAgent.speed = _characterStats.MovementSpeed.GetValue();
-    }
+
 }

@@ -14,7 +14,6 @@ public class LevelController : MonoBehaviour
     [SerializeField] private HUD _HUD;
     [SerializeField] private Canvas _enemyCanvas;
 
-    private LevelSystem _levelSystem;
 
     private bool _isGamePaused;
     private bool _isGameOver;
@@ -80,18 +79,8 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _HUD.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
-        _player.GetComponent<CharacterStats>().MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
-
-        AssignLevelSystem();
-
-
     }
-    private void AssignLevelSystem()
-    {
-        _levelSystem = new LevelSystem();
-        _levelSystem.OnExperienceGained += _HUD.UpdateExperienceBar;
-        _levelSystem.OnLevelUp += _HUD.UpdateLevelText;
-    }
+
     public void TogglePause()
     {
         _isGamePaused = !_isGamePaused;
@@ -123,7 +112,6 @@ public class LevelController : MonoBehaviour
 
         _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
-
 
     }
 }

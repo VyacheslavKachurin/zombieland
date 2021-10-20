@@ -5,9 +5,6 @@ using TMPro;
 using System;
 public class Player : MonoBehaviour, IDamageable
 {
-    public static CharacterStats CharacterStats;
-    public static Player PlayerInstance;
-
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
@@ -25,7 +22,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private float _dampTime = 0.1f;
     private Animator _animator;
-    private CharacterStats _characterStats;
+    private PlayerStats _playerStats;
+
 
     private float _currentHealth;
     private bool _isDead = false;
@@ -36,12 +34,11 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        PlayerInstance = this;
+        AssignStats();
 
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
 
-        AssignStats();
     }
 
     private void Update()
@@ -81,7 +78,6 @@ public class Player : MonoBehaviour, IDamageable
     {
         if (_currentHealth > 0)
         {
-            _damageAmount = _characterStats.CalculateDamage(20);
             _currentHealth -= _damageAmount;
             OnPlayerGotAttacked(_damageAmount);
             if (_currentHealth <= 0)
@@ -148,15 +144,13 @@ public class Player : MonoBehaviour, IDamageable
     {
         return _currentWeapon;
     }
-    public void AssignStats()
+    private void AssignStats()
     {
-        _characterStats = GetComponent<CharacterStats>();
-        CharacterStats = _characterStats;
-        _currentHealth = _characterStats.MaxHealth.GetValue();
-        _movementSpeed = _characterStats.MovementSpeed.GetValue();
-        //reloading speed (modifier : default weapon speed* 0.9)
-        //recoil (same as reloading)
-        //critical hit possibility (default*1.1)
+        _playerStats = GetComponent<PlayerStats>();
+
+        _currentHealth = _playerStats.MaxHealth.GetValue();
+        _movementSpeed = _playerStats.Speed.GetValue();
+
     }
 
 }

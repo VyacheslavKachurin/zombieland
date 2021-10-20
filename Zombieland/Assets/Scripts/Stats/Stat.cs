@@ -1,46 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
+
 [System.Serializable]
-public class Stat
+public class Stat 
 {
-    public event Action<int> OnValueChanged;
+    public event Action<float> OnValueChanged;
+    [SerializeField] private float _baseValue;
+    [SerializeField] private float _valueChanger;
 
-    [SerializeField] private int _baseValue;
-    [SerializeField] private int valueChanger;
-
-    private List<int> _modifiers = new List<int>();
-    public int GetValue()
+    public float GetValue()
     {
-        int finalValue = _baseValue;
-        _modifiers.ForEach(x => finalValue += x);
-
-        return finalValue;
+        return _baseValue;
     }
-    public void UpgradeValue()
+    public void IncreaseValue()
     {
-        _baseValue += valueChanger;
+        _baseValue+=_valueChanger;
         OnValueChanged(_baseValue);
     }
-    public void DowngradeValue()
+    public void DecreaseValue(float value)
     {
-        _baseValue -= valueChanger;
+        _baseValue-=_valueChanger;
         OnValueChanged(_baseValue);
     }
-    public void AddModifier(int modifier)
-    {
-        if (modifier != 0)
-        {
-            _modifiers.Add(modifier);
-        }
-    }
-    public void RemoveModifier(int modifier)
-    {
-        if (modifier != 0)
-        {
-            _modifiers.Remove(modifier);
-        }
-    }
-
+ 
 }
