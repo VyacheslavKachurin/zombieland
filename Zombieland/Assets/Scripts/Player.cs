@@ -27,7 +27,6 @@ public class Player : MonoBehaviour, IDamageable
 
     private float _currentHealth;
     private bool _isDead = false;
-    private float _damageAmount;
     private float _movementSpeed;
 
     private IWeapon _currentWeapon;
@@ -76,10 +75,12 @@ public class Player : MonoBehaviour, IDamageable
     }
     public void TakeDamage(float damageAmount)
     {
+
         if (_currentHealth > 0)
         {
-            _currentHealth -= _damageAmount;
-            OnPlayerGotAttacked(_damageAmount);
+            _currentHealth -= damageAmount;
+            OnPlayerGotAttacked(damageAmount);
+
             if (_currentHealth <= 0)
             {
                 Die();

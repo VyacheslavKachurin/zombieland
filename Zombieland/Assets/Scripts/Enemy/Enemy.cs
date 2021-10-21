@@ -8,6 +8,9 @@ public class Enemy : MonoBehaviour,IDamageable
     public event Action<float> OnEnemyGotAttacked;
 
     [SerializeField] private HitCollider _hitCollider;
+
+    private ExperienceSystem _experienceSystem;
+
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
     private float _attackRange = 1f;
@@ -15,17 +18,22 @@ public class Enemy : MonoBehaviour,IDamageable
     private CapsuleCollider _capsuleCollider; 
     private Animator _animator;
     private GameObject _enemyHealthBar;
+    private EnemyStats _enemyStats;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
 
     private Vector3 _playerPosition;
 
-    private int experience =100; //move to stats??
+    private int experience = 802; //move to stats??
+    
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
+        _experienceSystem = ExperienceSystem.ExperienceSystemInstance;
+
+        AssignStats();
     }
     private void Update()
     {
@@ -60,7 +68,7 @@ public class Enemy : MonoBehaviour,IDamageable
             {
                 Die();
             }
-            OnEnemyGotAttacked(damageAmount);
+            OnEnemyGotAttacked?.Invoke(damageAmount);
         }
         else
         {
@@ -74,6 +82,8 @@ public class Enemy : MonoBehaviour,IDamageable
         _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
+        _experienceSystem.AddExperience(experience);
+
 
 
     }
@@ -102,6 +112,15 @@ public class Enemy : MonoBehaviour,IDamageable
     public void GetPlayerPosition(Vector3 position)
     {
         _playerPosition = position;
+    }
+    private void AssignStats()
+    {
+        _enemyStats = GetComponent<EnemyStats>();
+
+        _navMeshAgent.speed = _enemyStats.Speed.GetValue();
+        _hitCollider.GetComponent<HitCollider>().DamageAmount = _enemyStats.Damage.GetValue();
+        _currentHealth = _enemyStats.MaxHealth.GetValue();
+        
     }
 
 }

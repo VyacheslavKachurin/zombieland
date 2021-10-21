@@ -12,8 +12,11 @@ public class HUD : MonoBehaviour
 
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _inventoryPanel;
-    [SerializeField] private Slider _healthSlider;
-    [SerializeField] private Slider _experienceSlider;
+    [SerializeField] private Slider _HPSlider;
+    [SerializeField] private Slider _XPSlider;
+    [SerializeField] private TextMeshProUGUI _currentXPText;
+    [SerializeField] private TextMeshProUGUI _maxXPText;
+
     [SerializeField] private TextMeshProUGUI _levelText;
     [SerializeField] private TextMeshProUGUI _bulletText;
     [SerializeField] private Animator _animator;
@@ -23,9 +26,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _exitButton;
 
-    private float _animatingSpeed = 0.005f;
-    private Coroutine _animatingCoroutine;
-    private int _levelCounter=1;
+    private float _animatingRate = 0.005f;
 
     private void Start()
     {
@@ -35,13 +36,13 @@ public class HUD : MonoBehaviour
 
     public void UpdateHealth(float health)
     {
-        _healthSlider.value -= health;
+        _HPSlider.value -= health;
     }
 
     public void Initialize(float maxValue)
     {
-        _healthSlider.maxValue = maxValue;
-        _healthSlider.value = maxValue;
+        _HPSlider.maxValue = maxValue;
+        _HPSlider.value = maxValue;
     }
     public void UpdateBullets(int bullets)
     {
@@ -92,43 +93,6 @@ public class HUD : MonoBehaviour
     {
         _weaponIcon.sprite = sprite;
     }
-    public void UpdateExperienceBar(int experience)
-    {
-
-        StartCoroutine(AnimateExperienceBar(experience));
-    }
-    private IEnumerator AnimateExperienceBar(float amount)
-    {
-        while (_experienceSlider.value < amount)
-        {
-            _experienceSlider.value++;
-            yield return new WaitForSeconds(_animatingSpeed);
-        }
-    }
-
-    public void UpdateLevelText(int amountOfTimes,int xp,int maxValue)
-    {
-        StartCoroutine(AnimateLevelUp(amountOfTimes,xp,maxValue));
-    }
-    private IEnumerator AnimateLevelUp(int amountOfTimes,int xp,int maxValue)
-    {
-        for (int i = 0; i < amountOfTimes; i++)
-        {
-            while (_experienceSlider.value < _experienceSlider.maxValue)
-            {
-                _experienceSlider.value++;
-                yield return new WaitForSeconds(_animatingSpeed);
-            }
-            _levelCounter++;
-            _levelText.text = _levelCounter.ToString();
-            _experienceSlider.value = 0;
-            _experienceSlider.maxValue = maxValue; 
-            //TODO: maxValue must be updated each level;
-
-        }
-        StartCoroutine(AnimateExperienceBar(xp));
-
-    }
 
     public void ToggleInventoryPanel()
     {
@@ -143,7 +107,59 @@ public class HUD : MonoBehaviour
     }
     public void UpgradeMaxHealthValue(int value)
     {
-        _healthSlider.maxValue = value;
+        _HPSlider.maxValue = value;
+    }
+
+    public void UpdateXP(int xp)
+    {
+        StartCoroutine(AnimateXP(xp));
+    }
+    private IEnumerator AnimateXP(float xp)
+    {
+
+        float desiredXP = _XPSlider.value + xp;
+        while (_XPSlider.value <= desiredXP)
+        {
+
+            _currentXPText.text = $"{_XPSlider.value++}";
+            yield return new WaitForSeconds(_animatingRate);
+        }
+
+    }
+    public void UpdateMaxExperience(int xp)
+    {
+        _XPSlider.value = 0;
+
+        _XPSlider.maxValue = xp;
+        _currentXPText.text = "0";
+        _maxXPText.text = xp.ToString();
+
+    }
+    public void UpdateLevel(int level, int xpToAdd, int maxXp)
+    {
+        StartCoroutine(AnimateLevel(level, xpToAdd, maxXp)); //first part of code is repeated
+
+    }
+    private IEnumerator AnimateLevel(int level, int xpToAdd, int maxXP)
+    {
+        Debug.Log("first part");
+        while (_XPSlider.value <= _XPSlider.maxValue)
+        {
+            _currentXPText.text = $"{_XPSlider.value++}";
+            yield return new WaitForSeconds(_animatingRate);
+
+            if (_XPSlider.value == _XPSlider.maxValue)
+            {
+                Debug.Log("second part");
+                UpdateMaxExperience(maxXP);
+                _levelText.text = $"{level}";
+                StartCoroutine(AnimateXP(xpToAdd));
+                yield break; // does it do anything here?
+            }
+        }
+      
+        
+
     }
 
 

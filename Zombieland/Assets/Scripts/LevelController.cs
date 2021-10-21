@@ -14,11 +14,13 @@ public class LevelController : MonoBehaviour
     [SerializeField] private HUD _HUD;
     [SerializeField] private Canvas _enemyCanvas;
 
+    private ExperienceSystem _experienceSystem;
 
     private bool _isGamePaused;
     private bool _isGameOver;
     private void Awake()
     {
+       
 
         Initialize();
 
@@ -79,6 +81,8 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _HUD.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
+
+        SetExperienceSystem();
     }
 
     public void TogglePause()
@@ -113,5 +117,17 @@ public class LevelController : MonoBehaviour
         _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
 
+    }
+    private void SetExperienceSystem()
+    {
+        _experienceSystem = new ExperienceSystem();
+
+        _HUD.UpdateMaxExperience(_experienceSystem.GetExperienceToNextLevel()); 
+        //event fires before hud managers to subscribe to it
+        
+        _experienceSystem.OnXPGained += _HUD.UpdateXP;
+
+        _experienceSystem.OnMaxExperienceChanged += _HUD.UpdateMaxExperience;// doesnt work
+        _experienceSystem.OnLevelUp += _HUD.UpdateLevel;
     }
 }
