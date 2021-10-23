@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,6 +11,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private Button _backButton;
+    [SerializeField] private Button _loadButton;
     private void Start()
     {
         Initialize();
@@ -46,6 +45,11 @@ public class MainMenu : MonoBehaviour
         _settingsButton.onClick.AddListener(ShowSettings);
         _exitButton.onClick.AddListener(ExitGame);
         _backButton.onClick.AddListener(HideSettings);
+        _loadButton.onClick.AddListener(LoadGame);
+    }
+    private void LoadGame()
+    {
+        SceneManager.LoadScene(1);
     }
 
 }

@@ -20,9 +20,8 @@ public class UpgradeDisplay : MonoBehaviour
         _experienceSystemInstance.OnUpgradePointsChanged += UpgradePoints;
         _experienceSystemInstance.OnUpgradePointsChanged += ToggleButtons;
 
-        UpgradePoints(0);
-        ToggleButtons(0);
-
+        UpgradePoints(_experienceSystemInstance.UpgradePoints);
+        ToggleButtons(_experienceSystemInstance.UpgradePoints);
         gameObject.SetActive(false); // subscribes to events and then turns off
 
     }
@@ -53,7 +52,6 @@ public class UpgradeDisplay : MonoBehaviour
                 line.ToggleButton(false);
             }
             _areButtonsOn = false;
-            Debug.Log("turn off buttons");
         }
         if (points > 0&&!_areButtonsOn)
         {

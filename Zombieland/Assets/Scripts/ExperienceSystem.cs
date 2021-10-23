@@ -24,7 +24,7 @@ public class ExperienceSystem
     public int UpgradePoints
     {
         get { return _upgradePoints; }
-        set { _upgradePoints = value; OnUpgradePointsChanged(value); }
+        set { _upgradePoints = value; OnUpgradePointsChanged?.Invoke(value); } // add checking for null
     }
 
     private int _xp;

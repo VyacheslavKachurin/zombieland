@@ -17,12 +17,18 @@ public class LevelController : MonoBehaviour
     private ExperienceSystem _experienceSystem;
     private SaveSystem _saveSystem;
 
+
     private bool _isGamePaused;
     private bool _isGameOver;
     private void Awake()
     {
         _saveSystem = new SaveSystem();
         Initialize();
+
+    }
+    private void Start()
+    {
+        LoadGame();
     }
     private void Update()
     {
@@ -70,9 +76,6 @@ public class LevelController : MonoBehaviour
         _inputController.OnShootingInput += _player.ReceiveShootingInput;
         _inputController.OnReloadPressed += _player.ReceiveReloadInput;
 
-
-
-
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
 
@@ -85,13 +88,10 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
         SetExperienceSystem();
-
-
     }
 
     public void TogglePause()
     {
-        //maybe switch cursor sprite here on pause?
 
         _isGamePaused = !_isGamePaused;
         if (_isGamePaused)
@@ -145,6 +145,7 @@ public class LevelController : MonoBehaviour
         _HUD.ReturnUpgradePanel().ReceiveStats(playerStats);
 
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
+
     }
     private void SaveGame()
     {
@@ -154,7 +155,6 @@ public class LevelController : MonoBehaviour
     private void LoadGame()
     {
         _saveSystem.LoadGame(_experienceSystem, _player);
-
     }
 
 

@@ -22,11 +22,10 @@ public class Stat
     }
     public void IncreaseValue()
     {
-        Debug.Log("value increased in stat.cs");
         _baseValue+=_valueChanger;
         OnValueChanged(_baseValue);
     }
-    public void DecreaseValue(float value)
+    public void DecreaseValue(float value) //if i decide to add minus button to ui
     {
         _baseValue-=_valueChanger;
         OnValueChanged(_baseValue);
