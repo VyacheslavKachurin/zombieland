@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour,IDamageable
 
     private Vector3 _playerPosition;
 
-    private int experience = 500; //move to stats??
+    private int experience = 20; //move to stats??
     
 
     private void Start()

@@ -7,7 +7,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject _mainMenuPanel;
     [SerializeField] private GameObject _settingsPanel;
 
-    [SerializeField] private Button _playButton;
+    [SerializeField] private Button _newGameButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private Button _backButton;
@@ -30,8 +30,9 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("Show levels");
     }
-    public void PlayGame()
+    public void NewGame()
     {
+        PlayerPrefs.SetInt("LoadGame", 0); // change to normal system later
         SceneManager.LoadScene(1);
     }
     public void HideSettings()
@@ -41,7 +42,7 @@ public class MainMenu : MonoBehaviour
     }
     private void Initialize()
     {
-        _playButton.onClick.AddListener(PlayGame);
+        _newGameButton.onClick.AddListener(NewGame);
         _settingsButton.onClick.AddListener(ShowSettings);
         _exitButton.onClick.AddListener(ExitGame);
         _backButton.onClick.AddListener(HideSettings);
@@ -49,7 +50,9 @@ public class MainMenu : MonoBehaviour
     }
     private void LoadGame()
     {
+        PlayerPrefs.SetInt("LoadGame", 1);  // change to normal system later
         SceneManager.LoadScene(1);
+
     }
 
 }

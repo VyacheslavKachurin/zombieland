@@ -29,9 +29,9 @@ public class HUD : MonoBehaviour
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _exitButton;
-   
 
-    private float _animatingRate=0.003f;
+
+    private float _animatingRate = 0.003f;
 
     private void Start()
     {
@@ -112,10 +112,10 @@ public class HUD : MonoBehaviour
     {
 
         float desiredXP = _XPSlider.value + xp;
-        while (_XPSlider.value <= desiredXP)
+        while (_XPSlider.value < desiredXP)
         {
+            _currentXPText.text = $"{++_XPSlider.value}";
 
-            _currentXPText.text = $"{_XPSlider.value++}";
             yield return new WaitForSeconds(_animatingRate);
         }
 
@@ -149,7 +149,7 @@ public class HUD : MonoBehaviour
                 StartCoroutine(AnimateXP(xpToAdd));
                 yield break;
             }
-        } 
+        }
     }
     public void ToggleUpgradePanel()
     {

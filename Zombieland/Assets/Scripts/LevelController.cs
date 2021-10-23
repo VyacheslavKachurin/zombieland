@@ -28,7 +28,10 @@ public class LevelController : MonoBehaviour
     }
     private void Start()
     {
-        LoadGame();
+        if (PlayerPrefs.GetInt("LoadGame") == 1)
+        {
+            LoadGame();
+        }
     }
     private void Update()
     {

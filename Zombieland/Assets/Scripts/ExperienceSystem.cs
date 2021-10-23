@@ -19,7 +19,7 @@ public class ExperienceSystem
     public int Level
     {
         get { return _level; }
-        set { _level = value; OnLevelUp(value, _xp, _experienceToNextLevel); }
+        set { _level = value; if(value!=1)OnLevelUp(value, _xp, _experienceToNextLevel); }
     }
     public int UpgradePoints
     {

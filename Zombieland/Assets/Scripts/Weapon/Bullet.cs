@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private int _damageAmount = 100;
+    private int _damageAmount = 25;
     private Rigidbody _rigidbody;
     private void Start()
     {      
