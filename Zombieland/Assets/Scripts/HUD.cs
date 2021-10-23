@@ -8,7 +8,9 @@ using System;
 
 public class HUD : MonoBehaviour
 {
-    public Button ContinueButton; //Action and UnityAction issues
+    public Button ContinueButton;
+    public Button SaveButton;
+    public Button LoadButton;
 
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _inventoryPanel;
@@ -27,6 +29,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _exitButton;
+   
 
     private float _animatingRate=0.003f;
 

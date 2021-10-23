@@ -11,6 +11,22 @@ public class ExperienceSystem
     public event Action<int> OnXPGained;
     public event Action<int, int, int> OnLevelUp;
 
+    public int XP
+    {
+        get { return _xp; }
+        set { _xp = value; }
+    }
+    public int Level
+    {
+        get { return _level; }
+        set { _level = value; OnLevelUp(value, _xp, _experienceToNextLevel); }
+    }
+    public int UpgradePoints
+    {
+        get { return _upgradePoints; }
+        set { _upgradePoints = value; OnUpgradePointsChanged(value); }
+    }
+
     private int _xp;
     private int _level;
     private int _experienceToNextLevel;
@@ -23,9 +39,10 @@ public class ExperienceSystem
         // 1. enemy.cs uses AddExperience on its death;
         // 2. UpgradeDisplay updates UpgradePoints from its event;
         // 3. Plus buttons decrease update points;
+        // 4. Level controller takes it for saving;
 
-        ExperienceSystemInstance = this; 
-        
+        ExperienceSystemInstance = this;
+
         _level = level;
         _xp = xp;
         _experienceToNextLevel = GetExperienceToNextLevel();
@@ -49,7 +66,7 @@ public class ExperienceSystem
 
                 OnUpgradePointsChanged(_upgradePoints); // add checking for null
 
-               _experienceToNextLevel = GetExperienceToNextLevel();
+                _experienceToNextLevel = GetExperienceToNextLevel();
                 OnLevelUp(_level, _xp, _experienceToNextLevel);
                 Debug.Log("level up");
             }

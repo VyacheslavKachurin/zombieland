@@ -47,13 +47,14 @@ public class Crosshair : MonoBehaviour
         if (pause)
         {
             newSprite = _pauseCursor;
-          
+            _hotSpot = new Vector2(0,0); //different sprite size
         }
         else
         {
             newSprite = sprite;
+            _hotSpot = new Vector2(sprite.width / 2, sprite.height / 2);
         }
-        _hotSpot = new Vector2(newSprite.width / 2, newSprite.height / 2); //different sprite size
+        
         Cursor.SetCursor(newSprite, _hotSpot, CursorMode.Auto);
        
     }

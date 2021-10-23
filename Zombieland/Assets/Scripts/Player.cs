@@ -11,6 +11,11 @@ public class Player : MonoBehaviour, IDamageable
     public event Action<IWeapon> OnWeaponChanged;
 
     [SerializeField] private WeaponHolder _weaponHolder;
+    public float CurrentHealth
+    {
+        get { return _currentHealth; }
+        set { _currentHealth = value; OnPlayerGotAttacked(0); }
+    }
 
 
     private float _horizontal;
@@ -30,7 +35,7 @@ public class Player : MonoBehaviour, IDamageable
     private float _movementSpeed;
 
     private IWeapon _currentWeapon;
-    private List<Stat> _stats=new List<Stat>();
+    private List<Stat> _stats = new List<Stat>();
 
     private void Start()
     {
@@ -151,7 +156,7 @@ public class Player : MonoBehaviour, IDamageable
     }
     private void AssignStats()
     {
-       // _playerStats = GetComponent<PlayerStats>(); moved to ReturnPlayerStats()
+        // _playerStats = GetComponent<PlayerStats>(); moved to ReturnPlayerStats()
 
         _currentHealth = _playerStats.MaxHealth.GetValue();
         _movementSpeed = _playerStats.Speed.GetValue();
@@ -159,16 +164,16 @@ public class Player : MonoBehaviour, IDamageable
         _playerStats.Speed.OnValueChanged += UpgradeSpeed;
 
     }
-    
+
     public PlayerStats ReturnPlayerStats()
     {
-        _playerStats = GetComponent<PlayerStats>(); //otherwise it gets called earlier then player assign the variable 
+        _playerStats = GetComponent<PlayerStats>(); //otherwise it gets called earlier than player assign the variable 
         return _playerStats;
     }
     private void UpgradeSpeed(float speed)
     {
         _movementSpeed = speed;
     }
-   
+
 
 }

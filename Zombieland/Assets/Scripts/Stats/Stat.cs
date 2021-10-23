@@ -15,6 +15,11 @@ public class Stat
     {
         return _baseValue;
     }
+    public void SetValue(float value)
+    {
+        _baseValue = value;
+        OnValueChanged(_baseValue);
+    }
     public void IncreaseValue()
     {
         Debug.Log("value increased in stat.cs");

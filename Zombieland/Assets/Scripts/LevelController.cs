@@ -15,11 +15,13 @@ public class LevelController : MonoBehaviour
     [SerializeField] private Canvas _enemyCanvas;
 
     private ExperienceSystem _experienceSystem;
+    private SaveSystem _saveSystem;
 
     private bool _isGamePaused;
     private bool _isGameOver;
     private void Awake()
     {
+        _saveSystem = new SaveSystem();
         Initialize();
     }
     private void Update()
@@ -73,15 +75,17 @@ public class LevelController : MonoBehaviour
 
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
-        
-        _HUD.ContinueButton.onClick.AddListener(this.TogglePause); //Action and UnityAction issues
+
+        _HUD.ContinueButton.onClick.AddListener(this.TogglePause);
+        _HUD.SaveButton.onClick.AddListener(SaveGame);
+        _HUD.LoadButton.onClick.AddListener(LoadGame);
 
         _player.OnPlayerDeath += _HUD.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
         SetExperienceSystem();
-       
+
 
     }
 
@@ -103,9 +107,9 @@ public class LevelController : MonoBehaviour
             Time.timeScale = 1;
             _player.enabled = !_isGamePaused;
             _inputController.OnShootingInput += _player.ReceiveShootingInput;
-            
+
         }
-        
+
         OnGamePaused?.Invoke(_isGamePaused);
     }
     public void GameOver(bool isGamePaused)
@@ -122,16 +126,16 @@ public class LevelController : MonoBehaviour
 
         _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
-        
+
     }
     private void SetExperienceSystem()
     {
         PlayerStats playerStats = _player.ReturnPlayerStats();
         _experienceSystem = new ExperienceSystem();
 
-        _HUD.UpdateMaxExperience(_experienceSystem.GetExperienceToNextLevel()); 
+        _HUD.UpdateMaxExperience(_experienceSystem.GetExperienceToNextLevel());
         //event fires before hud manages to subscribe to it
-        
+
         _experienceSystem.OnXPGained += _HUD.UpdateXP;
         _experienceSystem.OnLevelUp += _HUD.UpdateLevel;
 
@@ -141,8 +145,17 @@ public class LevelController : MonoBehaviour
         _HUD.ReturnUpgradePanel().ReceiveStats(playerStats);
 
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
-
-
+    }
+    private void SaveGame()
+    {
+        _saveSystem.SaveGame(_experienceSystem, _player);
 
     }
+    private void LoadGame()
+    {
+        _saveSystem.LoadGame(_experienceSystem, _player);
+
+    }
+
+
 }
