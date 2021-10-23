@@ -20,10 +20,7 @@ public class LevelController : MonoBehaviour
     private bool _isGameOver;
     private void Awake()
     {
-       
-
         Initialize();
-
     }
     private void Update()
     {
@@ -53,6 +50,7 @@ public class LevelController : MonoBehaviour
 
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
         _crosshair.OnCrosshairMoved += _cameraFollow.GetCrosshairPosition;
+        OnGamePaused += _crosshair.PauseCursor;
 
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
@@ -69,36 +67,45 @@ public class LevelController : MonoBehaviour
         _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
         _inputController.OnShootingInput += _player.ReceiveShootingInput;
         _inputController.OnReloadPressed += _player.ReceiveReloadInput;
-        _inputController.OnInventoryButtonPressed += TogglePause;
+
 
 
 
         _HUD = Instantiate(_HUD);
         OnGamePaused += _HUD.PauseGame;
+        
         _HUD.ContinueButton.onClick.AddListener(this.TogglePause); //Action and UnityAction issues
-        _inputController.OnInventoryButtonPressed += _HUD.ToggleInventoryPanel;
 
         _player.OnPlayerDeath += _HUD.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
         SetExperienceSystem();
+       
+
     }
 
     public void TogglePause()
     {
+        //maybe switch cursor sprite here on pause?
+
         _isGamePaused = !_isGamePaused;
         if (_isGamePaused)
         {
             Time.timeScale = 0;
             _player.enabled = !_isGamePaused;
+            _player.ReceiveShootingInput(false);
+
+            _inputController.OnShootingInput -= _player.ReceiveShootingInput;
         }
         else
         {
             Time.timeScale = 1;
             _player.enabled = !_isGamePaused;
+            _inputController.OnShootingInput += _player.ReceiveShootingInput;
+            
         }
-
+        
         OnGamePaused?.Invoke(_isGamePaused);
     }
     public void GameOver(bool isGamePaused)
@@ -108,26 +115,34 @@ public class LevelController : MonoBehaviour
     }
     public void AssignWeapon(IWeapon currentWeapon)
     {
-
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
-        currentWeapon.OnWeaponReload += _crosshair.ChangeCursor;
+        currentWeapon.OnWeaponReload += _crosshair.ReloadingSprite;
         currentWeapon.OnWeaponReload += _inputController.IsWeaponReloading;
         _HUD.UpdateBullets(currentWeapon.ReturnBulletsAmount());
 
         _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
-
+        
     }
     private void SetExperienceSystem()
     {
+        PlayerStats playerStats = _player.ReturnPlayerStats();
         _experienceSystem = new ExperienceSystem();
 
         _HUD.UpdateMaxExperience(_experienceSystem.GetExperienceToNextLevel()); 
-        //event fires before hud managers to subscribe to it
+        //event fires before hud manages to subscribe to it
         
         _experienceSystem.OnXPGained += _HUD.UpdateXP;
-
-        _experienceSystem.OnMaxExperienceChanged += _HUD.UpdateMaxExperience;// doesnt work
         _experienceSystem.OnLevelUp += _HUD.UpdateLevel;
+
+        _inputController.OnUpgradeButtonPressed += _HUD.ToggleUpgradePanel;
+        _inputController.OnUpgradeButtonPressed += TogglePause; // it turns on the upgrade panel as well as menu 
+
+        _HUD.ReturnUpgradePanel().ReceiveStats(playerStats);
+
+        playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
+
+
+
     }
 }

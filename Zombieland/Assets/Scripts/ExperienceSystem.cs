@@ -6,21 +6,26 @@ using System;
 public class ExperienceSystem
 {
     public static ExperienceSystem ExperienceSystemInstance;
+    public event Action<int> OnUpgradePointsChanged;
 
     public event Action<int> OnXPGained;
-    public event Action<int> OnMaxExperienceChanged;
     public event Action<int, int, int> OnLevelUp;
 
     private int _xp;
     private int _level;
     private int _experienceToNextLevel;
-    private int _experienceMultiplicator;
+
     private int _upgradePoints;
     private int _pointsPerLevel = 5;
 
     public ExperienceSystem(int level = 1, int xp = 0)
     {
-        ExperienceSystemInstance = this; // enemy.cs uses AddExperience on its death;
+        // 1. enemy.cs uses AddExperience on its death;
+        // 2. UpgradeDisplay updates UpgradePoints from its event;
+        // 3. Plus buttons decrease update points;
+
+        ExperienceSystemInstance = this; 
+        
         _level = level;
         _xp = xp;
         _experienceToNextLevel = GetExperienceToNextLevel();
@@ -40,7 +45,9 @@ public class ExperienceSystem
                 _xp = _xp - _experienceToNextLevel;
                 _level++; //can add only two levels at a time, if more, it adds too many XP;
 
-                _upgradePoints += 5;
+                _upgradePoints += _pointsPerLevel;
+
+                OnUpgradePointsChanged(_upgradePoints); // add checking for null
 
                _experienceToNextLevel = GetExperienceToNextLevel();
                 OnLevelUp(_level, _xp, _experienceToNextLevel);
@@ -53,7 +60,12 @@ public class ExperienceSystem
     {
         int level = _level + 1;
         int maxXp = (int)Mathf.Floor(100 * level * Mathf.Pow(level, 0.5f));
-        //  OnMaxExperienceChanged?.Invoke(maxXp);
+
         return maxXp;
+    }
+    public void UsePoint()
+    {
+        _upgradePoints--;
+        OnUpgradePointsChanged(_upgradePoints);
     }
 }

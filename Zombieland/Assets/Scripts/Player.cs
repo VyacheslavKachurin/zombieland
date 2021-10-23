@@ -30,9 +30,13 @@ public class Player : MonoBehaviour, IDamageable
     private float _movementSpeed;
 
     private IWeapon _currentWeapon;
+    private List<Stat> _stats=new List<Stat>();
 
     private void Start()
     {
+
+
+
         AssignStats();
 
         _animator = GetComponent<Animator>();
@@ -147,11 +151,24 @@ public class Player : MonoBehaviour, IDamageable
     }
     private void AssignStats()
     {
-        _playerStats = GetComponent<PlayerStats>();
+       // _playerStats = GetComponent<PlayerStats>(); moved to ReturnPlayerStats()
 
         _currentHealth = _playerStats.MaxHealth.GetValue();
         _movementSpeed = _playerStats.Speed.GetValue();
 
+        _playerStats.Speed.OnValueChanged += UpgradeSpeed;
+
     }
+    
+    public PlayerStats ReturnPlayerStats()
+    {
+        _playerStats = GetComponent<PlayerStats>(); //otherwise it gets called earlier then player assign the variable 
+        return _playerStats;
+    }
+    private void UpgradeSpeed(float speed)
+    {
+        _movementSpeed = speed;
+    }
+   
 
 }

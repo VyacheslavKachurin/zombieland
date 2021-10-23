@@ -11,7 +11,7 @@ public class InputController : MonoBehaviour
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
-    public event Action OnInventoryButtonPressed;
+    public event Action OnUpgradeButtonPressed;
 
     private float _horizontal;
     private float _vertical;
@@ -92,11 +92,11 @@ public class InputController : MonoBehaviour
     {
         _isReloading = isReloading;
     }
-    public void UpgradeButtonInput()
+    private void UpgradeButtonInput()
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
-            OnInventoryButtonPressed();
+            OnUpgradeButtonPressed();
         }
     }
 }

@@ -12,6 +12,8 @@ public class HUD : MonoBehaviour
 
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _inventoryPanel;
+    [SerializeField] private GameObject _upgradePanel;
+
     [SerializeField] private Slider _HPSlider;
     [SerializeField] private Slider _XPSlider;
     [SerializeField] private TextMeshProUGUI _currentXPText;
@@ -26,7 +28,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _exitButton;
 
-    private float _animatingRate = 0.005f;
+    private float _animatingRate=0.003f;
 
     private void Start()
     {
@@ -94,18 +96,7 @@ public class HUD : MonoBehaviour
         _weaponIcon.sprite = sprite;
     }
 
-    public void ToggleInventoryPanel()
-    {
-        if (_inventoryPanel.activeInHierarchy)
-        {
-            _inventoryPanel.SetActive(false);
-        }
-        else
-        {
-            _inventoryPanel.SetActive(true);
-        }
-    }
-    public void UpgradeMaxHealthValue(int value)
+    public void UpgradeMaxHealthValue(float value)
     {
         _HPSlider.maxValue = value;
     }
@@ -135,14 +126,14 @@ public class HUD : MonoBehaviour
         _maxXPText.text = xp.ToString();
 
     }
-    public void UpdateLevel(int level, int xpToAdd, int maxXp)
+    public void UpdateLevel(int level, int xpToAdd, int maxXP)
     {
-        StartCoroutine(AnimateLevel(level, xpToAdd, maxXp)); //first part of code is repeated
+        _animatingRate = level / maxXP;
+        StartCoroutine(AnimateLevel(level, xpToAdd, maxXP)); //first part of code is repeated
 
     }
     private IEnumerator AnimateLevel(int level, int xpToAdd, int maxXP)
     {
-        Debug.Log("first part");
         while (_XPSlider.value <= _XPSlider.maxValue)
         {
             _currentXPText.text = $"{_XPSlider.value++}";
@@ -150,16 +141,20 @@ public class HUD : MonoBehaviour
 
             if (_XPSlider.value == _XPSlider.maxValue)
             {
-                Debug.Log("second part");
                 UpdateMaxExperience(maxXP);
                 _levelText.text = $"{level}";
                 StartCoroutine(AnimateXP(xpToAdd));
-                yield break; // does it do anything here?
+                yield break;
             }
-        }
-      
-        
-
+        } 
+    }
+    public void ToggleUpgradePanel()
+    {
+        _upgradePanel.SetActive(!_upgradePanel.activeInHierarchy);
+    }
+    public UpgradeDisplay ReturnUpgradePanel()
+    {
+        return _upgradePanel.GetComponent<UpgradeDisplay>();
     }
 
 
