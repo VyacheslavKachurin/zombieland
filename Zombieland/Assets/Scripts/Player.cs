@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System;
+using UnityEngine.Animations.Rigging;
 public class Player : MonoBehaviour, IDamageable
 {
     public event Action<Vector3> OnPlayerMoved;
@@ -11,6 +11,8 @@ public class Player : MonoBehaviour, IDamageable
     public event Action<IWeapon> OnWeaponChanged;
 
     [SerializeField] private WeaponHolder _weaponHolder;
+    [SerializeField] private GameObject _aimingObject;
+    [SerializeField] private Rig _aimRig;
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -120,6 +122,10 @@ public class Player : MonoBehaviour, IDamageable
     public void ReceiveMouse(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
+        if (Time.timeScale != 0)
+        {
+            _aimingObject.transform.position = _mousePosition;
+        }
     }
 
     public void ReceiveShootingInput(bool isShooting)
@@ -174,6 +180,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         _movementSpeed = speed;
     }
+
 
 
 }

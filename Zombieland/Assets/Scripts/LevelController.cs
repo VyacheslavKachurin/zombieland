@@ -69,6 +69,7 @@ public class LevelController : MonoBehaviour
         _player.OnPlayerDeath += _enemySpawner.StopSpawning; //take care of bool
         _player.OnPlayerDeath += GameOver;
         _player.OnPlayerMoved += _enemySpawner.GetPlayerPosition;
+        
 
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
