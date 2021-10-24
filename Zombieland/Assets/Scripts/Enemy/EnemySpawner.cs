@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     {
         _plane = GameObject.Find("Plane");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-      //  InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
     }
     private void SpawnEnemy()
     {
@@ -34,7 +34,7 @@ public class EnemySpawner : MonoBehaviour
         enemyInstance.GetHealthBar(enemyHealthBarInstance);
         enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
         OnPlayerMoved += enemyInstance.GetPlayerPosition;
-        
+
     }
     private Vector3 GetRandomPosition()
     {
@@ -64,5 +64,5 @@ public class EnemySpawner : MonoBehaviour
         _playerPosition = position;
         OnPlayerMoved?.Invoke(position);
     }
-  
+
 }

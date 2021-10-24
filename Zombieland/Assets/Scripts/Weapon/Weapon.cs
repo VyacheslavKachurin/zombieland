@@ -22,7 +22,7 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private Sprite _weaponIcon;
     [SerializeField] private int _maxBulletAmount;
-    [SerializeField] private float _firingRate = 0.15f;
+    [SerializeField] private float _firingRate = 0.1f;
 
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
 

@@ -12,7 +12,6 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private WeaponHolder _weaponHolder;
     [SerializeField] private GameObject _aimingObject;
-    [SerializeField] private Rig _aimRig;
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -124,7 +123,8 @@ public class Player : MonoBehaviour, IDamageable
         _mousePosition = mousePosition;
         if (Time.timeScale != 0)
         {
-            _aimingObject.transform.position = _mousePosition;
+            _aimingObject.transform.position = new Vector3(_mousePosition.x,1,_mousePosition.z);
+            
         }
     }
 
