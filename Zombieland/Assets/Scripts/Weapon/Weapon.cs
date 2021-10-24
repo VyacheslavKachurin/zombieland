@@ -66,7 +66,7 @@ public class Weapon : MonoBehaviour, IWeapon
         {
             if (_currentBulletsAmount > 0)
             {
-                _muzzleFlash.Play();
+                _muzzleFlash.Play(); // move to ishooting module, resize particle system for different weapons and colors
                 //Invoke Recoil animation event 
 
                 _currentBulletsAmount--;
