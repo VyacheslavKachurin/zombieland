@@ -55,7 +55,7 @@ public class Player : MonoBehaviour, IDamageable
         if (!_isDead)
         {
             Move();
-            AimTowardsMouse();
+           AimTowardsMouse();
         }
     }
     private void Move()
@@ -123,8 +123,10 @@ public class Player : MonoBehaviour, IDamageable
         _mousePosition = mousePosition;
         if (Time.timeScale != 0)
         {
-            _aimingObject.transform.position = new Vector3(_mousePosition.x,1,_mousePosition.z);
+
+            _aimingObject.transform.position = _mousePosition;
             
+            // try to set up aiming help system
         }
     }
 

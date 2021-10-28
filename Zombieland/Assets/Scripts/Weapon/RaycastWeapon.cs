@@ -17,20 +17,19 @@ public class RaycastWeapon : MonoBehaviour, IShootingType
 
     public void CreateShot(Vector3 aim, Vector3 gunPointPosition)
     {
-        Vector3 target = aim - gunPointPosition;
+        Vector3 direction = aim - gunPointPosition;
         _ray.origin = gunPointPosition;
-        _ray.direction = target;
+        _ray.direction = direction;
 
         var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
         tracer.AddPosition(_ray.origin);
+        RaycastHit[] results = new RaycastHit[1];
 
-        if (Physics.Raycast(_ray, out _hitInfo, _layer))
+
+        if (Physics.Raycast(_ray, out _hitInfo, Mathf.Infinity, _layer))
         {
-
-
             var enemy = _hitInfo.collider.GetComponent<IDamageable>();
             ParticleSystem effect = _hitEffect;
-            Debug.DrawLine(_ray.origin, _hitInfo.point, Color.red, 2f);
             if (enemy != null)
             {
                 effect = _fleshEffect;

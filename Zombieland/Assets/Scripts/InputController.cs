@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 public class InputController : MonoBehaviour
 {
-    [SerializeField] private LayerMask _layerMask;
+   // [SerializeField] private LayerMask _layerMask; do i need this?
 
     public event Action<Vector3> OnMouseMoved;
     public event Action<float, float> OnAxisMoved;
@@ -45,7 +45,7 @@ public class InputController : MonoBehaviour
     private void ReadMouseInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           
