@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     {
         _plane = GameObject.Find("Plane");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-        InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
+     //   InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
     }
     private void SpawnEnemy()
     {

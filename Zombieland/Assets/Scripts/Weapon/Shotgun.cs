@@ -19,10 +19,10 @@ public class Shotgun : MonoBehaviour, IShootingType
     private RaycastHit _hitInfo;
 
 
-    public void CreateShot(Vector3 aim, Vector3 gunPointPosition)
+    public void CreateShot(Vector3 target, Vector3 origin)
     {
-        Vector3 direction = aim - gunPointPosition;
-        _ray.origin = gunPointPosition;
+        Vector3 direction = target - origin;
+        _ray.origin = origin;
         _ray.direction = direction;
 
 
@@ -60,12 +60,6 @@ public class Shotgun : MonoBehaviour, IShootingType
                 effect.Emit(1);
                 tracer.transform.position = _hitInfo.point;
             }
-            //  Debug.DrawLine(gunPointPosition, _hitInfo.point, Color.red, 2);
-
-
-
         }
-
-
     }
 }
