@@ -23,7 +23,7 @@ public class Bullet : MonoBehaviour
         {
             damageable.TakeDamage(_damageAmount);
         }
-        Destroy(gameObject);
+      //  Destroy(gameObject);
     }
 
 }

@@ -19,12 +19,10 @@ public class RaycastWeapon : MonoBehaviour, IShootingType
     {
         Vector3 direction = aim - gunPointPosition;
         _ray.origin = gunPointPosition;
-        _ray.direction = direction;
+        _ray.direction = direction.normalized;
 
         var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
         tracer.AddPosition(_ray.origin);
-        RaycastHit[] results = new RaycastHit[1];
-
 
         if (Physics.Raycast(_ray, out _hitInfo, Mathf.Infinity, _layer))
         {
@@ -47,11 +45,5 @@ public class RaycastWeapon : MonoBehaviour, IShootingType
 
             tracer.transform.position = _hitInfo.point;
         }
-
-        /*
-         Bullet bulletInstance = Instantiate(_bullet, gunPointPosition, Quaternion.LookRotation(target));
-         bulletInstance.SetVelocity(target.normalized * _bulletVelocity);
-        */
-
     }
 }

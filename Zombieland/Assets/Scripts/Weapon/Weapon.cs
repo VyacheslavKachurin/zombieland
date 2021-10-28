@@ -72,7 +72,7 @@ public class Weapon : MonoBehaviour, IWeapon
                 _currentBulletsAmount--;
 
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
-
+                //_aimPosition.y = _gunPoint.position.y;
                 _shootingModule.CreateShot(_aimPosition, _gunPoint.position);
 
                 if (_currentBulletsAmount == 0)
