@@ -9,10 +9,6 @@ public class Shotgun : MonoBehaviour, IShootingType
     [SerializeField] private ParticleSystem _hitEffect;
     [SerializeField] private ParticleSystem _fleshEffect;// video says instantiating takes more performance then repositioning it, check with profiler in future?
     [SerializeField] private TrailRenderer _tracerEffect;
-
-
-    [SerializeField] private Bullet _bullet;
-
     [SerializeField] private float _damageAmount = 15f;
 
     private Ray _ray;
@@ -24,8 +20,6 @@ public class Shotgun : MonoBehaviour, IShootingType
         Vector3 direction = target - origin;
         _ray.origin = origin;
         _ray.direction = direction;
-
-
 
         for (int i = -2; i < 5; i++)
         {
