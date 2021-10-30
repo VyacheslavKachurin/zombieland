@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
+        var damageable = collision.gameObject.GetComponent<IDamageable>();
         if (damageable != null)
         {
             damageable.TakeDamage(_damageAmount);
