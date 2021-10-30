@@ -44,6 +44,7 @@ public class Weapon : MonoBehaviour, IWeapon
     public void OnEnable()
     {
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
+        
     }
     public void Shoot(bool isShooting)
     {
@@ -80,6 +81,7 @@ public class Weapon : MonoBehaviour, IWeapon
                     _reloadingCoroutine = StartCoroutine(Reloading());
                 }
                 yield return new WaitForSeconds(_firingRate);
+                
             }
             else
             {
