@@ -3,35 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Weapon : MonoBehaviour,IWeapon
+public class Weapon : MonoBehaviour, IWeapon
 {
     public event Action<bool> OnWeaponReload;
     public event Action<int> OnBulletsAmountChanged
     {
-        add { 
-            _onBulletsAmountChanged += value; 
+        add
+        {
+            _onBulletsAmountChanged += value;
             _onBulletsAmountChanged(_maxBulletAmount);
         }
         remove { _onBulletsAmountChanged -= value; }
     }
 
     private event Action<int> _onBulletsAmountChanged;
-   
+
     [SerializeField] private Transform _gunPoint;
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private Sprite _weaponIcon;
     [SerializeField] private int _maxBulletAmount;
-    [SerializeField]private float _firingRate = 0.15f;
+    [SerializeField] private float _firingRate = 0.1f;
 
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
 
 
     private int _currentBulletsAmount;
-    private bool _isReloading=false;
+    private bool _isReloading = false;
     private bool _isShooting;
+    private bool _isShootingAllowed;
     private Vector3 _aimPosition;
     private IShootingType _shootingModule;
- 
+
     private Coroutine _shootingCoroutine;
     private Coroutine _reloadingCoroutine;
     public void Awake()
@@ -44,35 +46,38 @@ public class Weapon : MonoBehaviour,IWeapon
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
     }
     public void Shoot(bool isShooting)
-    {     
-            _isShooting = isShooting;
-            if (_isShooting&&!_isReloading)
-            {
-                _shootingCoroutine = StartCoroutine(Shooting());
-            }
-            else
+    {
+        _isShooting = isShooting;
+        if (_isShooting && !_isReloading)
+        {
+            _shootingCoroutine = StartCoroutine(Shooting());
+        }
+        else
+        {
+            if (_shootingCoroutine != null) // maybe move to a method? used 2 times
             {
                 StopCoroutine(_shootingCoroutine);
-            }       
+            }
+        }
     }
     private IEnumerator Shooting()
     {
-        while (true&&!_isReloading)
+        while (true && !_isReloading)
         {
             if (_currentBulletsAmount > 0)
             {
-                _muzzleFlash.Play();
+                _muzzleFlash.Play(); // move to ishooting module, resize particle system for different weapons and colors
                 //Invoke Recoil animation event 
 
                 _currentBulletsAmount--;
 
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
-                _shootingModule.CreateShot(_aimPosition,_gunPoint.position);
+                _shootingModule.CreateShot(_aimPosition, _gunPoint.position);
 
                 if (_currentBulletsAmount == 0)
                 {
-                    _reloadingCoroutine=StartCoroutine(Reloading());                   
+                    _reloadingCoroutine = StartCoroutine(Reloading());
                 }
                 yield return new WaitForSeconds(_firingRate);
             }
@@ -85,7 +90,11 @@ public class Weapon : MonoBehaviour,IWeapon
     }
     private IEnumerator Reloading()
     {
-        StopCoroutine(_shootingCoroutine);
+        if (_shootingCoroutine != null)
+        {
+            StopCoroutine(_shootingCoroutine);
+        }
+
         _isReloading = true;
         OnWeaponReload?.Invoke(_isReloading);
 
@@ -102,7 +111,7 @@ public class Weapon : MonoBehaviour,IWeapon
             _shootingCoroutine = StartCoroutine(Shooting());
             yield return null;
         }
-        
+
     }
 
     public void Reload()

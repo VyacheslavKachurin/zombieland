@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System;
-public class Player : MonoBehaviour
+using UnityEngine.Animations.Rigging;
+public class Player : MonoBehaviour, IDamageable
 {
     public event Action<Vector3> OnPlayerMoved;
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
-    [Range(0f, 10f)]
-    [SerializeField] private float _movementSpeed;
     [SerializeField] private WeaponHolder _weaponHolder;
+    [SerializeField] private GameObject _aimingObject;
+    public float CurrentHealth
+    {
+        get { return _currentHealth; }
+        set { _currentHealth = value; OnPlayerGotAttacked(0); }
+    }
+
 
     private float _horizontal;
     private float _vertical;
@@ -23,17 +28,26 @@ public class Player : MonoBehaviour
 
     private float _dampTime = 0.1f;
     private Animator _animator;
+    private PlayerStats _playerStats;
 
-    private float _health = 100;
+
+    private float _currentHealth;
     private bool _isDead = false;
-    private float _damageAmount = 20;//move to enemy script
+    private float _movementSpeed;
 
     private IWeapon _currentWeapon;
+    private List<Stat> _stats = new List<Stat>();
 
     private void Start()
     {
+
+
+
+        AssignStats();
+
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
+
     }
 
     private void Update()
@@ -41,7 +55,7 @@ public class Player : MonoBehaviour
         if (!_isDead)
         {
             Move();
-            LookAtTarget();
+           AimTowardsMouse();
         }
     }
     private void Move()
@@ -57,7 +71,7 @@ public class Player : MonoBehaviour
 
         OnPlayerMoved?.Invoke(transform.position);
     }
-    private void LookAtTarget()
+    private void AimTowardsMouse()
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();
@@ -69,13 +83,15 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
     }
-    private void TakeDamage()
+    public void TakeDamage(float damageAmount)
     {
-        if (_health > 0)
+
+        if (_currentHealth > 0)
         {
-            _health -= _damageAmount;
-            OnPlayerGotAttacked(_damageAmount);
-            if (_health <= 0)
+            _currentHealth -= damageAmount;
+            OnPlayerGotAttacked(damageAmount);
+
+            if (_currentHealth <= 0)
             {
                 Die();
             }
@@ -105,6 +121,13 @@ public class Player : MonoBehaviour
     public void ReceiveMouse(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
+        if (Time.timeScale != 0)
+        {
+
+            _aimingObject.transform.position = _mousePosition;
+            
+            // try to set up aiming help system
+        }
     }
 
     public void ReceiveShootingInput(bool isShooting)
@@ -139,15 +162,26 @@ public class Player : MonoBehaviour
     {
         return _currentWeapon;
     }
-    private void OnTriggerEnter(Collider other)
+    private void AssignStats()
     {
-        if (other.CompareTag("HitCollider"))
-        {
-            TakeDamage();
-        }
+        // _playerStats = GetComponent<PlayerStats>(); moved to ReturnPlayerStats()
+
+        _currentHealth = _playerStats.MaxHealth.GetValue();
+        _movementSpeed = _playerStats.Speed.GetValue();
+
+        _playerStats.Speed.OnValueChanged += UpgradeSpeed;
+
     }
 
-
+    public PlayerStats ReturnPlayerStats()
+    {
+        _playerStats = GetComponent<PlayerStats>(); //otherwise it gets called earlier than player assign the variable 
+        return _playerStats;
+    }
+    private void UpgradeSpeed(float speed)
+    {
+        _movementSpeed = speed;
+    }
 
 
 

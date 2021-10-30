@@ -4,13 +4,15 @@ using UnityEngine;
 using System;
 public class InputController : MonoBehaviour
 {
-    [SerializeField] private LayerMask _layerMask;
+   // [SerializeField] private LayerMask _layerMask; do i need this?
 
     public event Action<Vector3> OnMouseMoved;
     public event Action<float, float> OnAxisMoved;
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
+    public event Action OnUpgradeButtonPressed;
+
     private float _horizontal;
     private float _vertical;
     private Camera _camera;
@@ -28,6 +30,8 @@ public class InputController : MonoBehaviour
         ReadShootInput();
         SwitchWeaponInput();
         ReloadInput();
+
+        UpgradeButtonInput();
     }
 
     private void ReadAxisInput()
@@ -37,10 +41,11 @@ public class InputController : MonoBehaviour
 
         OnAxisMoved?.Invoke(_horizontal, _vertical);
     }
+
     private void ReadMouseInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           
@@ -87,4 +92,12 @@ public class InputController : MonoBehaviour
     {
         _isReloading = isReloading;
     }
+    private void UpgradeButtonInput()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            OnUpgradeButtonPressed();
+        }
+    }
+
 }
