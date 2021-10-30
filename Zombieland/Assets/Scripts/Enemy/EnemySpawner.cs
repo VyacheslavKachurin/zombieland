@@ -21,9 +21,10 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
-        _plane = GameObject.Find("Plane");
+        // ground is hardcoded, change it to something else
+        _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-     //   InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
     }
     private void SpawnEnemy()
     {
