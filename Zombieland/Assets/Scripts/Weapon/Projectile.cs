@@ -31,10 +31,11 @@ public class Projectile : MonoBehaviour
             if (rigidbody != null)
             {
                 rigidbody.AddExplosionForce(_explosionForce,transform.position,_radius);
-                if (damageable != null)
-                {
-                    damageable.TakeDamage(_explosionDamage);
-                }
+               
+            }
+            if (damageable != null)
+            {
+                damageable.TakeDamage(_explosionDamage);
             }
         }
         Destroy(gameObject);
