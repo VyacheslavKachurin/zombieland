@@ -38,33 +38,39 @@ public class Player : MonoBehaviour, IDamageable
     private IWeapon _currentWeapon;
     private List<Stat> _stats = new List<Stat>();
 
+    private Camera _camera;
+
     private void Start()
     {
-
-
-
+        _camera = Camera.main;
         AssignStats();
 
         _animator = GetComponent<Animator>();
         _weaponHolder.OnWeaponChanged += GetWeapon;
-
     }
+
 
     private void Update()
     {
         if (!_isDead)
         {
             Move();
-           AimTowardsMouse();
+            AimTowardsMouse();
         }
+
     }
+
     private void Move()
     {
         _direction = new Vector3(_horizontal, 0, _vertical);
-        transform.Translate(_direction.normalized * _movementSpeed * Time.deltaTime, Space.World);
 
-        _velocityZ = Vector3.Dot(_direction.normalized, transform.forward);
-        _velocityX = Vector3.Dot(_direction.normalized, transform.right);
+        Vector3 relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
+        relatedDirection.y = 0;
+
+        transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
+
+        _velocityZ = Vector3.Dot(relatedDirection.normalized, transform.forward);
+        _velocityX = Vector3.Dot(relatedDirection.normalized, transform.right);
 
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
@@ -125,7 +131,7 @@ public class Player : MonoBehaviour, IDamageable
         {
 
             _aimingObject.transform.position = _mousePosition;
-            
+
             // try to set up aiming help system
         }
     }
