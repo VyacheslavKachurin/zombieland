@@ -12,5 +12,5 @@ public interface IWeapon
     void ReceiveAim(Vector3 aim);
     public Sprite WeaponIcon();
     public int ReturnBulletsAmount();
-
+    public AnimationClip ReturnWeaponAnimation();
 }

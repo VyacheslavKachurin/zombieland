@@ -28,8 +28,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private float _dampTime = 0.1f;
     private Animator _animator;
+    private AnimatorOverrideController _animatorOverride;
     private PlayerStats _playerStats;
-
 
     private float _currentHealth;
     private bool _isDead = false;
@@ -46,6 +46,8 @@ public class Player : MonoBehaviour, IDamageable
         AssignStats();
 
         _animator = GetComponent<Animator>();
+        _animatorOverride = _animator.runtimeAnimatorController as AnimatorOverrideController;
+
         _weaponHolder.OnWeaponChanged += GetWeapon;
     }
 
@@ -151,6 +153,7 @@ public class Player : MonoBehaviour, IDamageable
         _currentWeapon = weapon;
         OnWeaponChanged(PassWeapon());
         _currentWeapon.OnWeaponReload += ReloadAnimation;
+        Invoke(nameof(SetWeaponAnimation), 0.001f);
     }
 
     private void ReloadAnimation(bool isReloading)
@@ -187,6 +190,12 @@ public class Player : MonoBehaviour, IDamageable
     private void UpgradeSpeed(float speed)
     {
         _movementSpeed = speed;
+    }
+    private void SetWeaponAnimation()
+    {
+        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+        Debug.Log(_currentWeapon.ReturnWeaponAnimation());
+        
     }
 
 

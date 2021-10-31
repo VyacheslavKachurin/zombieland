@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
 public class Weapon : MonoBehaviour, IWeapon
 {
     public event Action<bool> OnWeaponReload;
@@ -21,6 +20,7 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private Transform _gunPoint;
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private Sprite _weaponIcon;
+    [SerializeField] private AnimationClip _weaponAnimation;
     [SerializeField] private int _maxBulletAmount;
     [SerializeField] private float _firingRate = 0.1f;
 
@@ -44,7 +44,7 @@ public class Weapon : MonoBehaviour, IWeapon
     public void OnEnable()
     {
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
-        
+
     }
     public void Shoot(bool isShooting)
     {
@@ -81,7 +81,7 @@ public class Weapon : MonoBehaviour, IWeapon
                     _reloadingCoroutine = StartCoroutine(Reloading());
                 }
                 yield return new WaitForSeconds(_firingRate);
-                
+
             }
             else
             {
@@ -137,4 +137,9 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         return _currentBulletsAmount;
     }
+    public AnimationClip ReturnWeaponAnimation()
+    {
+        return _weaponAnimation;
+    }
+
 }
