@@ -153,7 +153,7 @@ public class Player : MonoBehaviour, IDamageable
         _currentWeapon = weapon;
         OnWeaponChanged(PassWeapon());
         _currentWeapon.OnWeaponReload += ReloadAnimation;
-        Invoke(nameof(SetWeaponAnimation), 0.001f);
+        SetWeaponAnimation();
     }
 
     private void ReloadAnimation(bool isReloading)
@@ -173,8 +173,6 @@ public class Player : MonoBehaviour, IDamageable
     }
     private void AssignStats()
     {
-        // _playerStats = GetComponent<PlayerStats>(); moved to ReturnPlayerStats()
-
         _currentHealth = _playerStats.MaxHealth.GetValue();
         _movementSpeed = _playerStats.Speed.GetValue();
 
@@ -193,9 +191,7 @@ public class Player : MonoBehaviour, IDamageable
     }
     private void SetWeaponAnimation()
     {
-        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
-        Debug.Log(_currentWeapon.ReturnWeaponAnimation());
-        
+        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();        
     }
 
 
