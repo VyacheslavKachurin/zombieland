@@ -46,19 +46,23 @@ public class PauseMenu : MonoBehaviour
         ContinueButton.interactable = false;
         gameObject.SetActive(isDead);
     }
+
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
     public void Exit()
     {
         Debug.Log("Exit");
         Application.Quit();
     }
+
     public void MainMenu()
     {
         SceneManager.LoadScene(0);
     }
+
     public void ShowSettings()
     {
         Debug.Log("Show Settings");

@@ -19,10 +19,12 @@ public class Crosshair : MonoBehaviour
     {
         ReloadingSprite(false);
     }
+
     public void Aim(Vector3 target)
     {
         transform.position = new Vector3(target.x, target.y + _offset, target.z);
     }
+
     public void ReloadingSprite(bool isReloading)
     {
         _isReloading = isReloading;  
@@ -38,6 +40,7 @@ public class Crosshair : MonoBehaviour
         _hotSpot = new Vector2(sprite.width / 2, sprite.height / 2); //different sprite size
         Cursor.SetCursor(sprite, _hotSpot, CursorMode.Auto);
     } 
+
     public void PauseCursor(bool value)
     {
         Debug.Log("pause cursor");
@@ -59,6 +62,4 @@ public class Crosshair : MonoBehaviour
         Cursor.SetCursor(newSprite, _hotSpot, CursorMode.Auto);
        
     }
-
-
 }

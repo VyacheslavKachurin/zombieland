@@ -16,6 +16,7 @@ public class SaveSystem
         formatter.Serialize(stream, gameData);
         stream.Close();
     }
+
     public void LoadGame(ExperienceSystem experienceSystem, Player player)
     {
         string path = Application.persistentDataPath + "/GameData.bin";
@@ -35,6 +36,7 @@ public class SaveSystem
 
         }
     }
+
     private void InsertValues(ExperienceSystem experienceSystem, Player player,GameData gameData)
     {  
         PlayerStats playerStats = player.ReturnPlayerStats();

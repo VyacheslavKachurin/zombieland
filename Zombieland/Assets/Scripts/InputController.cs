@@ -4,8 +4,6 @@ using UnityEngine;
 using System;
 public class InputController : MonoBehaviour,IPlayerInput
 {
-   // [SerializeField] private LayerMask _layerMask; do i need this?
-
     public event Action<Vector3> OnMouseMoved;
     public event Action<float, float> OnAxisMoved;
     public event Action<bool> OnShootingInput;
@@ -25,10 +23,12 @@ public class InputController : MonoBehaviour,IPlayerInput
 
     private bool _isUpgradeOn = false;
     private bool _wasPausePressed = false;
+
     private void Start()
     {
         _camera = Camera.main;
     }
+
     private void Update()
     {
         if (!_isPaused)
@@ -73,6 +73,7 @@ public class InputController : MonoBehaviour,IPlayerInput
             OnMouseMoved?.Invoke(_destination);
         }
     }
+
     private void ReadShootInput()
     {
         if (Input.GetButtonDown("Fire1"))
@@ -86,6 +87,7 @@ public class InputController : MonoBehaviour,IPlayerInput
             OnShootingInput?.Invoke(_isShooting);
         } 
     }
+
     private void SwitchWeaponInput()
     {
         if (_isReloading)
@@ -101,6 +103,7 @@ public class InputController : MonoBehaviour,IPlayerInput
             OnScrollWheelSwitched?.Invoke(false);
         }
     }
+
     private void ReloadInput()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -108,10 +111,12 @@ public class InputController : MonoBehaviour,IPlayerInput
             OnReloadPressed();
         }
     }
+
     public void IsWeaponReloading(bool isReloading)
     {
         _isReloading = isReloading;
     }
+
     private void UpgradeButtonInput()
     {
         if (Input.GetKeyDown(KeyCode.U)&&!_wasPausePressed)
@@ -123,6 +128,7 @@ public class InputController : MonoBehaviour,IPlayerInput
             
         }
     }
+
     public void Continue()
     {
         _isPaused = false;

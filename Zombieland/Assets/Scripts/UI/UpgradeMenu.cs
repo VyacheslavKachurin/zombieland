@@ -31,17 +31,20 @@ public class UpgradeMenu : MonoBehaviour
         CreateLine(stats.Speed);
 
     }
+
     private void UpgradePoints(int points)
     {
         _upgradePointsText.text = $"Points: {points}";
 
     }
+
     private void CreateLine(Stat stat)
     {
         StatLine lineInstance = Instantiate(_statLine, _statHolder);
         lineInstance.AssignButton(stat);
         _statLines.Add(lineInstance);
     }
+
     private void ToggleButtons(int points)
     {
         
@@ -62,6 +65,7 @@ public class UpgradeMenu : MonoBehaviour
             _areButtonsOn = true;
         }
     }
+
     public void ToggleUpgradePanel(bool value)
     {
         gameObject.SetActive(value);

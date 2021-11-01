@@ -35,6 +35,7 @@ public class Enemy : MonoBehaviour,IDamageable
 
         AssignStats();
     }
+
     private void Update()
     {
         Move();
@@ -75,6 +76,7 @@ public class Enemy : MonoBehaviour,IDamageable
             Die();
         }
     }
+
     private void Die()
     {
         _capsuleCollider.enabled = false;
@@ -83,18 +85,18 @@ public class Enemy : MonoBehaviour,IDamageable
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
         _experienceSystem.AddExperience(experience);
-
-
-
     }
+
     private void AttackComplete()
     {
         _navMeshAgent.enabled = true;
     }
+
     public void GetHealthBar(GameObject enemyHealthBar)
     {
         _enemyHealthBar = enemyHealthBar;
     }
+
     private void UpdateHealthBarPosition()
     {
         if (_enemyHealthBar != null)
@@ -109,10 +111,12 @@ public class Enemy : MonoBehaviour,IDamageable
         }
 
     }
+
     public void GetPlayerPosition(Transform position)
     {
         _playerTransform = position;
     }
+
     private void AssignStats()
     {
         _enemyStats = GetComponent<EnemyStats>();

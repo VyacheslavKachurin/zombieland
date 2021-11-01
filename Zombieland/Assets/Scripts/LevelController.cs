@@ -28,6 +28,7 @@ public class LevelController : MonoBehaviour
         Initialize();
 
     }
+
     private void Start()
     {
         if (PlayerPrefs.GetInt("LoadGame") == 1)
@@ -35,6 +36,7 @@ public class LevelController : MonoBehaviour
             LoadGame();
         }
     }
+
     private void Initialize()
     {
         _pauseMenu = Instantiate(_pauseMenu);
@@ -103,6 +105,7 @@ public class LevelController : MonoBehaviour
 
 
     }
+
     public void TogglePause(bool isPaused)
     {
         _isGamePaused = isPaused;
@@ -115,11 +118,13 @@ public class LevelController : MonoBehaviour
             Time.timeScale = 1;
         }
     }
+
     public void GameOver(bool isGamePaused)
     {
         TogglePause(true);
         _isGameOver = isGamePaused;
     }
+
     public void AssignWeapon(IWeapon currentWeapon)
     {
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
@@ -131,6 +136,7 @@ public class LevelController : MonoBehaviour
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
 
     }
+
     private void SetExperienceSystem()
     {
         PlayerStats playerStats = _player.ReturnPlayerStats();
@@ -149,11 +155,13 @@ public class LevelController : MonoBehaviour
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
     }
+
     private void SaveGame()
     {
         _saveSystem.SaveGame(_experienceSystem, _player);
 
     }
+
     private void LoadGame()
     {
         _saveSystem.LoadGame(_experienceSystem, _player);

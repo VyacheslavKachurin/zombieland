@@ -49,9 +49,9 @@ public class HUD : MonoBehaviour
     {
         StartCoroutine(AnimateXP(xp));
     }
+
     private IEnumerator AnimateXP(float xp)
     {
-
         float desiredXP = _XPSlider.value + xp;
         while (_XPSlider.value < desiredXP)
         {
@@ -59,8 +59,8 @@ public class HUD : MonoBehaviour
 
             yield return new WaitForSeconds(_animatingRate);
         }
-
     }
+
     public void UpdateMaxExperience(int xp)
     {
         _XPSlider.value = 0;
@@ -70,12 +70,14 @@ public class HUD : MonoBehaviour
         _maxXPText.text = xp.ToString();
 
     }
+
     public void UpdateLevel(int level, int xpToAdd, int maxXP)
     {
         _animatingRate = level / maxXP;
         StartCoroutine(AnimateLevel(level, xpToAdd, maxXP)); //first part of code is repeated
 
     }
+
     private IEnumerator AnimateLevel(int level, int xpToAdd, int maxXP)
     {
         while (_XPSlider.value <= _XPSlider.maxValue)

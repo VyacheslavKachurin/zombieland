@@ -47,6 +47,7 @@ public class ExperienceSystem
         _xp = xp;
         _experienceToNextLevel = GetExperienceToNextLevel();
     }
+
     public void AddExperience(int xp)
     {
         _xp += xp;
@@ -73,6 +74,7 @@ public class ExperienceSystem
         }
 
     }
+
     public int GetExperienceToNextLevel()
     {
         int level = _level + 1;
@@ -80,6 +82,7 @@ public class ExperienceSystem
 
         return maxXp;
     }
+
     public void UsePoint()
     {
         _upgradePoints--;

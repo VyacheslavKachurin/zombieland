@@ -18,10 +18,12 @@ public class StatLine : MonoBehaviour
 
         stat.OnValueChanged += UpdateValue;
     }
+
     private void UpdateValue(float value)
     {
         _valueText.text = value.ToString();
     }
+
     public void ToggleButton(bool isActive)
     {
         _plusButton.interactable = isActive;

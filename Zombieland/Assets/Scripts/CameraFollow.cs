@@ -15,6 +15,7 @@ public class CameraFollow : MonoBehaviour
     {
         CameraFollowCrosshair(_playerTransform.position, _crosshairTransform.position);
     }
+
     public void CameraFollowCrosshair(Vector3 playerPosition, Vector3 crosshairPosition)
     {
             Vector3 clampedTarget = new Vector3(
@@ -29,14 +30,17 @@ public class CameraFollow : MonoBehaviour
         
 
     }
+
     public void SetOffset(Vector3 playerPosition)
     {
         _offset = transform.position - playerPosition;
     }
+
     public void GetPlayerPosition(Transform playerPosition)
     {
         _playerTransform = playerPosition;
     }
+
     public void GetCrosshairPosition(Transform crosshairPosition)
     {
         _crosshairTransform = crosshairPosition;

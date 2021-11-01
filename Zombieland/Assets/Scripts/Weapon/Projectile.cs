@@ -16,10 +16,12 @@ public class Projectile : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.velocity = velocity;
     }
+
     private void Jump()
     {    
         Invoke(nameof(Explode),_delay);
     }
+
     private void Explode()
     {
         Instantiate(_explosionEffect, transform.position,Quaternion.identity);
@@ -39,12 +41,10 @@ public class Projectile : MonoBehaviour
             }
         }
         Destroy(gameObject);
-
-  
     }
+
     private void OnCollisionEnter(Collision collision)
     {
-        
         Jump();
     }
 }

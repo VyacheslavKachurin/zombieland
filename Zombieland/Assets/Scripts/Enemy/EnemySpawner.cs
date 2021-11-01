@@ -19,11 +19,12 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
-        // ground is hardcoded, change it to something else 
+        // ground is hardcoded, change it to something else  // will assign different Transform positions and store them in a list to randomly spawn
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
         InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
     }
+
     private void SpawnEnemy()
     {
         Enemy enemyInstance = Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
@@ -33,9 +34,8 @@ public class EnemySpawner : MonoBehaviour
         enemyInstance.GetHealthBar(enemyHealthBarInstance);
         enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
         enemyInstance.GetPlayerPosition(_playerTransform);
-
-
     }
+
     private Vector3 GetRandomPosition()
     {
         _spawnPosition = new Vector3(
@@ -51,6 +51,7 @@ public class EnemySpawner : MonoBehaviour
             return GetRandomPosition();
         }
     }
+
     public void SetCanvas(Canvas canvas)
     {
         _enemyCanvas = canvas;
@@ -59,10 +60,10 @@ public class EnemySpawner : MonoBehaviour
     {
         CancelInvoke(nameof(SpawnEnemy));
     }
+
     public void GetPlayerPosition(Transform position)
     {
         _playerTransform = position;
-        //  OnPlayerMoved?.Invoke(position);
     }
 
 }

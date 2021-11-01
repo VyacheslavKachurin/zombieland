@@ -48,7 +48,6 @@ public class Player : MonoBehaviour, IDamageable
         _weaponHolder.OnWeaponChanged += GetWeapon;
     }
 
-
     private void Update()
     {
         if (!_isDead)
@@ -75,6 +74,7 @@ public class Player : MonoBehaviour, IDamageable
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
     }
+
     private void AimTowardsMouse()
     {
         Vector3 lookDirection = _mousePosition - transform.position;
@@ -87,6 +87,7 @@ public class Player : MonoBehaviour, IDamageable
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
     }
+
     public void TakeDamage(float damageAmount)
     {
 
@@ -167,6 +168,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         return _currentWeapon;
     }
+
     private void AssignStats()
     {
         _currentHealth = _playerStats.MaxHealth.GetValue();
@@ -185,10 +187,12 @@ public class Player : MonoBehaviour, IDamageable
     {
         _movementSpeed = speed;
     }
+
     private void SetWeaponAnimation()
     {
         _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();        
     }
+
     public void Initialize(IPlayerInput input)
     {
         input.OnAxisMoved += ReceiveAxis;

@@ -25,6 +25,7 @@ public class GrenadeLauncher : MonoBehaviour, IShootingType
         return velocity;
     
     }
+
     public void CreateShot(Vector3 target, Vector3 origin)
     {
         Vector3 velocity = CalculateVelocity(target,origin,1f);
