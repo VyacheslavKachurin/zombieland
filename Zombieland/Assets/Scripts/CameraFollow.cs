@@ -8,12 +8,12 @@ public class CameraFollow : MonoBehaviour
     [Range(0f, 10f)] [SerializeField] private float _radius;
 
     private Vector3 _offset;
-    private Vector3 _playerPosition;
-    private Vector3 _crosshairPosition;
+    private Transform _playerTransform;
+    private Transform _crosshairTransform;
 
     private void LateUpdate()
     {
-        CameraFollowCrosshair(_playerPosition, _crosshairPosition);
+        CameraFollowCrosshair(_playerTransform.position, _crosshairTransform.position);
     }
     public void CameraFollowCrosshair(Vector3 playerPosition, Vector3 crosshairPosition)
     {
@@ -33,13 +33,13 @@ public class CameraFollow : MonoBehaviour
     {
         _offset = transform.position - playerPosition;
     }
-    public void GetPlayerPosition(Vector3 playerPosition)
+    public void GetPlayerPosition(Transform playerPosition)
     {
-        _playerPosition = playerPosition;
+        _playerTransform = playerPosition;
     }
-    public void GetCrosshairPosition(Vector3 crosshairPosition)
+    public void GetCrosshairPosition(Transform crosshairPosition)
     {
-        _crosshairPosition = crosshairPosition;
+        _crosshairTransform = crosshairPosition;
     }
 
 }

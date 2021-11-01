@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class UpgradeDisplay : MonoBehaviour
+public class UpgradeMenu : MonoBehaviour
 {
     [SerializeField] private Transform _statHolder;
     [SerializeField] private StatLine _statLine;
@@ -61,6 +61,10 @@ public class UpgradeDisplay : MonoBehaviour
             }
             _areButtonsOn = true;
         }
+    }
+    public void ToggleUpgradePanel(bool value)
+    {
+        gameObject.SetActive(value);
     }
 
 

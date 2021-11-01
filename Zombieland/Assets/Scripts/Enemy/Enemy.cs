@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour,IDamageable
     private EnemyStats _enemyStats;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
 
-    private Vector3 _playerPosition;
+    private Transform _playerTransform;
 
     private int experience = 20; //move to stats??
     
@@ -45,9 +45,9 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         if (_navMeshAgent.enabled)
         {
-            _navMeshAgent.SetDestination(_playerPosition);
+            _navMeshAgent.SetDestination(_playerTransform.position);
         }
-        if (Vector3.Distance(transform.position, _playerPosition) <= _attackRange)
+        if (Vector3.Distance(transform.position, _playerTransform.position) <= _attackRange)
         {
             Attack();
         }
@@ -109,9 +109,9 @@ public class Enemy : MonoBehaviour,IDamageable
         }
 
     }
-    public void GetPlayerPosition(Vector3 position)
+    public void GetPlayerPosition(Transform position)
     {
-        _playerPosition = position;
+        _playerTransform = position;
     }
     private void AssignStats()
     {

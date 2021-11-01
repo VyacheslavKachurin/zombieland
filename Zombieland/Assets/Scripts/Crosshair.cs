@@ -4,8 +4,6 @@ using UnityEngine;
 using System;
 public class Crosshair : MonoBehaviour
 {
-    public event Action<Vector3> OnCrosshairMoved;
-
     [SerializeField] private Texture2D _whiteCrosshair;
     [SerializeField] private Texture2D _reloadingTexture;
     [SerializeField] private Texture2D _redCrosshair;
@@ -15,6 +13,7 @@ public class Crosshair : MonoBehaviour
 
     private float _offset = 0.1f;
     private Vector2 _hotSpot;
+    private bool _isPaused = false;
 
     private void Awake()
     {
@@ -23,8 +22,6 @@ public class Crosshair : MonoBehaviour
     public void Aim(Vector3 target)
     {
         transform.position = new Vector3(target.x, target.y + _offset, target.z);
-        
-        OnCrosshairMoved?.Invoke(transform.position);
     }
     public void ReloadingSprite(bool isReloading)
     {
@@ -41,11 +38,15 @@ public class Crosshair : MonoBehaviour
         _hotSpot = new Vector2(sprite.width / 2, sprite.height / 2); //different sprite size
         Cursor.SetCursor(sprite, _hotSpot, CursorMode.Auto);
     } 
-    public void PauseCursor(bool pause)
+    public void PauseCursor(bool value)
     {
+        Debug.Log("pause cursor");
+
+        _isPaused = value;
         Texture2D newSprite;
-        if (pause)
+        if (_isPaused)
         {
+            
             newSprite = _pauseCursor;
             _hotSpot = new Vector2(0,0); //different sprite size
         }

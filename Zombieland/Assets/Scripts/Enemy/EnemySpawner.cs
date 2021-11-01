@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public event Action<Vector3> OnPlayerMoved;
     [SerializeField] private Enemy _enemy;
     [SerializeField] private GameObject _enemyHealthBar;
     private float _spawnRate = 2f;
@@ -16,15 +15,14 @@ public class EnemySpawner : MonoBehaviour
     private GameObject _plane;
     private Canvas _enemyCanvas;
 
-
-    private Vector3 _playerPosition;
+    private Transform _playerTransform;
 
     private void Awake()
     {
-        // ground is hardcoded, change it to something else
+        // ground is hardcoded, change it to something else 
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-       // InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
     }
     private void SpawnEnemy()
     {
@@ -34,7 +32,8 @@ public class EnemySpawner : MonoBehaviour
         enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
         enemyInstance.GetHealthBar(enemyHealthBarInstance);
         enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
-        OnPlayerMoved += enemyInstance.GetPlayerPosition;
+        enemyInstance.GetPlayerPosition(_playerTransform);
+
 
     }
     private Vector3 GetRandomPosition()
@@ -43,7 +42,7 @@ public class EnemySpawner : MonoBehaviour
             Random.Range(-_range, _range),
             0,
             Random.Range(-_range, _range));
-        if (Vector3.Distance(_playerPosition, _spawnPosition) >= _spawnDistance)
+        if (Vector3.Distance(_playerTransform.position, _spawnPosition) >= _spawnDistance)
         {
             return _spawnPosition;
         }
@@ -60,10 +59,10 @@ public class EnemySpawner : MonoBehaviour
     {
         CancelInvoke(nameof(SpawnEnemy));
     }
-    public void GetPlayerPosition(Vector3 position)
+    public void GetPlayerPosition(Transform position)
     {
-        _playerPosition = position;
-        OnPlayerMoved?.Invoke(position);
+        _playerTransform = position;
+        //  OnPlayerMoved?.Invoke(position);
     }
 
 }

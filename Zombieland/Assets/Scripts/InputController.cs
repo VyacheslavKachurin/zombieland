@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class InputController : MonoBehaviour
+public class InputController : MonoBehaviour,IPlayerInput
 {
    // [SerializeField] private LayerMask _layerMask; do i need this?
 
@@ -11,7 +11,8 @@ public class InputController : MonoBehaviour
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
-    public event Action OnUpgradeButtonPressed;
+    public event Action<bool> OnUpgradeButtonPressed;
+    public event Action<bool> OnGamePaused;
 
     private float _horizontal;
     private float _vertical;
@@ -19,19 +20,38 @@ public class InputController : MonoBehaviour
     private Vector3 _destination;
     private bool _isShooting;
     private bool _isReloading;
+
+    private bool _isPaused = false;
+
+    private bool _isUpgradeOn = false;
+    private bool _wasPausePressed = false;
     private void Start()
     {
         _camera = Camera.main;
     }
     private void Update()
     {
-        ReadAxisInput();
-        ReadMouseInput();
-        ReadShootInput();
-        SwitchWeaponInput();
-        ReloadInput();
+        if (!_isPaused)
+        {
+            ReadAxisInput();
+            ReadMouseInput();
+            ReadShootInput();
+            SwitchWeaponInput();
+            ReloadInput();            
+        }
 
         UpgradeButtonInput();
+        ReadPauseInput();
+    }
+
+    private void ReadPauseInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)&&!_isUpgradeOn)
+        {
+            _wasPausePressed = !_wasPausePressed;
+            _isPaused = !_isPaused;
+            OnGamePaused(_isPaused);
+        }
     }
 
     private void ReadAxisInput()
@@ -94,10 +114,20 @@ public class InputController : MonoBehaviour
     }
     private void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.U)&&!_wasPausePressed)
         {
-            OnUpgradeButtonPressed();
+            _isPaused = !_isPaused;
+            _isUpgradeOn = !_isUpgradeOn;
+            OnUpgradeButtonPressed(_isPaused);
+            
+            
         }
+    }
+    public void Continue()
+    {
+        _isPaused = false;
+        _wasPausePressed = false;
+
     }
 
 }
