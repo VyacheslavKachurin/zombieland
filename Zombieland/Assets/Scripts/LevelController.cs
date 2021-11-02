@@ -93,7 +93,6 @@ public class LevelController : MonoBehaviour
         _inputController.Continue();
         _crosshair.PauseCursor(false);
 
-
     }
 
     public void TogglePause(bool isPaused)
@@ -137,8 +136,6 @@ public class LevelController : MonoBehaviour
 
         _experienceSystem.OnXPGained += _HUD.UpdateXP;
         _experienceSystem.OnLevelUp += _HUD.UpdateLevel;
-
-      //  _inputController.OnUpgradeButtonPressed += _upgradeMenu.ToggleUpgradePanel;
 
         _upgradeMenu.ReceiveStats(playerStats);
 
