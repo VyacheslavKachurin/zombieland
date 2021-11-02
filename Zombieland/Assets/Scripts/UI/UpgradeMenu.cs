@@ -15,7 +15,7 @@ public class UpgradeMenu : MonoBehaviour
 
     private void Start()
     {
-        _experienceSystemInstance = ExperienceSystem.ExperienceSystemInstance;
+        _experienceSystemInstance = ExperienceSystem.Instance;
 
         _experienceSystemInstance.OnUpgradePointsChanged += UpgradePoints;
         _experienceSystemInstance.OnUpgradePointsChanged += ToggleButtons;

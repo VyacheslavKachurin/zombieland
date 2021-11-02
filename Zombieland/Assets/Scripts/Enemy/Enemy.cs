@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour,IDamageable
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
-        _experienceSystem = ExperienceSystem.ExperienceSystemInstance;
+        _experienceSystem = ExperienceSystem.Instance;
 
         AssignStats();
     }

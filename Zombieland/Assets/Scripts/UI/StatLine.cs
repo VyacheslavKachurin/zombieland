@@ -13,7 +13,7 @@ public class StatLine : MonoBehaviour
         _nameText.text = stat.GetUIName();
         _valueText.text = stat.GetValue().ToString();
         _plusButton.onClick.AddListener(stat.IncreaseValue);
-        _plusButton.onClick.AddListener(ExperienceSystem.ExperienceSystemInstance.UsePoint);
+        _plusButton.onClick.AddListener(ExperienceSystem.Instance.UsePoint);
         ToggleButton(false);
 
         stat.OnValueChanged += UpdateValue;

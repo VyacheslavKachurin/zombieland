@@ -5,7 +5,7 @@ using System;
 
 public class ExperienceSystem
 {
-    public static ExperienceSystem ExperienceSystemInstance;
+    public static ExperienceSystem Instance;
     public event Action<int> OnUpgradePointsChanged;
 
     public event Action<int> OnXPGained;
@@ -41,7 +41,7 @@ public class ExperienceSystem
         // 3. Plus buttons decrease update points;
         // 4. Level controller takes it for saving;
 
-        ExperienceSystemInstance = this;
+        Instance = this;
 
         _level = level;
         _xp = xp;

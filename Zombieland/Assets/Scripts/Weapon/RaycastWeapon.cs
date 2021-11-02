@@ -27,7 +27,7 @@ public class RaycastWeapon : MonoBehaviour, IShootingType
         if (Physics.Raycast(_ray, out _hitInfo, Mathf.Infinity, _layer))
         {
             var enemy = _hitInfo.collider.GetComponent<IDamageable>();
-            ParticleSystem effect = _hitEffect;
+            ParticleSystem effect;
             if (enemy != null)
             {
                 effect = _fleshEffect;

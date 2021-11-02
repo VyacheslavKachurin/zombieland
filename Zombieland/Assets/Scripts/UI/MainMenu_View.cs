@@ -1,8 +1,7 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenu_View : MonoBehaviour
 {
     [SerializeField] private GameObject _mainMenuPanel;
     [SerializeField] private GameObject _settingsPanel;
@@ -36,8 +35,7 @@ public class MainMenu : MonoBehaviour
 
     public void NewGame()
     {
-        PlayerPrefs.SetInt("LoadGame", 0); // change to normal system later
-        SceneManager.LoadScene(1);
+        MainMenu_Model.StartNewGame();
     }
 
     public void HideSettings()
@@ -57,9 +55,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadGame()
     {
-        PlayerPrefs.SetInt("LoadGame", 1);  // change to normal system later
-        SceneManager.LoadScene(1);
-
+        MainMenu_Model.LoadGame();
     }
 
 }

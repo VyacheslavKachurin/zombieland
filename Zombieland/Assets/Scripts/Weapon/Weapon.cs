@@ -29,7 +29,6 @@ public class Weapon : MonoBehaviour, IWeapon
     private int _currentBulletsAmount;
     private bool _isReloading = false;
     private bool _isShooting;
-    private bool _isShootingAllowed;
     private Vector3 _aimPosition;
     private IShootingType _shootingModule;
 

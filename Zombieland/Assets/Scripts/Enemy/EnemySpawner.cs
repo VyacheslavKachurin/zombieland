@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private Enemy _enemy;
     [SerializeField] private GameObject _enemyHealthBar;
-    private float _spawnRate = 2f;
+    private float _spawnRate;
     private float _spawnDistance = 20f;
     private float _range;
     private Vector3 _spawnPosition;
@@ -19,10 +19,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
-        // ground is hardcoded, change it to something else  // will assign different Transform positions and store them in a list to randomly spawn
+        // ground is hardcoded, change it to something else 
+        // will assign different Transform positions and store them in a list to randomly spawn
+
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-        InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
+
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, GetDifficulty());
     }
 
     private void SpawnEnemy()
@@ -64,6 +67,26 @@ public class EnemySpawner : MonoBehaviour
     public void GetPlayerPosition(Transform position)
     {
         _playerTransform = position;
+    }
+    private float GetDifficulty()
+    {
+        int difficulty = PlayerPrefs.GetInt("Difficulty", 0);
+
+        switch (difficulty)
+        {
+            case 0:
+                _spawnRate = 2f;
+                break;
+            case 1:
+                _spawnRate = 1.5f;
+                break;
+            case 2:
+                _spawnRate = 1f;
+                break;
+
+        }
+        return _spawnRate;
+
     }
 
 }
