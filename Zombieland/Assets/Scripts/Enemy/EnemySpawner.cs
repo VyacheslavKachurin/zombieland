@@ -15,17 +15,18 @@ public class EnemySpawner : MonoBehaviour
     private GameObject _plane;
     private Canvas _enemyCanvas;
 
-    private Transform _playerTransform;
+    private Transform _targetTransform;
 
     private void Awake()
     {
+        // TODO 
         // ground is hardcoded, change it to something else 
         // will assign different Transform positions and store them in a list to randomly spawn
 
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
 
-        InvokeRepeating(nameof(SpawnEnemy), 0.1f, GetDifficulty());
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, SetDifficulty());
     }
 
     private void SpawnEnemy()
@@ -36,7 +37,7 @@ public class EnemySpawner : MonoBehaviour
         enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
         enemyInstance.GetHealthBar(enemyHealthBarInstance);
         enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
-        enemyInstance.GetPlayerPosition(_playerTransform);
+        enemyInstance.SetTarget(_targetTransform);
     }
 
     private Vector3 GetRandomPosition()
@@ -45,7 +46,7 @@ public class EnemySpawner : MonoBehaviour
             Random.Range(-_range, _range),
             0,
             Random.Range(-_range, _range));
-        if (Vector3.Distance(_playerTransform.position, _spawnPosition) >= _spawnDistance)
+        if (Vector3.Distance(_targetTransform.position, _spawnPosition) >= _spawnDistance)
         {
             return _spawnPosition;
         }
@@ -64,11 +65,11 @@ public class EnemySpawner : MonoBehaviour
         CancelInvoke(nameof(SpawnEnemy));
     }
 
-    public void GetPlayerPosition(Transform position)
+    public void SetTarget(Transform position)
     {
-        _playerTransform = position;
+        _targetTransform = position;
     }
-    private float GetDifficulty()
+    private float SetDifficulty()
     {
         int difficulty = PlayerPrefs.GetInt("Difficulty", 0);
 

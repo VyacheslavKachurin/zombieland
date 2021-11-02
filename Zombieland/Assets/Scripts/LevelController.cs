@@ -45,18 +45,17 @@ public class LevelController : MonoBehaviour
             _cameraFollow.transform.position,
             _cameraFollow.transform.rotation);
 
-        _cameraFollow.SetOffset(_player.transform.position);
-
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
         _cameraFollow.GetCrosshairPosition(_crosshair.transform);
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
 
-        _cameraFollow.GetPlayerPosition(_player.transform);
-        _player.OnPlayerDeath += _enemySpawner.StopSpawning; //take care of bool
+        _cameraFollow.SetTarget(_player.transform);
+
+        _player.OnPlayerDeath += _enemySpawner.StopSpawning; //TODO : take care of bool
         _player.OnPlayerDeath += GameOver;
 
-        _enemySpawner.GetPlayerPosition(_player.transform);
+        _enemySpawner.SetTarget(_player.transform);
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
         _inputController.OnMouseMoved += _crosshair.Aim;

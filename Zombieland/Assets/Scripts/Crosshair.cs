@@ -43,8 +43,6 @@ public class Crosshair : MonoBehaviour
 
     public void PauseCursor(bool value)
     {
-        Debug.Log("pause cursor");
-
         _isPaused = value;
         Texture2D newSprite;
         if (_isPaused)
