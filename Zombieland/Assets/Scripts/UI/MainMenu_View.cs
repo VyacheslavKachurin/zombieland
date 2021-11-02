@@ -35,7 +35,7 @@ public class MainMenu_View : MonoBehaviour
 
     public void NewGame()
     {
-        MainMenu_Model.StartNewGame();
+        GameManager.Instance.NewGame();
     }
 
     public void HideSettings()
@@ -55,7 +55,7 @@ public class MainMenu_View : MonoBehaviour
 
     private void LoadGame()
     {
-        MainMenu_Model.LoadGame();
+        GameManager.Instance.LoadGame();
     }
 
 }

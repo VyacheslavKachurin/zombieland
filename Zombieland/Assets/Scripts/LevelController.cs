@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 public class LevelController : MonoBehaviour
 {
-   // public event Action<bool> OnGamePaused;
+    public static LevelController Instance;
 
     [SerializeField] private Player _player;
     [SerializeField] private InputController _inputController;
@@ -22,19 +22,16 @@ public class LevelController : MonoBehaviour
 
     private bool _isGamePaused;
     private bool _isGameOver;
+
     private void Awake()
     {
+        Instance = this;
+        Debug.Log("awaken");
+        // 1. GameManager uses its "Load" method to load game without using "FindObjectOfType"
+       
         _saveSystem = new SaveSystem();
         Initialize();
-
-    }
-
-    private void Start()
-    {
-        if (PlayerPrefs.GetInt("LoadGame") == 1)
-        {
-            LoadGame();
-        }
+       
     }
 
     private void Initialize()
@@ -162,7 +159,7 @@ public class LevelController : MonoBehaviour
 
     }
 
-    private void LoadGame()
+    public void LoadGame()
     {
         _saveSystem.LoadGame(_experienceSystem, _player);
     }

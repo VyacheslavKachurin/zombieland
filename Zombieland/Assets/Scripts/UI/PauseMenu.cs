@@ -49,7 +49,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        GameManager.Instance.Restart();
     }
 
     public void Exit()
@@ -60,7 +60,7 @@ public class PauseMenu : MonoBehaviour
 
     public void MainMenu()
     {
-        SceneManager.LoadScene(0);
+        GameManager.Instance.LoadMainMenu();
     }
 
     public void ShowSettings()
