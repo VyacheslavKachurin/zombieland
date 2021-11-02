@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LoadGameAsync()
     {        
-        AsyncOperation asyncLoadLevel=SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1,LoadSceneMode.Single);
+        AsyncOperation asyncLoadLevel=SceneManager.LoadSceneAsync(1);
 
         while (!asyncLoadLevel.isDone)
         {

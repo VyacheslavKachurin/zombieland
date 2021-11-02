@@ -26,10 +26,10 @@ public class LevelController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        Debug.Log("awaken");
         // 1. GameManager uses its "Load" method to load game without using "FindObjectOfType"
        
         _saveSystem = new SaveSystem();
+
         Initialize();
        
     }
@@ -52,11 +52,8 @@ public class LevelController : MonoBehaviour
 
         _cameraFollow.SetOffset(_player.transform.position);
 
-
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
         _cameraFollow.GetCrosshairPosition(_crosshair.transform);
-        
-
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
 
@@ -79,7 +76,8 @@ public class LevelController : MonoBehaviour
 
         _pauseMenu.ContinueButton.onClick.AddListener(Continue);
         _pauseMenu.SaveButton.onClick.AddListener(SaveGame);
-        _pauseMenu.LoadButton.onClick.AddListener(LoadGame);
+
+        _pauseMenu.LoadButton.onClick.AddListener(GameManager.Instance.LoadGame);
 
         _player.OnPlayerDeath += _pauseMenu.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
