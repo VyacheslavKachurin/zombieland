@@ -17,8 +17,10 @@ public class GameManager : MonoBehaviour
     }
 
     private IEnumerator LoadGameAsync()
-    {        
-        AsyncOperation asyncLoadLevel=SceneManager.LoadSceneAsync(1);
+    {
+        // scene is hardcoded, change to different way when have SceneIndex saved in GameData
+        AsyncOperation asyncLoadLevel =SceneManager.LoadSceneAsync(1); 
+        
 
         while (!asyncLoadLevel.isDone)
         {
@@ -28,14 +30,17 @@ public class GameManager : MonoBehaviour
         
         LevelController.Instance.LoadGame();
     }
+
     public void LoadGame()
     {
         StartCoroutine(LoadGameAsync());
     }
+
     public void CheckScene(Scene scene, LoadSceneMode loadSceneMode)
     {
         Debug.Log(LevelController.Instance != null);
     }
+
     public void NewGame()
     {
         
