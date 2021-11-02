@@ -27,18 +27,14 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         yield return new WaitForEndOfFrame();
-        
-        LevelController.Instance.LoadGame();
+
+        // LevelController.Instance.LoadGame();
+        FindObjectOfType<LevelController>().LoadGame();
     }
 
     public void LoadGame()
     {
         StartCoroutine(LoadGameAsync());
-    }
-
-    public void CheckScene(Scene scene, LoadSceneMode loadSceneMode)
-    {
-        Debug.Log(LevelController.Instance != null);
     }
 
     public void NewGame()

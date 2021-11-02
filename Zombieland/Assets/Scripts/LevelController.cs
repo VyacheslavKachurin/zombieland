@@ -4,8 +4,6 @@ using UnityEngine;
 using System;
 public class LevelController : MonoBehaviour
 {
-    public static LevelController Instance;
-
     [SerializeField] private Player _player;
     [SerializeField] private InputController _inputController;
     [SerializeField] private CameraFollow _cameraFollow;
@@ -24,10 +22,7 @@ public class LevelController : MonoBehaviour
     private bool _isGameOver;
 
     private void Awake()
-    {
-        Instance = this;
-        // 1. GameManager uses its "Load" method to load game without using "FindObjectOfType"
-       
+    {        
         _saveSystem = new SaveSystem();
 
         Initialize();
