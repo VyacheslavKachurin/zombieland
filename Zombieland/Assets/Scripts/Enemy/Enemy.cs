@@ -6,10 +6,9 @@ using System;
 public class Enemy : MonoBehaviour,IDamageable
 {
     public event Action<float> OnEnemyGotAttacked;
+    public event Action<int> EnemyDied;
 
     [SerializeField] private HitCollider _hitCollider;
-
-    private ExperienceSystem _experienceSystem;
 
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
@@ -31,7 +30,6 @@ public class Enemy : MonoBehaviour,IDamageable
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
-        _experienceSystem = ExperienceSystem.Instance;
 
         AssignStats();
     }
@@ -84,7 +82,8 @@ public class Enemy : MonoBehaviour,IDamageable
         _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
-        _experienceSystem.AddExperience(experience);
+
+        EnemyDied?.Invoke(experience);
     }
 
     private void AttackComplete()

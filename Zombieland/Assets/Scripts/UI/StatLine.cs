@@ -8,12 +8,12 @@ public class StatLine : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _valueText;
     [SerializeField] private Button _plusButton;
 
-    public void AssignButton(Stat stat)
+    public void AssignButton(Stat stat,ExperienceSystem XPsystem)
     {
         _nameText.text = stat.GetUIName();
         _valueText.text = stat.GetValue().ToString();
         _plusButton.onClick.AddListener(stat.IncreaseValue);
-        _plusButton.onClick.AddListener(ExperienceSystem.Instance.UsePoint);
+        _plusButton.onClick.AddListener(XPsystem.UsePoint);
         ToggleButton(false);
 
         stat.OnValueChanged += UpdateValue;

@@ -5,7 +5,6 @@ using System;
 
 public class ExperienceSystem
 {
-    public static ExperienceSystem Instance;
     public event Action<int> OnUpgradePointsChanged;
 
     public event Action<int> OnXPGained;
@@ -36,13 +35,6 @@ public class ExperienceSystem
 
     public ExperienceSystem(int level = 1, int xp = 0)
     {
-        // 1. enemy.cs uses AddExperience on its death;
-        // 2. UpgradeDisplay updates UpgradePoints from its event;
-        // 3. Plus buttons decrease update points;
-        // 4. Level controller takes it for saving;
-
-        Instance = this;
-
         _level = level;
         _xp = xp;
         _experienceToNextLevel = GetExperienceToNextLevel();
@@ -72,7 +64,6 @@ public class ExperienceSystem
                 Debug.Log("level up");
             }
         }
-
     }
 
     public int GetExperienceToNextLevel()

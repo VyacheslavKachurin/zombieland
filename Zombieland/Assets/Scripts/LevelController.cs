@@ -12,7 +12,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private HUD _HUD;
     [SerializeField] private UpgradeMenu _upgradeMenu;
     [SerializeField] private PauseMenu _pauseMenu;
-    [SerializeField] private Canvas _enemyCanvas;
+    
 
     private ExperienceSystem _experienceSystem;
     private SaveSystem _saveSystem;
@@ -35,9 +35,8 @@ public class LevelController : MonoBehaviour
         _isGamePaused = false;
         Time.timeScale = 1;
 
-        _enemyCanvas = Instantiate(_enemyCanvas);
+       
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
-        _enemySpawner.SetCanvas(_enemyCanvas);
 
 
         _cameraFollow = Instantiate(
@@ -136,9 +135,13 @@ public class LevelController : MonoBehaviour
         _experienceSystem.OnXPGained += _HUD.UpdateXP;
         _experienceSystem.OnLevelUp += _HUD.UpdateLevel;
 
+        _upgradeMenu.SetExperienceSystem(_experienceSystem);
+
         _upgradeMenu.ReceiveStats(playerStats);
 
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
+
+        _enemySpawner.SetExperienceSystem(_experienceSystem);
 
     }
 

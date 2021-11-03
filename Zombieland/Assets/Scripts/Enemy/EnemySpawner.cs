@@ -7,21 +7,26 @@ using Random = UnityEngine.Random;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private Enemy _enemy;
+    [SerializeField] private Canvas _enemyCanvas;
     [SerializeField] private GameObject _enemyHealthBar;
+
     private float _spawnRate;
     private float _spawnDistance = 20f;
     private float _range;
     private Vector3 _spawnPosition;
     private GameObject _plane;
-    private Canvas _enemyCanvas;
 
     private Transform _targetTransform;
+    private ExperienceSystem _experienceSystem;
 
     private void Awake()
     {
         // TODO 
         // ground is hardcoded, change it to something else 
         // will assign different Transform positions and store them in a list to randomly spawn
+
+        _enemyCanvas = Instantiate(_enemyCanvas);
+     
 
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
@@ -38,6 +43,7 @@ public class EnemySpawner : MonoBehaviour
         enemyInstance.GetHealthBar(enemyHealthBarInstance);
         enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
         enemyInstance.SetTarget(_targetTransform);
+        enemyInstance.EnemyDied += _experienceSystem.AddExperience;
     }
 
     private Vector3 GetRandomPosition()
@@ -54,11 +60,6 @@ public class EnemySpawner : MonoBehaviour
         {
             return GetRandomPosition();
         }
-    }
-
-    public void SetCanvas(Canvas canvas)
-    {
-        _enemyCanvas = canvas;
     }
     public void StopSpawning(bool uselessBool)
     {
@@ -88,6 +89,10 @@ public class EnemySpawner : MonoBehaviour
         }
         return _spawnRate;
 
+    }
+    public void SetExperienceSystem(ExperienceSystem XPSystem)
+    {
+        _experienceSystem = XPSystem;
     }
 
 }
