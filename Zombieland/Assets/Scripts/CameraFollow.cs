@@ -37,7 +37,7 @@ public class CameraFollow : MonoBehaviour
         _offset = transform.position - targetTransform.position;
     }
 
-    public void GetCrosshairPosition(Transform crosshairTransform)
+    public void SetCrosshairPosition(Transform crosshairTransform)
     {
         _crosshairTransform = crosshairTransform;
     }

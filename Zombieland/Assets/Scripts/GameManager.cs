@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance=null;
+    public static GameManager Instance = null;
     private void Awake()
     {
         if (Instance != null)
@@ -19,8 +19,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoadGameAsync()
     {
         // scene is hardcoded, change to different way when have SceneIndex saved in GameData
-        AsyncOperation asyncLoadLevel =SceneManager.LoadSceneAsync(1); 
-        
+        AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(1);
+
 
         while (!asyncLoadLevel.isDone)
         {
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     public void NewGame()
     {
-        
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
@@ -52,10 +52,10 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    
-
-    
 
 
-    
+
+
+
+
 }

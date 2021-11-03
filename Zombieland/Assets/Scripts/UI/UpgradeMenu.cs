@@ -8,8 +8,6 @@ public class UpgradeMenu : MonoBehaviour
     [SerializeField] private StatLine _statLine;
     [SerializeField] private TextMeshProUGUI _upgradePointsText;
 
-
-
     private ExperienceSystem _experienceSystem;
 
     private List<StatLine> _statLines = new List<StatLine>();
@@ -55,9 +53,9 @@ public class UpgradeMenu : MonoBehaviour
         }
     }
 
-    public void ToggleUpgradePanel(bool value)
+    public void ToggleUpgradePanel(bool isEnabled)
     {
-        gameObject.SetActive(value);
+        gameObject.SetActive(isEnabled);
     }
 
     public void SetExperienceSystem(ExperienceSystem XPSystem)

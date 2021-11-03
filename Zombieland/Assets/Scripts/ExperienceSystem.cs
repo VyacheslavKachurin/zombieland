@@ -18,12 +18,21 @@ public class ExperienceSystem
     public int Level
     {
         get { return _level; }
-        set { _level = value; if(value!=1)OnLevelUp(value, _xp, _experienceToNextLevel); }
+        set
+        {
+            _level = value;
+            if (value != 1)
+                OnLevelUp(value, _xp, _experienceToNextLevel);
+        }
     }
     public int UpgradePoints
     {
         get { return _upgradePoints; }
-        set { _upgradePoints = value; OnUpgradePointsChanged?.Invoke(value); } // add checking for null
+        set
+        {
+            _upgradePoints = value;
+            OnUpgradePointsChanged?.Invoke(value);
+        }
     }
 
     private int _xp;

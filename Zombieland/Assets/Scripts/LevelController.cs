@@ -17,9 +17,7 @@ public class LevelController : MonoBehaviour
     private ExperienceSystem _experienceSystem;
     private SaveSystem _saveSystem;
 
-
     private bool _isGamePaused;
-    private bool _isGameOver;
 
     private void Awake()
     {        
@@ -45,19 +43,19 @@ public class LevelController : MonoBehaviour
             _cameraFollow.transform.rotation);
 
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
-        _cameraFollow.GetCrosshairPosition(_crosshair.transform);
+        _cameraFollow.SetCrosshairPosition(_crosshair.transform);
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
 
         _cameraFollow.SetTarget(_player.transform);
 
         _player.OnPlayerDeath += _enemySpawner.StopSpawning; //TODO : take care of bool
-        _player.OnPlayerDeath += GameOver;
+        _player.OnPlayerDeath += TogglePause;
 
         _enemySpawner.SetTarget(_player.transform);
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
-        _inputController.OnMouseMoved += _crosshair.Aim;
+        _inputController.CursorMoved += _crosshair.Aim;
         _inputController.OnGamePaused += _crosshair.PauseCursor;
 
         _inputController.OnGamePaused += TogglePause;
@@ -106,12 +104,6 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    public void GameOver(bool isGamePaused)
-    {
-        TogglePause(true);
-        _isGameOver = isGamePaused;
-    }
-
     public void AssignWeapon(IWeapon currentWeapon)
     {
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
@@ -119,7 +111,7 @@ public class LevelController : MonoBehaviour
         currentWeapon.OnWeaponReload += _inputController.IsWeaponReloading;
         _HUD.UpdateBullets(currentWeapon.ReturnBulletsAmount());
 
-        _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
+        _inputController.CursorMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
 
     }
@@ -155,6 +147,5 @@ public class LevelController : MonoBehaviour
     {
         _saveSystem.LoadGame(_experienceSystem, _player);
     }
-
 
 }

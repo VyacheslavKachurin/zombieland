@@ -15,8 +15,6 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private Button _exitButton;
     [SerializeField] private Animator _animator;
 
-    private bool _isPaused = false;
-
     private void Start()
     {
         AssignButtons();
@@ -30,8 +28,7 @@ public class PauseMenu : MonoBehaviour
     }
     public void ShowPanel(bool value)
     {
-        _isPaused = value;
-        if (_isPaused)
+        if (value)
         {
             _animator.SetTrigger("Pause");
         }

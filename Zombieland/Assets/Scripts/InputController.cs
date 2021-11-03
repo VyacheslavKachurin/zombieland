@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class InputController : MonoBehaviour,IPlayerInput
+public class InputController : MonoBehaviour, IPlayerInput
 {
-    public event Action<Vector3> OnMouseMoved;
-    public event Action<float, float> OnAxisMoved;
+    public event Action<Vector3> CursorMoved;
+    public event Action<float, float> Moved;
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
@@ -37,7 +37,7 @@ public class InputController : MonoBehaviour,IPlayerInput
             ReadMouseInput();
             ReadShootInput();
             SwitchWeaponInput();
-            ReloadInput();            
+            ReloadInput();
         }
 
         UpgradeButtonInput();
@@ -46,7 +46,7 @@ public class InputController : MonoBehaviour,IPlayerInput
 
     private void ReadPauseInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)&&!_isUpgradeOn)
+        if (Input.GetKeyDown(KeyCode.Escape) && !_isUpgradeOn)
         {
             _wasPausePressed = !_wasPausePressed;
             _isPaused = !_isPaused;
@@ -59,7 +59,7 @@ public class InputController : MonoBehaviour,IPlayerInput
         _horizontal = Input.GetAxisRaw("Horizontal");
         _vertical = Input.GetAxisRaw("Vertical");
 
-        OnAxisMoved?.Invoke(_horizontal, _vertical);
+        Moved?.Invoke(_horizontal, _vertical);
     }
 
     private void ReadMouseInput()
@@ -70,7 +70,7 @@ public class InputController : MonoBehaviour,IPlayerInput
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           
 
-            OnMouseMoved?.Invoke(_destination);
+            CursorMoved?.Invoke(_destination);
         }
     }
 
@@ -79,13 +79,13 @@ public class InputController : MonoBehaviour,IPlayerInput
         if (Input.GetButtonDown("Fire1"))
         {
             _isShooting = true;
-            OnShootingInput?.Invoke(_isShooting);         
+            OnShootingInput?.Invoke(_isShooting);
         }
         if (Input.GetButtonUp("Fire1"))
         {
             _isShooting = false;
             OnShootingInput?.Invoke(_isShooting);
-        } 
+        }
     }
 
     private void SwitchWeaponInput()
@@ -94,7 +94,7 @@ public class InputController : MonoBehaviour,IPlayerInput
         {
             return;
         }
-       if(Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
             OnScrollWheelSwitched?.Invoke(true);
         }
@@ -119,13 +119,13 @@ public class InputController : MonoBehaviour,IPlayerInput
 
     private void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.U)&&!_wasPausePressed)
+        if (Input.GetKeyDown(KeyCode.U) && !_wasPausePressed)
         {
             _isPaused = !_isPaused;
             _isUpgradeOn = !_isUpgradeOn;
             OnUpgradeButtonPressed(_isPaused);
-            
-            
+
+
         }
     }
 

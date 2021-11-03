@@ -195,8 +195,8 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Initialize(IPlayerInput input)
     {
-        input.OnAxisMoved += ReceiveAxis;
-        input.OnMouseMoved += ReceiveMouse;
+        input.Moved += ReceiveAxis;
+        input.CursorMoved += ReceiveMouse;
         input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;

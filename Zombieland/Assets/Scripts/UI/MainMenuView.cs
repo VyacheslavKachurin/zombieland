@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class MainMenu_View : MonoBehaviour
+public class MainMenuView : MonoBehaviour
 {
+    public event Action NewGameStarted;
+    public event Action SavedGameLoaded;
+
     [SerializeField] private GameObject _mainMenuPanel;
-    [SerializeField] private GameObject _settingsPanel;
+    [SerializeField] private SettingsPanel _settingsPanel;
 
     [SerializeField] private Button _newGameButton;
     [SerializeField] private Button _settingsButton;
@@ -16,32 +20,32 @@ public class MainMenu_View : MonoBehaviour
         Initialize();
     }
 
-    public void ExitGame()
+    private void ExitGame()
     {
         Debug.Log("Exit the game");
         Application.Quit();
     }
 
-    public void ShowSettings()
+    private void ShowSettings()
     {
         _mainMenuPanel.SetActive(false);
-        _settingsPanel.SetActive(true);
+        _settingsPanel.gameObject.SetActive(true);
     }
 
-    public void ShowLevels()
+    private void ShowLevels()
     {
         Debug.Log("Show levels");
     }
 
-    public void NewGame()
+    private void NewGame()
     {
-        GameManager.Instance.NewGame();
+        NewGameStarted();        
     }
 
-    public void HideSettings()
+    private void HideSettings()
     {
         _mainMenuPanel.SetActive(true);
-        _settingsPanel.SetActive(false);
+        _settingsPanel.gameObject.SetActive(false);
     }
 
     private void Initialize()
@@ -55,7 +59,7 @@ public class MainMenu_View : MonoBehaviour
 
     private void LoadGame()
     {
-        GameManager.Instance.LoadGame();
+        SavedGameLoaded();   
     }
 
 }
