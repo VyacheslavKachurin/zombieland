@@ -2,22 +2,25 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+
 public class SaveSystem 
 {
-  
-    public void SaveGame(ExperienceSystem experienceSystem, Player player)
+    private GameData _gameData;
+
+    public void SaveGame(ExperienceSystem experienceSystem, Player player,Scenes scene)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/GameData.bin";
         FileStream stream = new FileStream(path, FileMode.Create);
 
-        GameData gameData = new GameData(experienceSystem,player);
+        GameData gameData = new GameData(experienceSystem,player,scene);
 
         formatter.Serialize(stream, gameData);
         stream.Close();
     }
 
-    public void LoadGame(ExperienceSystem experienceSystem, Player player)
+    //public void LoadGame(ExperienceSystem experienceSystem, Player player)
+    public Scenes LoadGame()
     {
         string path = Application.persistentDataPath + "/GameData.bin";
 
@@ -27,18 +30,21 @@ public class SaveSystem
             FileStream stream= new FileStream(path, FileMode.Open);
 
             GameData gameData=formatter.Deserialize(stream) as GameData;
+            _gameData = gameData;
             stream.Close();
-            InsertValues(experienceSystem, player, gameData);
+            return _gameData.Level;
+            //InsertValues(experienceSystem, player, gameData);
         }
         else
         {
             Debug.Log("save file doesnt exist");
-
+            return Scenes.MainMenu;
         }
     }
 
-    private void InsertValues(ExperienceSystem experienceSystem, Player player,GameData gameData)
-    {  
+    public void InsertValues(ExperienceSystem experienceSystem, Player player)
+    {
+        GameData gameData = _gameData;
         PlayerStats playerStats = player.ReturnPlayerStats();
 
         player.CurrentHealth = gameData.CurrentHealth;

@@ -72,7 +72,7 @@ public class EnemySpawner : MonoBehaviour
     }
     private float SetDifficulty()
     {
-        int difficulty = PlayerPrefs.GetInt("Difficulty", 0);
+        int difficulty = SettingsSystem.GetDifficulty();
 
         switch (difficulty)
         {

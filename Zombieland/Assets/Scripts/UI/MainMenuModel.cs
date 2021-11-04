@@ -27,5 +27,11 @@ public class MainMenuModel : MonoBehaviour
         _mainMenuView.NewGameStarted += LoadNewGame;
         _mainMenuView.SavedGameLoaded += LoadSavedGame;
     }
+    private void OnDestroy()
+    {
+        _mainMenuView.NewGameStarted -= LoadNewGame;
+        _mainMenuView.SavedGameLoaded -= LoadSavedGame;
+
+    }
 
 }

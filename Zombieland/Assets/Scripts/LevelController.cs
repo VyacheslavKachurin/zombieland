@@ -4,6 +4,12 @@ using UnityEngine;
 using System;
 public class LevelController : MonoBehaviour
 {
+    public Player Player
+    { get { return _player; } }
+
+    public ExperienceSystem ExperienceSystem
+    { get { return _experienceSystem; } }
+
     [SerializeField] private Player _player;
     [SerializeField] private InputController _inputController;
     [SerializeField] private CameraFollow _cameraFollow;
@@ -13,18 +19,14 @@ public class LevelController : MonoBehaviour
     [SerializeField] private UpgradeMenu _upgradeMenu;
     [SerializeField] private PauseMenu _pauseMenu;
     
-
     private ExperienceSystem _experienceSystem;
-    private SaveSystem _saveSystem;
 
     private bool _isGamePaused;
 
     private void Awake()
     {        
-        _saveSystem = new SaveSystem();
-
         Initialize();
-       
+
     }
 
     private void Initialize()
@@ -65,10 +67,9 @@ public class LevelController : MonoBehaviour
         _HUD = Instantiate(_HUD);
         _inputController.OnGamePaused += _pauseMenu.ShowPanel;
 
-        _pauseMenu.ContinueButton.onClick.AddListener(Continue);
+        _pauseMenu.ContinueButton.onClick.AddListener(Continue); 
         _pauseMenu.SaveButton.onClick.AddListener(SaveGame);
-
-        _pauseMenu.LoadButton.onClick.AddListener(GameManager.Instance.LoadGame);
+        _pauseMenu.LoadButton.onClick.AddListener(GameManager.Instance.LoadGame); // doesnt work
 
         _player.OnPlayerDeath += _pauseMenu.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
@@ -134,18 +135,16 @@ public class LevelController : MonoBehaviour
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
         _enemySpawner.SetExperienceSystem(_experienceSystem);
-
     }
 
     private void SaveGame()
     {
-        _saveSystem.SaveGame(_experienceSystem, _player);
-
+        GameManager.Instance.SaveGame();
     }
 
     public void LoadGame()
     {
-        _saveSystem.LoadGame(_experienceSystem, _player);
+        GameManager.Instance.LoadGame();
     }
 
 }
