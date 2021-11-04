@@ -61,7 +61,7 @@ public class EnemySpawner : MonoBehaviour
             return GetRandomPosition();
         }
     }
-    public void StopSpawning(bool uselessBool)
+    public void StopSpawning(bool value) //this method will be changed in future builds 
     {
         CancelInvoke(nameof(SpawnEnemy));
     }
