@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class GameData 
 {
+    public Scenes Level;
+
     public float CurrentHealth;
     public float MaxHealth;
     public float MovementSpeed;
@@ -15,7 +17,7 @@ public class GameData
 
     public float[] PlayerPosition=new float[3];
 
-    public GameData(ExperienceSystem experienceSystem,Player player)
+    public GameData(ExperienceSystem experienceSystem,Player player,Scenes scene)
     {
         PlayerStats playerStats = player.ReturnPlayerStats();
 
@@ -30,6 +32,11 @@ public class GameData
         PlayerPosition[0] = player.transform.position.x;
         PlayerPosition[1] = player.transform.position.y;
         PlayerPosition[2] = player.transform.position.z;
+
+        // Level = scene.GetName();
+
+        Level = scene;
+        
     }
    
 }

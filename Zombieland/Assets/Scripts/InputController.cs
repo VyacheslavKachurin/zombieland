@@ -2,16 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class InputController : MonoBehaviour
+public class InputController : MonoBehaviour, IPlayerInput
 {
-   // [SerializeField] private LayerMask _layerMask; do i need this?
-
-    public event Action<Vector3> OnMouseMoved;
-    public event Action<float, float> OnAxisMoved;
+    public event Action<Vector3> CursorMoved;
+    public event Action<float, float> Moved;
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
-    public event Action OnUpgradeButtonPressed;
+    public event Action<bool> OnUpgradeButtonPressed;
+    public event Action<bool> OnGamePaused;
 
     private float _horizontal;
     private float _vertical;
@@ -19,19 +18,40 @@ public class InputController : MonoBehaviour
     private Vector3 _destination;
     private bool _isShooting;
     private bool _isReloading;
+
+    private bool _isPaused = false;
+
+    private bool _isUpgradeOn = false;
+    private bool _wasPausePressed = false;
+
     private void Start()
     {
         _camera = Camera.main;
     }
+
     private void Update()
     {
-        ReadAxisInput();
-        ReadMouseInput();
-        ReadShootInput();
-        SwitchWeaponInput();
-        ReloadInput();
+        if (!_isPaused)
+        {
+            ReadAxisInput();
+            ReadMouseInput();
+            ReadShootInput();
+            SwitchWeaponInput();
+            ReloadInput();
+        }
 
         UpgradeButtonInput();
+        ReadPauseInput();
+    }
+
+    private void ReadPauseInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !_isUpgradeOn)
+        {
+            _wasPausePressed = !_wasPausePressed;
+            _isPaused = !_isPaused;
+            OnGamePaused(_isPaused);
+        }
     }
 
     private void ReadAxisInput()
@@ -39,7 +59,7 @@ public class InputController : MonoBehaviour
         _horizontal = Input.GetAxisRaw("Horizontal");
         _vertical = Input.GetAxisRaw("Vertical");
 
-        OnAxisMoved?.Invoke(_horizontal, _vertical);
+        Moved?.Invoke(_horizontal, _vertical);
     }
 
     private void ReadMouseInput()
@@ -50,29 +70,31 @@ public class InputController : MonoBehaviour
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           
 
-            OnMouseMoved?.Invoke(_destination);
+            CursorMoved?.Invoke(_destination);
         }
     }
+
     private void ReadShootInput()
     {
         if (Input.GetButtonDown("Fire1"))
         {
             _isShooting = true;
-            OnShootingInput?.Invoke(_isShooting);         
+            OnShootingInput?.Invoke(_isShooting);
         }
         if (Input.GetButtonUp("Fire1"))
         {
             _isShooting = false;
             OnShootingInput?.Invoke(_isShooting);
-        } 
+        }
     }
+
     private void SwitchWeaponInput()
     {
         if (_isReloading)
         {
             return;
         }
-       if(Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
             OnScrollWheelSwitched?.Invoke(true);
         }
@@ -81,6 +103,7 @@ public class InputController : MonoBehaviour
             OnScrollWheelSwitched?.Invoke(false);
         }
     }
+
     private void ReloadInput()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -88,16 +111,29 @@ public class InputController : MonoBehaviour
             OnReloadPressed();
         }
     }
+
     public void IsWeaponReloading(bool isReloading)
     {
         _isReloading = isReloading;
     }
+
     private void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.U) && !_wasPausePressed)
         {
-            OnUpgradeButtonPressed();
+            _isPaused = !_isPaused;
+            _isUpgradeOn = !_isUpgradeOn;
+            OnUpgradeButtonPressed(_isPaused);
+
+
         }
+    }
+
+    public void Continue()
+    {
+        _isPaused = false;
+        _wasPausePressed = false;
+
     }
 
 }

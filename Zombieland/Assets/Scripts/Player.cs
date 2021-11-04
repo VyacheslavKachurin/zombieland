@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.Animations.Rigging;
 public class Player : MonoBehaviour, IDamageable
 {
-    public event Action<Vector3> OnPlayerMoved;
+
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
@@ -17,7 +16,6 @@ public class Player : MonoBehaviour, IDamageable
         get { return _currentHealth; }
         set { _currentHealth = value; OnPlayerGotAttacked(0); }
     }
-
 
     private float _horizontal;
     private float _vertical;
@@ -36,7 +34,6 @@ public class Player : MonoBehaviour, IDamageable
     private float _movementSpeed;
 
     private IWeapon _currentWeapon;
-    private List<Stat> _stats = new List<Stat>();
 
     private Camera _camera;
 
@@ -50,7 +47,6 @@ public class Player : MonoBehaviour, IDamageable
 
         _weaponHolder.OnWeaponChanged += GetWeapon;
     }
-
 
     private void Update()
     {
@@ -77,8 +73,8 @@ public class Player : MonoBehaviour, IDamageable
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
-        OnPlayerMoved?.Invoke(transform.position);
     }
+
     private void AimTowardsMouse()
     {
         Vector3 lookDirection = _mousePosition - transform.position;
@@ -91,6 +87,7 @@ public class Player : MonoBehaviour, IDamageable
             transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         }
     }
+
     public void TakeDamage(float damageAmount)
     {
 
@@ -120,13 +117,13 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    public void ReceiveAxis(float horizontal, float vertical)
+    private void ReceiveAxis(float horizontal, float vertical)
     {
         _horizontal = horizontal;
         _vertical = vertical;
     }
 
-    public void ReceiveMouse(Vector3 mousePosition)
+    private void ReceiveMouse(Vector3 mousePosition)
     {
         _mousePosition = mousePosition;
         if (Time.timeScale != 0)
@@ -138,12 +135,12 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    public void ReceiveShootingInput(bool isShooting)
+    private void ReceiveShootingInput(bool isShooting)
     {
         _currentWeapon.Shoot(isShooting);
     }
 
-    public void ReceiveScroolWheelInput(bool input)
+    private void ReceiveScroolWheelInput(bool input)
     {
         _weaponHolder.ChangeWeapon(input);
     }
@@ -162,7 +159,7 @@ public class Player : MonoBehaviour, IDamageable
             _animator.SetTrigger("Reloading");
     }
 
-    public void ReceiveReloadInput()
+    private void ReceiveReloadInput()
     {
         _currentWeapon.Reload();
     }
@@ -171,6 +168,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         return _currentWeapon;
     }
+
     private void AssignStats()
     {
         _currentHealth = _playerStats.MaxHealth.GetValue();
@@ -189,11 +187,18 @@ public class Player : MonoBehaviour, IDamageable
     {
         _movementSpeed = speed;
     }
+
     private void SetWeaponAnimation()
     {
         _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();        
     }
 
-
-
+    public void Initialize(IPlayerInput input)
+    {
+        input.Moved += ReceiveAxis;
+        input.CursorMoved += ReceiveMouse;
+        input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
+        input.OnShootingInput += ReceiveShootingInput;
+        input.OnReloadPressed += ReceiveReloadInput;
+    }
 }

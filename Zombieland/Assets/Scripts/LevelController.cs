@@ -4,7 +4,11 @@ using UnityEngine;
 using System;
 public class LevelController : MonoBehaviour
 {
-    public event Action<bool> OnGamePaused;
+    public Player Player
+    { get { return _player; } }
+
+    public ExperienceSystem ExperienceSystem
+    { get { return _experienceSystem; } }
 
     [SerializeField] private Player _player;
     [SerializeField] private InputController _inputController;
@@ -12,43 +16,27 @@ public class LevelController : MonoBehaviour
     [SerializeField] private Crosshair _crosshair;
     [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private HUD _HUD;
-    [SerializeField] private Canvas _enemyCanvas;
-
+    [SerializeField] private UpgradeMenu _upgradeMenu;
+    [SerializeField] private PauseMenu _pauseMenu;
+    
     private ExperienceSystem _experienceSystem;
-    private SaveSystem _saveSystem;
-
 
     private bool _isGamePaused;
-    private bool _isGameOver;
+
     private void Awake()
-    {
-        _saveSystem = new SaveSystem();
+    {        
         Initialize();
 
-    }
-    private void Start()
-    {
-        if (PlayerPrefs.GetInt("LoadGame") == 1)
-        {
-            LoadGame();
-        }
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) && !_isGameOver)
-        {
-            TogglePause();
-        }
     }
 
     private void Initialize()
     {
+        _pauseMenu = Instantiate(_pauseMenu);
         _isGamePaused = false;
         Time.timeScale = 1;
 
-        _enemyCanvas = Instantiate(_enemyCanvas);
+       
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
-        _enemySpawner.SetCanvas(_enemyCanvas);
 
 
         _cameraFollow = Instantiate(
@@ -56,71 +44,67 @@ public class LevelController : MonoBehaviour
             _cameraFollow.transform.position,
             _cameraFollow.transform.rotation);
 
-        _cameraFollow.SetOffset(_player.transform.position);
-
-
         _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
-        _crosshair.OnCrosshairMoved += _cameraFollow.GetCrosshairPosition;
-        OnGamePaused += _crosshair.PauseCursor;
-
+        _cameraFollow.SetCrosshairPosition(_crosshair.transform);
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
-        _player.OnPlayerMoved += _cameraFollow.GetPlayerPosition;
-        _player.OnPlayerDeath += _enemySpawner.StopSpawning; //take care of bool
-        _player.OnPlayerDeath += GameOver;
-        _player.OnPlayerMoved += _enemySpawner.GetPlayerPosition;
-        
 
+        _cameraFollow.SetTarget(_player.transform);
+
+        _player.OnPlayerDeath += _enemySpawner.StopSpawning; //TODO : take care of bool
+        _player.OnPlayerDeath += TogglePause;
+
+        _enemySpawner.SetTarget(_player.transform);
 
         _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
-        _inputController.OnAxisMoved += _player.ReceiveAxis;
-        _inputController.OnMouseMoved += _player.ReceiveMouse;
-        _inputController.OnMouseMoved += _crosshair.Aim;
-        _inputController.OnScrollWheelSwitched += _player.ReceiveScroolWheelInput;
-        _inputController.OnShootingInput += _player.ReceiveShootingInput;
-        _inputController.OnReloadPressed += _player.ReceiveReloadInput;
+        _inputController.CursorMoved += _crosshair.Aim;
+        _inputController.OnGamePaused += _crosshair.PauseCursor;
+
+        _inputController.OnGamePaused += TogglePause;
+
+        _player.Initialize(_inputController);
 
         _HUD = Instantiate(_HUD);
-        OnGamePaused += _HUD.PauseGame;
+        _inputController.OnGamePaused += _pauseMenu.ShowPanel;
 
-        _HUD.ContinueButton.onClick.AddListener(this.TogglePause);
-        _HUD.SaveButton.onClick.AddListener(SaveGame);
-        _HUD.LoadButton.onClick.AddListener(LoadGame);
+        _pauseMenu.ContinueButton.onClick.AddListener(Continue); 
+        _pauseMenu.SaveButton.onClick.AddListener(SaveGame);
+        _pauseMenu.LoadButton.onClick.AddListener(GameManager.Instance.LoadGame); // doesnt work
 
-        _player.OnPlayerDeath += _HUD.GameOver;
+        _player.OnPlayerDeath += _pauseMenu.GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
+        _upgradeMenu = Instantiate(_upgradeMenu);
+
+        _inputController.OnUpgradeButtonPressed += _upgradeMenu.ToggleUpgradePanel;
+        _inputController.OnUpgradeButtonPressed += TogglePause;
+
         SetExperienceSystem();
     }
-
-    public void TogglePause()
+ 
+    private void Continue()
     {
+        TogglePause(false);
+        _pauseMenu.ShowPanel(false);
+        _inputController.Continue();
+        _crosshair.PauseCursor(false);
 
-        _isGamePaused = !_isGamePaused;
+    }
+
+    public void TogglePause(bool isPaused)
+    {
+        _isGamePaused = isPaused;
         if (_isGamePaused)
         {
-            Time.timeScale = 0;
-            _player.enabled = !_isGamePaused;
-            _player.ReceiveShootingInput(false);
-
-            _inputController.OnShootingInput -= _player.ReceiveShootingInput;
+            Time.timeScale = 0;   
         }
         else
         {
             Time.timeScale = 1;
-            _player.enabled = !_isGamePaused;
-            _inputController.OnShootingInput += _player.ReceiveShootingInput;
-
         }
+    }
 
-        OnGamePaused?.Invoke(_isGamePaused);
-    }
-    public void GameOver(bool isGamePaused)
-    {
-        TogglePause();
-        _isGameOver = isGamePaused;
-    }
     public void AssignWeapon(IWeapon currentWeapon)
     {
         currentWeapon.OnBulletsAmountChanged += _HUD.UpdateBullets;
@@ -128,10 +112,11 @@ public class LevelController : MonoBehaviour
         currentWeapon.OnWeaponReload += _inputController.IsWeaponReloading;
         _HUD.UpdateBullets(currentWeapon.ReturnBulletsAmount());
 
-        _inputController.OnMouseMoved += currentWeapon.ReceiveAim;
+        _inputController.CursorMoved += currentWeapon.ReceiveAim;
         _HUD.UpdateImage(currentWeapon.WeaponIcon());
 
     }
+
     private void SetExperienceSystem()
     {
         PlayerStats playerStats = _player.ReturnPlayerStats();
@@ -143,23 +128,23 @@ public class LevelController : MonoBehaviour
         _experienceSystem.OnXPGained += _HUD.UpdateXP;
         _experienceSystem.OnLevelUp += _HUD.UpdateLevel;
 
-        _inputController.OnUpgradeButtonPressed += _HUD.ToggleUpgradePanel;
-        _inputController.OnUpgradeButtonPressed += TogglePause; // it turns on the upgrade panel as well as menu 
+        _upgradeMenu.SetExperienceSystem(_experienceSystem);
 
-        _HUD.ReturnUpgradePanel().ReceiveStats(playerStats);
+        _upgradeMenu.ReceiveStats(playerStats);
 
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
+        _enemySpawner.SetExperienceSystem(_experienceSystem);
     }
+
     private void SaveGame()
     {
-        _saveSystem.SaveGame(_experienceSystem, _player);
-
+        GameManager.Instance.SaveGame();
     }
-    private void LoadGame()
+
+    public void LoadGame()
     {
-        _saveSystem.LoadGame(_experienceSystem, _player);
+        GameManager.Instance.LoadGame();
     }
-
 
 }

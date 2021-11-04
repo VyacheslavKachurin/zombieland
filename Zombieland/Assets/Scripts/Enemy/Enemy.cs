@@ -6,10 +6,9 @@ using System;
 public class Enemy : MonoBehaviour,IDamageable
 {
     public event Action<float> OnEnemyGotAttacked;
+    public event Action<int> EnemyDied;
 
     [SerializeField] private HitCollider _hitCollider;
-
-    private ExperienceSystem _experienceSystem;
 
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
@@ -21,7 +20,7 @@ public class Enemy : MonoBehaviour,IDamageable
     private EnemyStats _enemyStats;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
 
-    private Vector3 _playerPosition;
+    private Transform _targetTransform;
 
     private int experience = 20; //move to stats??
     
@@ -31,10 +30,10 @@ public class Enemy : MonoBehaviour,IDamageable
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
-        _experienceSystem = ExperienceSystem.ExperienceSystemInstance;
 
         AssignStats();
     }
+
     private void Update()
     {
         Move();
@@ -45,9 +44,9 @@ public class Enemy : MonoBehaviour,IDamageable
     {
         if (_navMeshAgent.enabled)
         {
-            _navMeshAgent.SetDestination(_playerPosition);
+            _navMeshAgent.SetDestination(_targetTransform.position);
         }
-        if (Vector3.Distance(transform.position, _playerPosition) <= _attackRange)
+        if (Vector3.Distance(transform.position, _targetTransform.position) <= _attackRange)
         {
             Attack();
         }
@@ -75,6 +74,7 @@ public class Enemy : MonoBehaviour,IDamageable
             Die();
         }
     }
+
     private void Die()
     {
         _capsuleCollider.enabled = false;
@@ -82,19 +82,20 @@ public class Enemy : MonoBehaviour,IDamageable
         _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
-        _experienceSystem.AddExperience(experience);
 
-
-
+        EnemyDied?.Invoke(experience);
     }
+
     private void AttackComplete()
     {
         _navMeshAgent.enabled = true;
     }
+
     public void GetHealthBar(GameObject enemyHealthBar)
     {
         _enemyHealthBar = enemyHealthBar;
     }
+
     private void UpdateHealthBarPosition()
     {
         if (_enemyHealthBar != null)
@@ -109,10 +110,12 @@ public class Enemy : MonoBehaviour,IDamageable
         }
 
     }
-    public void GetPlayerPosition(Vector3 position)
+
+    public void SetTarget(Transform position)
     {
-        _playerPosition = position;
+        _targetTransform = position;
     }
+
     private void AssignStats()
     {
         _enemyStats = GetComponent<EnemyStats>();

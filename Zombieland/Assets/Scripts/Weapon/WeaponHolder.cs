@@ -15,6 +15,7 @@ public class WeaponHolder : MonoBehaviour
     {
         Initialize();
     }
+
     private void Initialize()
     {
         _selectedWeapon = 0;

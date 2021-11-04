@@ -26,11 +26,9 @@ public class Weapon : MonoBehaviour, IWeapon
 
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
 
-
     private int _currentBulletsAmount;
     private bool _isReloading = false;
     private bool _isShooting;
-    private bool _isShootingAllowed;
     private Vector3 _aimPosition;
     private IShootingType _shootingModule;
 
@@ -41,11 +39,13 @@ public class Weapon : MonoBehaviour, IWeapon
         _shootingModule = GetComponent<IShootingType>();
         _currentBulletsAmount = _maxBulletAmount;
     }
+
     public void OnEnable()
     {
         _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
     }
+
     public void Shoot(bool isShooting)
     {
         _isShooting = isShooting;
@@ -61,6 +61,7 @@ public class Weapon : MonoBehaviour, IWeapon
             }
         }
     }
+
     private IEnumerator Shooting()
     {
         while (true && !_isReloading)
@@ -90,6 +91,7 @@ public class Weapon : MonoBehaviour, IWeapon
             }
         }
     }
+
     private IEnumerator Reloading()
     {
         if (_shootingCoroutine != null)
@@ -120,6 +122,7 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         _reloadingCoroutine = StartCoroutine(Reloading());
     }
+
     public Sprite ReturnIcon()
     {
         return _weaponIcon;
@@ -129,14 +132,17 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         return _weaponIcon;
     }
+
     public void ReceiveAim(Vector3 aim)
     {
         _aimPosition = aim;
     }
+
     public int ReturnBulletsAmount()
     {
         return _currentBulletsAmount;
     }
+
     public AnimationClip ReturnWeaponAnimation()
     {
         return _weaponAnimation;

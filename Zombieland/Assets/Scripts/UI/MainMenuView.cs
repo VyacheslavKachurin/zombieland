@@ -1,11 +1,14 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
-public class MainMenu : MonoBehaviour
+public class MainMenuView : MonoBehaviour
 {
+    public event Action NewGameStarted;
+    public event Action SavedGameLoaded;
+
     [SerializeField] private GameObject _mainMenuPanel;
-    [SerializeField] private GameObject _settingsPanel;
+    [SerializeField] private SettingsPanel _settingsPanel;
 
     [SerializeField] private Button _newGameButton;
     [SerializeField] private Button _settingsButton;
@@ -16,30 +19,35 @@ public class MainMenu : MonoBehaviour
     {
         Initialize();
     }
-    public void ExitGame()
+
+    private void ExitGame()
     {
         Debug.Log("Exit the game");
         Application.Quit();
     }
-    public void ShowSettings()
+
+    private void ShowSettings()
     {
         _mainMenuPanel.SetActive(false);
-        _settingsPanel.SetActive(true);
+        _settingsPanel.gameObject.SetActive(true);
     }
-    public void ShowLevels()
+
+    private void ShowLevels()
     {
         Debug.Log("Show levels");
     }
-    public void NewGame()
+
+    private void NewGame()
     {
-        PlayerPrefs.SetInt("LoadGame", 0); // change to normal system later
-        SceneManager.LoadScene(1);
+        NewGameStarted();        
     }
-    public void HideSettings()
+
+    private void HideSettings()
     {
         _mainMenuPanel.SetActive(true);
-        _settingsPanel.SetActive(false);
+        _settingsPanel.gameObject.SetActive(false);
     }
+
     private void Initialize()
     {
         _newGameButton.onClick.AddListener(NewGame);
@@ -48,11 +56,10 @@ public class MainMenu : MonoBehaviour
         _backButton.onClick.AddListener(HideSettings);
         _loadButton.onClick.AddListener(LoadGame);
     }
+
     private void LoadGame()
     {
-        PlayerPrefs.SetInt("LoadGame", 1);  // change to normal system later
-        SceneManager.LoadScene(1);
-
+        SavedGameLoaded();   
     }
 
 }

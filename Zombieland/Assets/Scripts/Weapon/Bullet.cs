@@ -11,11 +11,13 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, 1);
        
     }
+
     public void SetVelocity(Vector3 velocity)
     {
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.velocity =velocity;
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         var damageable = collision.gameObject.GetComponent<IDamageable>();

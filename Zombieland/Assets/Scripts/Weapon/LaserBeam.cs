@@ -18,7 +18,6 @@ public class LaserBeam : MonoBehaviour
         if (damageable != null)
         {
             damageable.TakeDamage(_damage);
-            Debug.Log("collided");
         }
         if (_lives == 0)
         {

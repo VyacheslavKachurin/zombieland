@@ -6,26 +6,34 @@ using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public event Action<Vector3> OnPlayerMoved;
     [SerializeField] private Enemy _enemy;
+    [SerializeField] private Canvas _enemyCanvas;
     [SerializeField] private GameObject _enemyHealthBar;
-    private float _spawnRate = 2f;
+
+    private float _spawnRate;
     private float _spawnDistance = 20f;
     private float _range;
     private Vector3 _spawnPosition;
     private GameObject _plane;
-    private Canvas _enemyCanvas;
 
-
-    private Vector3 _playerPosition;
+    private Transform _targetTransform;
+    private ExperienceSystem _experienceSystem;
 
     private void Awake()
     {
-        // ground is hardcoded, change it to something else
+        // TODO 
+        // ground is hardcoded, change it to something else 
+        // will assign different Transform positions and store them in a list to randomly spawn
+
+        _enemyCanvas = Instantiate(_enemyCanvas);
+     
+
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-       // InvokeRepeating(nameof(SpawnEnemy), 0.1f, _spawnRate);
+
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, SetDifficulty());
     }
+
     private void SpawnEnemy()
     {
         Enemy enemyInstance = Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
@@ -34,16 +42,17 @@ public class EnemySpawner : MonoBehaviour
         enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
         enemyInstance.GetHealthBar(enemyHealthBarInstance);
         enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
-        OnPlayerMoved += enemyInstance.GetPlayerPosition;
-
+        enemyInstance.SetTarget(_targetTransform);
+        enemyInstance.EnemyDied += _experienceSystem.AddExperience;
     }
+
     private Vector3 GetRandomPosition()
     {
         _spawnPosition = new Vector3(
             Random.Range(-_range, _range),
             0,
             Random.Range(-_range, _range));
-        if (Vector3.Distance(_playerPosition, _spawnPosition) >= _spawnDistance)
+        if (Vector3.Distance(_targetTransform.position, _spawnPosition) >= _spawnDistance)
         {
             return _spawnPosition;
         }
@@ -52,18 +61,38 @@ public class EnemySpawner : MonoBehaviour
             return GetRandomPosition();
         }
     }
-    public void SetCanvas(Canvas canvas)
-    {
-        _enemyCanvas = canvas;
-    }
-    public void StopSpawning(bool uselessBool)
+    public void StopSpawning(bool value) //this method will be changed in future builds 
     {
         CancelInvoke(nameof(SpawnEnemy));
     }
-    public void GetPlayerPosition(Vector3 position)
+
+    public void SetTarget(Transform position)
     {
-        _playerPosition = position;
-        OnPlayerMoved?.Invoke(position);
+        _targetTransform = position;
+    }
+    private float SetDifficulty()
+    {
+        int difficulty = SettingsSystem.GetDifficulty();
+
+        switch (difficulty)
+        {
+            case 0:
+                _spawnRate = 2f;
+                break;
+            case 1:
+                _spawnRate = 1.5f;
+                break;
+            case 2:
+                _spawnRate = 1f;
+                break;
+
+        }
+        return _spawnRate;
+
+    }
+    public void SetExperienceSystem(ExperienceSystem XPSystem)
+    {
+        _experienceSystem = XPSystem;
     }
 
 }

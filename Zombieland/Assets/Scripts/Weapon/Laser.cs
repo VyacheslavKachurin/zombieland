@@ -5,6 +5,7 @@ using UnityEngine;
 public class Laser : MonoBehaviour, IShootingType
 {
     [SerializeField] private LaserBeam _laserBeam;
+
     public void CreateShot(Vector3 target, Vector3 origin)
     {
         Vector3 direction = target - origin;
