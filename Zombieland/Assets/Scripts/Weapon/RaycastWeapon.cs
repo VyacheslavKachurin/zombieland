@@ -15,13 +15,13 @@ public class RaycastWeapon : MonoBehaviour, IShootingType
         var direction = target - origin;
         _ray.origin = origin;
         _ray.direction = direction;
+        
 
         var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
         tracer.AddPosition(_ray.origin);
 
         if (Physics.Raycast(_ray, out _hitInfo, Mathf.Infinity))
         {
-            Debug.Log(_hitInfo.point);
             var enemy = _hitInfo.collider.GetComponent<IDamageable>();
 
             if (enemy != null)
@@ -31,6 +31,7 @@ public class RaycastWeapon : MonoBehaviour, IShootingType
                 _fleshImpact.transform.forward = _hitInfo.normal;
                 _fleshImpact.Emit(1);
             }
+
             tracer.transform.position = _hitInfo.point;
         }
     }

@@ -30,28 +30,21 @@ public class Shotgun : MonoBehaviour, IShootingType
             _ray.direction.z + i * randomRange
             );
 
+            var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
+            tracer.AddPosition(_ray.origin);
+
             if (Physics.Raycast(_ray, out _hitInfo, Mathf.Infinity))
-            {
-
-                var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
-                tracer.AddPosition(_ray.origin);
-              
-
+            {           
                 var enemy = _hitInfo.collider.GetComponent<IDamageable>();
-                ParticleSystem effect = _hitEffect;
+
                 if (enemy != null)
                 {
-                    effect = _fleshImpact;
                     enemy.TakeDamage(_damageAmount);
-                }
-                else
-                {
-                    effect = _hitEffect;
+                    _fleshImpact.transform.position = _hitInfo.point;
+                    _fleshImpact.transform.forward = _hitInfo.normal;
+                    _fleshImpact.Emit(1);
                 }
 
-                effect.transform.position = _hitInfo.point;
-                effect.transform.forward = _hitInfo.normal;
-                effect.Emit(1);
                 tracer.transform.position = _hitInfo.point;
             }
         }
