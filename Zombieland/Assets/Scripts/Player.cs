@@ -125,6 +125,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ReceiveMouse(Vector3 mousePosition)
     {
+        //TODO: check if its only for moving head and nothing more. if for head tilting - delete
+
         _mousePosition = mousePosition;
         if (Time.timeScale != 0)
         {

@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 public class InputController : MonoBehaviour, IPlayerInput
 {
+    [SerializeField] private LayerMask _layerMask;
     public event Action<Vector3> CursorMoved;
     public event Action<float, float> Moved;
     public event Action<bool> OnShootingInput;
@@ -65,7 +66,7 @@ public class InputController : MonoBehaviour, IPlayerInput
     private void ReadMouseInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
         {
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           

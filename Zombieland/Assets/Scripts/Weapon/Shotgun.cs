@@ -7,7 +7,7 @@ public class Shotgun : MonoBehaviour, IShootingType
     [SerializeField] private float _fireRange = 0.05f;
     [SerializeField] private LayerMask _layer;
     [SerializeField] private ParticleSystem _hitEffect;
-    [SerializeField] private ParticleSystem _fleshEffect;// video says instantiating takes more performance then repositioning it, check with profiler in future?
+    [SerializeField] private ParticleSystem _fleshImpact;// video says instantiating takes more performance then repositioning it, check with profiler in future?
     [SerializeField] private TrailRenderer _tracerEffect;
     [SerializeField] private float _damageAmount = 15f;
 
@@ -41,7 +41,7 @@ public class Shotgun : MonoBehaviour, IShootingType
                 ParticleSystem effect = _hitEffect;
                 if (enemy != null)
                 {
-                    effect = _fleshEffect;
+                    effect = _fleshImpact;
                     enemy.TakeDamage(_damageAmount);
                 }
                 else

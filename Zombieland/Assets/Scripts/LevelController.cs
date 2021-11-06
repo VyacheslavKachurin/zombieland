@@ -18,6 +18,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private HUD _HUD;
     [SerializeField] private UpgradeMenu _upgradeMenu;
     [SerializeField] private PauseMenu _pauseMenu;
+    [SerializeField] private GameObject _aimingLayer;
     
     private ExperienceSystem _experienceSystem;
 
@@ -31,6 +32,7 @@ public class LevelController : MonoBehaviour
 
     private void Initialize()
     {
+        Instantiate(_aimingLayer,_aimingLayer.transform.position,Quaternion.identity);
         _pauseMenu = Instantiate(_pauseMenu);
         _isGamePaused = false;
         Time.timeScale = 1;

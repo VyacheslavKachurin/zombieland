@@ -148,4 +148,9 @@ public class Weapon : MonoBehaviour, IWeapon
         return _weaponAnimation;
     }
 
+    public float SetOffset()
+    {
+        return _gunPoint.position.y;
+    }
+
 }
