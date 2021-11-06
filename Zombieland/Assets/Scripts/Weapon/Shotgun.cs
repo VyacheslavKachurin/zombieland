@@ -7,7 +7,7 @@ public class Shotgun : MonoBehaviour, IShootingType
     [SerializeField] private float _fireRange = 0.05f;
     [SerializeField] private LayerMask _layer;
     [SerializeField] private ParticleSystem _hitEffect;
-    [SerializeField] private ParticleSystem _fleshEffect;// video says instantiating takes more performance then repositioning it, check with profiler in future?
+    [SerializeField] private ParticleSystem _fleshImpact;// video says instantiating takes more performance then repositioning it, check with profiler in future?
     [SerializeField] private TrailRenderer _tracerEffect;
     [SerializeField] private float _damageAmount = 15f;
 
@@ -30,28 +30,21 @@ public class Shotgun : MonoBehaviour, IShootingType
             _ray.direction.z + i * randomRange
             );
 
+            var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
+            tracer.AddPosition(_ray.origin);
+
             if (Physics.Raycast(_ray, out _hitInfo, Mathf.Infinity))
-            {
-
-                var tracer = Instantiate(_tracerEffect, _ray.origin, Quaternion.identity);
-                tracer.AddPosition(_ray.origin);
-              
-
+            {           
                 var enemy = _hitInfo.collider.GetComponent<IDamageable>();
-                ParticleSystem effect = _hitEffect;
+
                 if (enemy != null)
                 {
-                    effect = _fleshEffect;
                     enemy.TakeDamage(_damageAmount);
-                }
-                else
-                {
-                    effect = _hitEffect;
+                    _fleshImpact.transform.position = _hitInfo.point;
+                    _fleshImpact.transform.forward = _hitInfo.normal;
+                    _fleshImpact.Emit(1);
                 }
 
-                effect.transform.position = _hitInfo.point;
-                effect.transform.forward = _hitInfo.normal;
-                effect.Emit(1);
                 tracer.transform.position = _hitInfo.point;
             }
         }
