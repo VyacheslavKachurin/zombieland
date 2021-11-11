@@ -21,12 +21,15 @@ public class LevelController : MonoBehaviour
     [SerializeField] private GameObject _aimingLayer;
     
     private ExperienceSystem _experienceSystem;
+    private AudioManager _audioManager;
 
     private bool _isGamePaused;
 
     private void Awake()
     {        
         Initialize();
+        _audioManager = AudioManager.Instance;
+        _audioManager.PlayGameTheme();
 
     }
 

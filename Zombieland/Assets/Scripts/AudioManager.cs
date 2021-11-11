@@ -7,6 +7,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     [SerializeField] private AudioClip _mainTheme;
+    [SerializeField] private AudioClip _gameTheme;
     private AudioSource _audioSource;
 
     private void Awake()
@@ -29,6 +30,12 @@ public class AudioManager : MonoBehaviour
 
     public void PlayButtonClick(AudioClip effect)
     {
-       AudioSource.PlayClipAtPoint(effect, transform.position);
+        //  AudioSource.PlayClipAtPoint(effect, transform.position);
+        _audioSource.PlayOneShot(effect);
+    }
+    public void PlayGameTheme()
+    {
+        _audioSource.clip = _gameTheme;
+        _audioSource.Play();
     }
 }

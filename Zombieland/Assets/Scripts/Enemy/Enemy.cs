@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     public event Action<int> EnemyDied;
 
     [SerializeField] private HitCollider _hitCollider;
+    [SerializeField] private AudioClip _chasingSound;
 
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
@@ -20,6 +21,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
 
     private CapsuleCollider _capsuleCollider;
     private Animator _animator;
+    private AudioSource _audioSource;
     private GameObject _enemyHealthBar;
     private EnemyStats _enemyStats;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
@@ -35,6 +37,8 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
         _ragdoll = GetComponentsInChildren<Rigidbody>();
+        _audioSource = GetComponent<AudioSource>();
+
         DeactivateRagdoll();
         AssignStats();
     }
@@ -147,7 +151,9 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     {
         _animator.ResetTrigger("Attack");
         _animator.SetTrigger("isChasing");
-        
+
+        _audioSource.PlayOneShot(_chasingSound);
+
         _navMeshAgent.enabled = true;
     }
 
