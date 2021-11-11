@@ -5,6 +5,8 @@ using System;
 public class Player : MonoBehaviour, IDamageable
 {
 
+    public static Player instance;
+
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
@@ -39,6 +41,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        instance = this;
         _camera = Camera.main;
         AssignStats();
 

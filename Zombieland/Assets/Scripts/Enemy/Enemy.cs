@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System;
-public class Enemy : MonoBehaviour,IDamageable
+public class Enemy : MonoBehaviour,IDamageable,IEnemy
 {
     public event Action<float> OnEnemyGotAttacked;
     public event Action<int> EnemyDied;
@@ -12,7 +12,10 @@ public class Enemy : MonoBehaviour,IDamageable
 
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
+
     private float _attackRange = 1f;
+
+    
 
     private CapsuleCollider _capsuleCollider; 
     private Animator _animator;
@@ -30,30 +33,23 @@ public class Enemy : MonoBehaviour,IDamageable
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
-
         AssignStats();
     }
 
     private void Update()
     {
-        Move();
         UpdateHealthBarPosition();
     }
 
-    private void Move()
+    public void Move()
     {
-        if (_navMeshAgent.enabled)
-        {
-            _navMeshAgent.SetDestination(_targetTransform.position);
-        }
-        if (Vector3.Distance(transform.position, _targetTransform.position) <= _attackRange)
-        {
-            Attack();
-        }
+     
+        _navMeshAgent.SetDestination(_targetTransform.position);
     }
 
-    private void Attack()
+    public void Attack()
     {
+        _animator.ResetTrigger("isChasing");
         _animator.SetTrigger("Attack");
         _navMeshAgent.enabled = false;
     }
@@ -126,4 +122,24 @@ public class Enemy : MonoBehaviour,IDamageable
         
     }
 
+    public void SetIdleState()
+    {
+        _animator.SetTrigger("isIdle");
+        _navMeshAgent.enabled = false;
+    }
+    public Transform GetTarget()
+    {
+        return _targetTransform;
+    }
+    public float GetAttackRange()
+    {
+        return _attackRange;
+    }
+
+    public void SetChasingState()
+    {
+        _animator.ResetTrigger("Attack");
+        _animator.SetTrigger("isChasing");
+        _navMeshAgent.enabled = true;
+    }
 }

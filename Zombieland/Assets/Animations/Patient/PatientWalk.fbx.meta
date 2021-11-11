@@ -1,57 +1,12 @@
 fileFormatVersion: 2
-guid: edfae93f87c86b7499b1b9a2fdb37263
+guid: 472cd52abc523cb449ceefdc23a71b60
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
     second: mixamo.com
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_Body_MAT
-    second: {fileID: 2100000, guid: 97597cea4eb50784da5a1876c62965fa, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_EyeSpec_MAT
-    second: {fileID: 2100000, guid: 1060a9e0c698d14459a26afd8f1f22a9, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_Eyes_MAT
-    second: {fileID: 2100000, guid: 1c74c45b929fc384fb903d2c33ff1b46, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_Gown_MAT
-    second: {fileID: 2100000, guid: a0cadfe1abf306c4b916b1fc3219e1a9, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_Hair_MAT
-    second: {fileID: 2100000, guid: 7ba5c486e8ae5bf40b59a8d30ae2d509, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_Teeth_MAT
-    second: {fileID: 2100000, guid: 630616070ee6155469b9cfb2b438f11b, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_diffuse
-    second: {fileID: 2800000, guid: e26717688af60144796562b305323b89, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_normal
-    second: {fileID: 2800000, guid: 6ee8031145365dd40ae959421c218b03, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Jill_HiMidRes_specular
-    second: {fileID: 2800000, guid: 390f355083c7c8e4492654add18448e5, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -71,7 +26,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -136,11 +91,11 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 2
+  animationType: 3
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
