@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System;
+using Random = UnityEngine.Random;
+
 public class Enemy : MonoBehaviour, IDamageable, IEnemy
 {
     public event Action<float> OnEnemyGotAttacked;
     public event Action<int> EnemyDied;
 
     [SerializeField] private HitCollider _hitCollider;
-    [SerializeField] private AudioClip _chasingSound;
+    [SerializeField] private AudioClip[] _chasingSounds;
 
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
@@ -152,9 +154,15 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         _animator.ResetTrigger("Attack");
         _animator.SetTrigger("isChasing");
 
-        _audioSource.PlayOneShot(_chasingSound);
+        PlayChasingSound();  
 
         _navMeshAgent.enabled = true;
+    }
+    private void PlayChasingSound()
+    {
+        int random = Random.Range(0, _chasingSounds.Length);
+
+        _audioSource.PlayOneShot(_chasingSounds[random]);
     }
 
     private void ActivateRagdoll()

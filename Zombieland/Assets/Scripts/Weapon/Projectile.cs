@@ -5,6 +5,8 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _explosionEffect;
+    [SerializeField] private AudioClip _explosionSound;
+
     private Rigidbody _rigidbody;
     private float _delay = 0.3f;
     private float _jumpForce = 3;
@@ -24,6 +26,8 @@ public class Projectile : MonoBehaviour
 
     private void Explode()
     {
+        AudioSource.PlayClipAtPoint(_explosionSound,transform.position);
+
         Instantiate(_explosionEffect, transform.position, Quaternion.identity);
         Collider[] colliders = Physics.OverlapSphere(transform.position, _radius);
         foreach (Collider collider in colliders)
