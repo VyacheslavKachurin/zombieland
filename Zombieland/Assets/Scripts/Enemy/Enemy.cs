@@ -83,7 +83,6 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         //TODO: set death state?
         _navMeshAgent.speed = 0; // temporary fix TO
 
-       // _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
 
@@ -148,6 +147,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     {
         _animator.ResetTrigger("Attack");
         _animator.SetTrigger("isChasing");
+        
         _navMeshAgent.enabled = true;
     }
 
