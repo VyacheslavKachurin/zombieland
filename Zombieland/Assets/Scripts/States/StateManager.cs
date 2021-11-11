@@ -31,6 +31,7 @@ public class StateManager : MonoBehaviour
         _currentState.Enter(this);
 
     }
+
     private void Update()
     {
         _currentState.Update(this);

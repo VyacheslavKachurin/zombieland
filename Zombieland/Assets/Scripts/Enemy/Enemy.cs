@@ -150,6 +150,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         _animator.SetTrigger("isChasing");
         _navMeshAgent.enabled = true;
     }
+
     private void ActivateRagdoll()
     {
         foreach (var rb in _ragdoll)
@@ -158,6 +159,7 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
         }
         _animator.enabled = false;
     }
+
     private void DeactivateRagdoll()
     {
         foreach (var rb in _ragdoll)
