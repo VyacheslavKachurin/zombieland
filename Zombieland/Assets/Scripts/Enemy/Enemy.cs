@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System;
-public class Enemy : MonoBehaviour,IDamageable,IEnemy
+public class Enemy : MonoBehaviour, IDamageable, IEnemy
 {
     public event Action<float> OnEnemyGotAttacked;
     public event Action<int> EnemyDied;
@@ -14,10 +14,11 @@ public class Enemy : MonoBehaviour,IDamageable,IEnemy
     private float _currentHealth;
 
     private float _attackRange = 1f;
+    private Rigidbody[] _ragdoll;
 
-    
 
-    private CapsuleCollider _capsuleCollider; 
+
+    private CapsuleCollider _capsuleCollider;
     private Animator _animator;
     private GameObject _enemyHealthBar;
     private EnemyStats _enemyStats;
@@ -26,13 +27,15 @@ public class Enemy : MonoBehaviour,IDamageable,IEnemy
     private Transform _targetTransform;
 
     private int experience = 20; //move to stats??
-    
+
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
+        _ragdoll = GetComponentsInChildren<Rigidbody>();
+        DeactivateRagdoll();
         AssignStats();
     }
 
@@ -43,7 +46,7 @@ public class Enemy : MonoBehaviour,IDamageable,IEnemy
 
     public void Move()
     {
-     
+
         _navMeshAgent.SetDestination(_targetTransform.position);
     }
 
@@ -74,8 +77,13 @@ public class Enemy : MonoBehaviour,IDamageable,IEnemy
     private void Die()
     {
         _capsuleCollider.enabled = false;
-        _animator.SetTrigger("Die");
-        _navMeshAgent.enabled = false;
+
+
+        ActivateRagdoll();
+        //TODO: set death state?
+        _navMeshAgent.speed = 0; // temporary fix TO
+
+       // _navMeshAgent.enabled = false;
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
 
@@ -119,7 +127,7 @@ public class Enemy : MonoBehaviour,IDamageable,IEnemy
         _navMeshAgent.speed = _enemyStats.Speed.GetValue();
         _hitCollider.GetComponent<HitCollider>().DamageAmount = _enemyStats.Damage.GetValue();
         _currentHealth = _enemyStats.MaxHealth.GetValue();
-        
+
     }
 
     public void SetIdleState()
@@ -141,5 +149,21 @@ public class Enemy : MonoBehaviour,IDamageable,IEnemy
         _animator.ResetTrigger("Attack");
         _animator.SetTrigger("isChasing");
         _navMeshAgent.enabled = true;
+    }
+    private void ActivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = false;
+        }
+        _animator.enabled = false;
+    }
+    private void DeactivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = true;
+        }
+        _animator.enabled = true;
     }
 }
