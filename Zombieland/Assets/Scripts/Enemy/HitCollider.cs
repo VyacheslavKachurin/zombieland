@@ -13,10 +13,12 @@ public class HitCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var idamageable = other.GetComponent<IDamageable>();
-        if (idamageable != null)
+        if (other.tag == "Player") // to avoid hitting itself
         {
-            idamageable.TakeDamage(_damageAmount);
+            var idamageable = other.GetComponent<IDamageable>();
+           
+                idamageable.TakeDamage(_damageAmount);
+            
         }
     }
 }
