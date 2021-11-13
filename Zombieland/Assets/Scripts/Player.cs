@@ -195,7 +195,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetWeaponAnimation()
     {
-        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();        
+        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
     }
 
     public void Initialize(IPlayerInput input)
