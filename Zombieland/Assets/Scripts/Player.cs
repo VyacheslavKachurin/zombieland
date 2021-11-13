@@ -39,12 +39,22 @@ public class Player : MonoBehaviour, IDamageable
 
     private Camera _camera;
 
+    private CharacterController _cc;
+
+    private enum PlayerState
+    {
+        Aiming,notAiming,Dead
+    }
+
+    private PlayerState _currentPlayerState=PlayerState.notAiming;
+
     private void Start()
     {
         instance = this;
         _camera = Camera.main;
         AssignStats();
 
+        _cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
         _animatorOverride = _animator.runtimeAnimatorController as AnimatorOverrideController;
 
@@ -53,12 +63,13 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (!_isDead)
+        if (_currentPlayerState==PlayerState.Aiming)
         {
-            Move();
             AimTowardsMouse();
+           
         }
-
+        GetGrounded();
+        Move();
     }
 
     private void Move()
@@ -68,7 +79,7 @@ public class Player : MonoBehaviour, IDamageable
         Vector3 relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
         relatedDirection.y = 0;
 
-        transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
+        //  transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
 
         _velocityZ = Vector3.Dot(relatedDirection.normalized, transform.forward);
         _velocityX = Vector3.Dot(relatedDirection.normalized, transform.right);
@@ -76,6 +87,10 @@ public class Player : MonoBehaviour, IDamageable
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
+        if (_direction.magnitude != 0&&_currentPlayerState!=PlayerState.Aiming)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relatedDirection), Time.deltaTime * 10f);// make turn speed
+        }
     }
 
     private void AimTowardsMouse()
@@ -134,7 +149,7 @@ public class Player : MonoBehaviour, IDamageable
         if (Time.timeScale != 0)
         {
 
-            _aimingObject.transform.position = _mousePosition;
+            // _aimingObject.transform.position = _mousePosition;
 
             // try to set up aiming help system
         }
@@ -205,5 +220,44 @@ public class Player : MonoBehaviour, IDamageable
         input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;
+        input.SprintingSwitched += SetSprinting;
+        input.JumpPressed += Evade;
+        input.AimedWeapon += AimWeapon;
+    }
+
+    private void GetGrounded()
+    {
+        if (!_cc.isGrounded)
+        {
+            _cc.Move(Physics.gravity);
+        }
+
+    }
+
+    private void SetSprinting(bool value)
+    {
+        _animator.SetBool("isSprinting", value);
+    }
+
+    private void Evade()
+    {
+        _currentPlayerState = PlayerState.notAiming;
+        _animator.SetTrigger("Evade");
+    }
+
+    private void AimWeapon(bool value)
+    {
+        if (value)
+        {
+            _currentPlayerState = PlayerState.Aiming;
+        }
+        else
+        {
+            _currentPlayerState = PlayerState.notAiming;
+        }
+
+        _animator.SetBool("isAiming", value);
+        
+
     }
 }
