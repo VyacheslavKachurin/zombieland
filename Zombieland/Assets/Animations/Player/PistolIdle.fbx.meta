@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 0b42a2a0ed6c2fb4091f53d2a0363088
+guid: ecd3c70733e81fe4d810bb4cb05ea38f
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: JumpToRoll
+    second: mixamo.com
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -21,11 +21,12 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
       copied configuration does not match position in animation file:\n\t'mixamorig:LeftUpLeg'
-      : position error = 38.370792 mm\n\t'mixamorig:LeftLeg' : position error = 2.073227
-      mm\n\t'mixamorig:LeftFoot' : position error = 11.521991 mm\n\t'mixamorig:LeftToeBase'
-      : position error = 4.227361 mm\n\t'mixamorig:RightUpLeg' : position error =
-      38.291267 mm\n\t'mixamorig:RightLeg' : position error = 2.480520 mm\n\t'mixamorig:RightFoot'
-      : position error = 11.722835 mm\n"
+      : position error = 9.086119 mm\n\t'mixamorig:LeftLeg' : position error = 775.537720
+      mm\n\t'mixamorig:LeftFoot' : position error = 757.458801 mm\n\t'mixamorig:LeftToeBase'
+      : position error = 306.720459 mm\n\t'mixamorig:RightUpLeg' : position error
+      = 10.099209 mm\n\t'mixamorig:RightLeg' : position error = 774.924622 mm\n\t'mixamorig:RightFoot'
+      : position error = 758.139404 mm\n\t'mixamorig:RightToeBase' : position error
+      = 311.738556 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -39,43 +40,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: JumpToRoll
-      takeName: mixamo.com
-      internalID: 0
-      firstFrame: 0
-      lastFrame: 71
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 1
-      keepOriginalPositionY: 0
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 1
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events:
-      - time: 0.9538047
-        functionName: FinishJumping
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []

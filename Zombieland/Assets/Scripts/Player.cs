@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Animations.Rigging;
 public class Player : MonoBehaviour, IDamageable
 {
 
@@ -13,6 +14,9 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private WeaponHolder _weaponHolder;
     [SerializeField] private GameObject _aimingObject;
+    [SerializeField] private Rig _aimingRig;
+   
+   
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -43,10 +47,10 @@ public class Player : MonoBehaviour, IDamageable
 
     private enum PlayerState
     {
-        Aiming,notAiming,Dead
+        Aiming,Walking,Dead,Jumping
     }
 
-    private PlayerState _currentPlayerState=PlayerState.notAiming;
+    private PlayerState _currentState=PlayerState.Walking;
 
     private void Start()
     {
@@ -59,17 +63,20 @@ public class Player : MonoBehaviour, IDamageable
         _animatorOverride = _animator.runtimeAnimatorController as AnimatorOverrideController;
 
         _weaponHolder.OnWeaponChanged += GetWeapon;
+
     }
 
     private void Update()
     {
-        if (_currentPlayerState==PlayerState.Aiming)
+        if (_currentState==PlayerState.Aiming)
         {
             AimTowardsMouse();
            
         }
         GetGrounded();
         Move();
+
+      
     }
 
     private void Move()
@@ -87,7 +94,7 @@ public class Player : MonoBehaviour, IDamageable
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
-        if (_direction.magnitude != 0&&_currentPlayerState!=PlayerState.Aiming)
+        if (_direction.magnitude != 0&&_currentState!=PlayerState.Aiming)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relatedDirection), Time.deltaTime * 10f);// make turn speed
         }
@@ -212,6 +219,10 @@ public class Player : MonoBehaviour, IDamageable
     {
         _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
     }
+    private void FinishJumping()
+    {
+        _currentState = PlayerState.Walking;
+    }
 
     public void Initialize(IPlayerInput input)
     {
@@ -241,23 +252,27 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Evade()
     {
-        _currentPlayerState = PlayerState.notAiming;
-        _animator.SetTrigger("Evade");
+        if (_currentState != PlayerState.Jumping)
+        {
+            _currentState = PlayerState.Jumping;
+            _animator.SetTrigger("Evade");
+        }
     }
 
     private void AimWeapon(bool value)
     {
         if (value)
         {
-            _currentPlayerState = PlayerState.Aiming;
+            _currentState = PlayerState.Aiming;
         }
         else
         {
-            _currentPlayerState = PlayerState.notAiming;
+            _currentState = PlayerState.Walking;
         }
 
         _animator.SetBool("isAiming", value);
-        
+        _aimingRig.weight = Convert.ToInt32(value);
+
 
     }
 }
