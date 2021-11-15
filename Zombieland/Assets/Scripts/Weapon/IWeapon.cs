@@ -19,5 +19,9 @@ public interface IWeapon
 
     public AnimationClip ReturnWeaponAnimation();
 
+    public AnimationClip ReturnIdlePose();
     public float SetOffset();
+
+    public Transform RightGrip();
+    public Transform LeftGrip();
 }

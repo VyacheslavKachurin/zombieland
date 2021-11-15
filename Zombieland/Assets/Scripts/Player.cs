@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.Animations.Rigging;
+
 public class Player : MonoBehaviour, IDamageable
 {
 
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private WeaponHolder _weaponHolder;
     [SerializeField] private GameObject _aimingObject;
     [SerializeField] private Rig _aimingRig;   
-   
+
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -31,7 +32,6 @@ public class Player : MonoBehaviour, IDamageable
 
     private float _dampTime = 0.1f;
     private Animator _animator;
-    private AnimatorOverrideController _animatorOverride;
     private PlayerStats _playerStats;
 
     private float _currentHealth;
@@ -46,13 +46,14 @@ public class Player : MonoBehaviour, IDamageable
 
     private enum PlayerState
     {
-        Aiming,Walking,Dead,Jumping
+        Aiming, Walking, Dead, Jumping
     }
 
-    private PlayerState _currentState=PlayerState.Walking;
+    private PlayerState _currentState = PlayerState.Walking;
 
     private void Start()
     {
+       
      
         instance = this;
         _camera = Camera.main;
@@ -60,7 +61,6 @@ public class Player : MonoBehaviour, IDamageable
 
         _cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
-        _animatorOverride = _animator.runtimeAnimatorController as AnimatorOverrideController;
 
         _weaponHolder.OnWeaponChanged += GetWeapon;
 
@@ -68,15 +68,15 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        if (_currentState==PlayerState.Aiming)
+        if (_currentState == PlayerState.Aiming)
         {
-            AimTowardsMouse();
-           
+            AimTowardsMouse();       
         }
+
         GetGrounded();
         Move();
 
-      
+
     }
 
     private void Move()
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour, IDamageable
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
-        if (_direction.magnitude != 0&&_currentState!=PlayerState.Aiming)
+        if (_direction.magnitude != 0 && _currentState != PlayerState.Aiming)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relatedDirection), Time.deltaTime * 10f);// make turn speed
         }
@@ -164,7 +164,10 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ReceiveShootingInput(bool isShooting)
     {
-        _currentWeapon.Shoot(isShooting);
+        if (_currentState == PlayerState.Aiming)
+        {
+            _currentWeapon.Shoot(isShooting);
+        }
     }
 
     private void ReceiveScroolWheelInput(bool input)
@@ -177,7 +180,7 @@ public class Player : MonoBehaviour, IDamageable
         _currentWeapon = weapon;
         OnWeaponChanged(PassWeapon());
         _currentWeapon.OnWeaponReload += ReloadAnimation;
-        SetWeaponAnimation();
+
     }
 
     private void ReloadAnimation(bool isReloading)
@@ -217,7 +220,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetWeaponAnimation()
     {
-       // _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+
     }
     private void FinishJumping()
     {
@@ -270,12 +273,15 @@ public class Player : MonoBehaviour, IDamageable
             _currentState = PlayerState.Walking;
         }
 
+        //  _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+
         _animator.SetBool("isAiming", value);
         _aimingRig.weight = Convert.ToInt32(value);
     }
 
-    public void EquipWeapon(GameObject weapon )
+    public void EquipWeapon(GameObject weapon)
     {
         _weaponHolder.EquipWeapon(weapon);
     }
+
 }

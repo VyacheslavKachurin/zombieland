@@ -24,7 +24,11 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private int _maxBulletAmount;
     [SerializeField] private float _firingRate = 0.1f;
     [SerializeField] private AudioClip _shotClip;
+    [SerializeField] private AnimationClip _weaponPose;
 
+    [SerializeField] private Transform _leftGrip;
+    [SerializeField] private Transform _rightGrip;
+         
     private AudioSource _audioSource;
 
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
@@ -166,4 +170,19 @@ public class Weapon : MonoBehaviour, IWeapon
         _audioSource.PlayOneShot(_shotClip);
     }
 
+    public AnimationClip ReturnIdlePose()
+    {
+        return _weaponPose;
+    }
+
+    public Transform RightGrip()
+    {
+        return _rightGrip;
+
+    }
+
+    public Transform LeftGrip()
+    {
+        return _leftGrip;
+    }
 }
