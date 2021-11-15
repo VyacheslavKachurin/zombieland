@@ -14,8 +14,7 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private WeaponHolder _weaponHolder;
     [SerializeField] private GameObject _aimingObject;
-    [SerializeField] private Rig _aimingRig;
-   
+    [SerializeField] private Rig _aimingRig;   
    
     public float CurrentHealth
     {
@@ -54,6 +53,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void Start()
     {
+     
         instance = this;
         _camera = Camera.main;
         AssignStats();
@@ -217,7 +217,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetWeaponAnimation()
     {
-        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+       // _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
     }
     private void FinishJumping()
     {
@@ -272,7 +272,10 @@ public class Player : MonoBehaviour, IDamageable
 
         _animator.SetBool("isAiming", value);
         _aimingRig.weight = Convert.ToInt32(value);
+    }
 
-
+    public void EquipWeapon(GameObject weapon )
+    {
+        _weaponHolder.EquipWeapon(weapon);
     }
 }

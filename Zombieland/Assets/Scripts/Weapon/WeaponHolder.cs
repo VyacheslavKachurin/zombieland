@@ -62,4 +62,21 @@ public class WeaponHolder : MonoBehaviour
         IWeapon weapon = _weapons[_selectedWeapon].GetComponent<IWeapon>();
         return weapon;
     }
+    public void EquipWeapon(GameObject weapon)
+    {
+        _weapons.Add(weapon);
+        var newWeapon = Instantiate(weapon);
+        newWeapon.transform.parent = this.transform;
+        newWeapon.transform.localPosition = Vector3.zero;
+        newWeapon.transform.localRotation = Quaternion.identity;
+
+        _selectedWeapon = _weapons.Count-1;
+
+        _weapons[_selectedWeapon-1].SetActive(false);
+        _weapons[_selectedWeapon].SetActive(true);
+        
+
+        OnWeaponChanged?.Invoke(ChooseWeapon());
+
+    }
 }

@@ -31,7 +31,7 @@ public class EnemySpawner : MonoBehaviour
         _plane = GameObject.Find("street");
         _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
 
-       // InvokeRepeating(nameof(SpawnEnemy), 0.1f, SetDifficulty());
+        InvokeRepeating(nameof(SpawnEnemy), 0.1f, SetDifficulty());
     }
 
     private void SpawnEnemy()
