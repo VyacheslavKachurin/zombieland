@@ -13,7 +13,10 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private WeaponHolder _weaponHolder;
     [SerializeField] private GameObject _aimingObject;
-    [SerializeField] private Rig _aimingRig;   
+
+    [SerializeField] private Rig _aimingRig;
+    [SerializeField] private Rig _holdWeaponRig;
+    [SerializeField] private Rig _handsIK;
 
     public float CurrentHealth
     {
@@ -41,6 +44,7 @@ public class Player : MonoBehaviour, IDamageable
     private Camera _camera;
 
     private CharacterController _cc;
+    private Rigidbody[] _ragdoll;
 
     private enum PlayerState
     {
@@ -59,6 +63,8 @@ public class Player : MonoBehaviour, IDamageable
 
         _weaponHolder.OnWeaponChanged += GetWeapon;
 
+        _ragdoll = GetComponentsInChildren<Rigidbody>();
+        DeactivateRagdoll();
     }
 
     private void Update()
@@ -67,11 +73,8 @@ public class Player : MonoBehaviour, IDamageable
         {
             AimTowardsMouse();       
         }
-
         GetGrounded();
         Move();
-
-
     }
 
     private void Move()
@@ -131,9 +134,18 @@ public class Player : MonoBehaviour, IDamageable
         if (!_isDead)
         {
             _isDead = true;
-            _animator.SetTrigger("Die");
+            //_animator.SetTrigger("Die");
 
-            OnPlayerDeath?.Invoke(_isDead);
+            ActivateRagdoll();
+
+            _aimingRig.enabled = false ;
+            _holdWeaponRig.enabled=false;
+            _handsIK.enabled=false;
+
+            _cc.enabled = false;
+
+
+            //OnPlayerDeath?.Invoke(_isDead);
         }
     }
 
@@ -272,6 +284,24 @@ public class Player : MonoBehaviour, IDamageable
     public void EquipWeapon(GameObject weapon)
     {
         _weaponHolder.EquipWeapon(weapon);
+    }
+
+    private void DeactivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = true;
+        }
+       
+    }
+
+    private void ActivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = false;
+        }
+        _animator.enabled = false;
     }
 
 }

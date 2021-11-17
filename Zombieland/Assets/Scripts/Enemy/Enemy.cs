@@ -54,6 +54,17 @@ public class Enemy : MonoBehaviour, IDamageable
         SwitchState(EnemyState.Idle);
     }
 
+    private void Update()
+    {
+        UpdateHealthBarPosition();
+
+        if (_currentState == EnemyState.Chasing)
+        {
+            RotateTowardsTarget();
+        }
+        CheckForTarget(IsTargetVisible(),IsTargetAttackable());
+    }
+
     private void SwitchState(EnemyState state)
     {
         if (_currentState != state)
@@ -133,16 +144,6 @@ public class Enemy : MonoBehaviour, IDamageable
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * 5f);
     }
 
-    private void Update()
-    {
-        UpdateHealthBarPosition();
-
-        if (_currentState == EnemyState.Chasing)
-        {
-            RotateTowardsTarget();
-        }
-        CheckForTarget(IsTargetVisible(),IsTargetAttackable());
-    }
 
     private IEnumerator Move()
     {
