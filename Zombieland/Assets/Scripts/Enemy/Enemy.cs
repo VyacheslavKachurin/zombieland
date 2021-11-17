@@ -79,7 +79,6 @@ public class Enemy : MonoBehaviour, IDamageable
 
                 case EnemyState.Chasing:
                     SetChasingState();
-                    Debug.Log("set chasign state");
                     return;
 
                 case EnemyState.Attacking:
@@ -127,7 +126,6 @@ public class Enemy : MonoBehaviour, IDamageable
             }
             else if (isVisible)
             {
-                Debug.Log("goes here");
                 SwitchState(EnemyState.Chasing);
             }
             else

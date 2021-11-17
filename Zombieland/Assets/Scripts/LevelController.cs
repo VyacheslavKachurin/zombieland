@@ -19,14 +19,14 @@ public class LevelController : MonoBehaviour
     [SerializeField] private UpgradeMenu _upgradeMenu;
     [SerializeField] private PauseMenu _pauseMenu;
     [SerializeField] private GameObject _aimingLayer;
-    
+
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
 
     private bool _isGamePaused;
 
     private void Awake()
-    {        
+    {
         Initialize();
         _audioManager = AudioManager.Instance;
         _audioManager.PlayGameTheme();
@@ -35,12 +35,12 @@ public class LevelController : MonoBehaviour
 
     private void Initialize()
     {
-        Instantiate(_aimingLayer,_aimingLayer.transform.position,Quaternion.identity);
+        Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
         _pauseMenu = Instantiate(_pauseMenu);
         _isGamePaused = false;
         Time.timeScale = 1;
 
-       
+
         _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
 
 
@@ -56,8 +56,7 @@ public class LevelController : MonoBehaviour
 
         _cameraFollow.SetTarget(_player.transform);
 
-        _player.OnPlayerDeath += _enemySpawner.StopSpawning; //TODO : take care of bool
-        _player.OnPlayerDeath += TogglePause;
+
 
         _enemySpawner.SetTarget(_player.transform);
 
@@ -72,11 +71,12 @@ public class LevelController : MonoBehaviour
         _HUD = Instantiate(_HUD);
         _inputController.OnGamePaused += _pauseMenu.ShowPanel;
 
-        _pauseMenu.ContinueButton.onClick.AddListener(Continue); 
+        _pauseMenu.ContinueButton.onClick.AddListener(Continue);
         _pauseMenu.SaveButton.onClick.AddListener(SaveGame);
         _pauseMenu.LoadButton.onClick.AddListener(GameManager.Instance.LoadGame); // doesnt work
 
-        _player.OnPlayerDeath += _pauseMenu.GameOver;
+
+        _player.OnPlayerDeath += GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
@@ -87,7 +87,7 @@ public class LevelController : MonoBehaviour
 
         SetExperienceSystem();
     }
- 
+
     private void Continue()
     {
         TogglePause(false);
@@ -102,7 +102,7 @@ public class LevelController : MonoBehaviour
         _isGamePaused = isPaused;
         if (_isGamePaused)
         {
-            Time.timeScale = 0;   
+            Time.timeScale = 0;
         }
         else
         {
@@ -150,6 +150,19 @@ public class LevelController : MonoBehaviour
     public void LoadGame()
     {
         GameManager.Instance.LoadGame();
+    }
+
+    private void GameOver(bool value)
+    {
+        _enemySpawner.StopSpawning(value); //TODO : take care of bool
+        StartCoroutine(TogglePauseAfterDeath());
+    }
+
+    private IEnumerator TogglePauseAfterDeath()
+    {
+        yield return new WaitForSeconds(2f);
+        _pauseMenu.GameOver(true);
+        TogglePause(true);
     }
 
 }

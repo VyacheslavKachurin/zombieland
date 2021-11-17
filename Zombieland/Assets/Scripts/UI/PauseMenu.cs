@@ -35,13 +35,14 @@ public class PauseMenu : MonoBehaviour
         else
         {
             _animator.SetTrigger("Continue");
-        }
-        
+        }  
     }
-    public void GameOver(bool isDead)
+
+    public void GameOver(bool value)
     {
         ContinueButton.interactable = false;
-        gameObject.SetActive(isDead);
+        // gameObject.SetActive(isDead);
+        ShowPanel(value);
     }
 
     public void Restart()

@@ -134,7 +134,6 @@ public class Player : MonoBehaviour, IDamageable
         if (!_isDead)
         {
             _isDead = true;
-            //_animator.SetTrigger("Die");
 
             ActivateRagdoll();
 
@@ -143,9 +142,11 @@ public class Player : MonoBehaviour, IDamageable
             _handsIK.enabled=false;
 
             _cc.enabled = false;
+           
 
 
-            //OnPlayerDeath?.Invoke(_isDead);
+            OnPlayerDeath?.Invoke(_isDead);
+            Destroy(this);
         }
     }
 
