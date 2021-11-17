@@ -23,6 +23,13 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private AnimationClip _weaponAnimation;
     [SerializeField] private int _maxBulletAmount;
     [SerializeField] private float _firingRate = 0.1f;
+    [SerializeField] private AudioClip _shotClip;
+    [SerializeField] private AnimationClip _weaponPose;
+
+    [SerializeField] private Transform _leftGrip;
+    [SerializeField] private Transform _rightGrip;
+         
+    private AudioSource _audioSource;
 
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
 
@@ -38,6 +45,8 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         _shootingModule = GetComponent<IShootingType>();
         _currentBulletsAmount = _maxBulletAmount;
+        _audioSource = GetComponent<AudioSource>();
+
     }
 
     public void OnEnable()
@@ -68,6 +77,7 @@ public class Weapon : MonoBehaviour, IWeapon
         {
             if (_currentBulletsAmount > 0)
             {
+                PlayShootSound(); //TODO: turn into 1 method
                 _muzzleFlash.Play(); // move to ishooting module, resize particle system for different weapons and colors
                 //Invoke Recoil animation event 
 
@@ -76,12 +86,14 @@ public class Weapon : MonoBehaviour, IWeapon
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
                 _shootingModule.CreateShot(_aimPosition, _gunPoint.position);
-
+               
                 if (_currentBulletsAmount == 0)
                 {
+                    
                     _reloadingCoroutine = StartCoroutine(Reloading());
                 }
                 yield return new WaitForSeconds(_firingRate);
+              
 
             }
             else
@@ -153,4 +165,24 @@ public class Weapon : MonoBehaviour, IWeapon
         return _gunPoint.position.y;
     }
 
+    private void PlayShootSound()
+    {
+        _audioSource.PlayOneShot(_shotClip);
+    }
+
+    public AnimationClip ReturnIdlePose()
+    {
+        return _weaponPose;
+    }
+
+    public Transform RightGrip()
+    {
+        return _rightGrip;
+
+    }
+
+    public Transform LeftGrip()
+    {
+        return _leftGrip;
+    }
 }

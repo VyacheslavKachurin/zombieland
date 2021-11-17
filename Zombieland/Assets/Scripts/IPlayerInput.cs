@@ -7,4 +7,7 @@ public interface IPlayerInput
     public event Action<bool> OnShootingInput;
     public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
+    public event Action<bool> SprintingSwitched;
+    public event Action JumpPressed;
+    public event Action<bool> AimedWeapon;
 }

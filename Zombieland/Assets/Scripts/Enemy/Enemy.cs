@@ -3,19 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System;
-public class Enemy : MonoBehaviour,IDamageable
+using Random = UnityEngine.Random;
+
+public class Enemy : MonoBehaviour, IDamageable, IEnemy
 {
     public event Action<float> OnEnemyGotAttacked;
     public event Action<int> EnemyDied;
 
     [SerializeField] private HitCollider _hitCollider;
+    [SerializeField] private AudioClip[] _chasingSounds;
 
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
-    private float _attackRange = 1f;
 
-    private CapsuleCollider _capsuleCollider; 
+    private float _attackRange = 1f;
+    private Rigidbody[] _ragdoll;
+
+    private CapsuleCollider _capsuleCollider;
     private Animator _animator;
+    private AudioSource _audioSource;
     private GameObject _enemyHealthBar;
     private EnemyStats _enemyStats;
     private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
@@ -23,37 +29,34 @@ public class Enemy : MonoBehaviour,IDamageable
     private Transform _targetTransform;
 
     private int experience = 20; //move to stats??
-    
+
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
+        _ragdoll = GetComponentsInChildren<Rigidbody>();
+        _audioSource = GetComponent<AudioSource>();
 
+        DeactivateRagdoll();
         AssignStats();
     }
 
     private void Update()
     {
-        Move();
         UpdateHealthBarPosition();
     }
 
-    private void Move()
+    public void Move()
     {
-        if (_navMeshAgent.enabled)
-        {
-            _navMeshAgent.SetDestination(_targetTransform.position);
-        }
-        if (Vector3.Distance(transform.position, _targetTransform.position) <= _attackRange)
-        {
-            Attack();
-        }
+
+        _navMeshAgent.SetDestination(_targetTransform.position);
     }
 
-    private void Attack()
+    public void Attack()
     {
+        _animator.ResetTrigger("isChasing");
         _animator.SetTrigger("Attack");
         _navMeshAgent.enabled = false;
     }
@@ -78,8 +81,12 @@ public class Enemy : MonoBehaviour,IDamageable
     private void Die()
     {
         _capsuleCollider.enabled = false;
-        _animator.SetTrigger("Die");
-        _navMeshAgent.enabled = false;
+
+
+        ActivateRagdoll();
+        //TODO: set death state?
+        _navMeshAgent.speed = 0; // temporary fix TO
+
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
 
@@ -123,7 +130,54 @@ public class Enemy : MonoBehaviour,IDamageable
         _navMeshAgent.speed = _enemyStats.Speed.GetValue();
         _hitCollider.GetComponent<HitCollider>().DamageAmount = _enemyStats.Damage.GetValue();
         _currentHealth = _enemyStats.MaxHealth.GetValue();
-        
+
     }
 
+    public void SetIdleState()
+    {
+        _animator.SetTrigger("isIdle");
+        _navMeshAgent.enabled = false;
+    }
+    public Transform GetTarget()
+    {
+        return _targetTransform;
+    }
+    public float GetAttackRange()
+    {
+        return _attackRange;
+    }
+
+    public void SetChasingState()
+    {
+        _animator.ResetTrigger("Attack");
+        _animator.SetTrigger("isChasing");
+
+        PlayChasingSound();  
+
+        _navMeshAgent.enabled = true;
+    }
+    private void PlayChasingSound()
+    {
+        int random = Random.Range(0, _chasingSounds.Length);
+
+        _audioSource.PlayOneShot(_chasingSounds[random]);
+    }
+
+    private void ActivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = false;
+        }
+        _animator.enabled = false;
+    }
+
+    private void DeactivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = true;
+        }
+        _animator.enabled = true;
+    }
 }

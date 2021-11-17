@@ -12,6 +12,9 @@ public class InputController : MonoBehaviour, IPlayerInput
     public event Action OnReloadPressed;
     public event Action<bool> OnUpgradeButtonPressed;
     public event Action<bool> OnGamePaused;
+    public event Action<bool> SprintingSwitched;
+    public event Action JumpPressed;
+    public event Action<bool> AimedWeapon;
 
     private float _horizontal;
     private float _vertical;
@@ -34,11 +37,14 @@ public class InputController : MonoBehaviour, IPlayerInput
     {
         if (!_isPaused)
         {
+            ReadSprintButton();
             ReadAxisInput();
-            ReadMouseInput();
+            ReadCursorInput();
             ReadShootInput();
             SwitchWeaponInput();
             ReloadInput();
+            ReadJumpButton();
+            ReadAimingInput();
         }
 
         UpgradeButtonInput();
@@ -63,7 +69,7 @@ public class InputController : MonoBehaviour, IPlayerInput
         Moved?.Invoke(_horizontal, _vertical);
     }
 
-    private void ReadMouseInput()
+    private void ReadCursorInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
@@ -73,6 +79,18 @@ public class InputController : MonoBehaviour, IPlayerInput
 
             CursorMoved?.Invoke(_destination);
         }
+    }
+    private void ReadAimingInput()
+    {
+        if (Input.GetButtonDown("Fire2"))
+        {
+            AimedWeapon(true);
+         
+        } if (Input.GetButtonUp("Fire2"))
+        {
+            AimedWeapon(false);
+        }
+        
     }
 
     private void ReadShootInput()
@@ -135,6 +153,25 @@ public class InputController : MonoBehaviour, IPlayerInput
         _isPaused = false;
         _wasPausePressed = false;
 
+    }
+    
+    private void ReadSprintButton()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            SprintingSwitched(true);
+        } 
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            SprintingSwitched(false);
+        }
+    }
+    private void ReadJumpButton()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            JumpPressed();
+        }
     }
 
 }

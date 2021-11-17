@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Animations.Rigging;
+
 public class Player : MonoBehaviour, IDamageable
 {
 
@@ -11,6 +13,8 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private WeaponHolder _weaponHolder;
     [SerializeField] private GameObject _aimingObject;
+    [SerializeField] private Rig _aimingRig;   
+
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -26,7 +30,6 @@ public class Player : MonoBehaviour, IDamageable
 
     private float _dampTime = 0.1f;
     private Animator _animator;
-    private AnimatorOverrideController _animatorOverride;
     private PlayerStats _playerStats;
 
     private float _currentHealth;
@@ -37,24 +40,37 @@ public class Player : MonoBehaviour, IDamageable
 
     private Camera _camera;
 
+    private CharacterController _cc;
+
+    private enum PlayerState
+    {
+        Aiming, Walking, Dead, Jumping
+    }
+
+    private PlayerState _currentState = PlayerState.Walking;
+
     private void Start()
     {
         _camera = Camera.main;
         AssignStats();
 
+        _cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
-        _animatorOverride = _animator.runtimeAnimatorController as AnimatorOverrideController;
 
         _weaponHolder.OnWeaponChanged += GetWeapon;
+
     }
 
     private void Update()
     {
-        if (!_isDead)
+        if (_currentState == PlayerState.Aiming)
         {
-            Move();
-            AimTowardsMouse();
+            AimTowardsMouse();       
         }
+
+        GetGrounded();
+        Move();
+
 
     }
 
@@ -65,7 +81,7 @@ public class Player : MonoBehaviour, IDamageable
         Vector3 relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
         relatedDirection.y = 0;
 
-        transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
+        //  transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
 
         _velocityZ = Vector3.Dot(relatedDirection.normalized, transform.forward);
         _velocityX = Vector3.Dot(relatedDirection.normalized, transform.right);
@@ -73,6 +89,10 @@ public class Player : MonoBehaviour, IDamageable
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
+        if (_direction.magnitude != 0 && _currentState != PlayerState.Aiming)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relatedDirection), Time.deltaTime * 10f);// make turn speed
+        }
     }
 
     private void AimTowardsMouse()
@@ -90,10 +110,10 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damageAmount)
     {
-
         if (_currentHealth > 0)
         {
             _currentHealth -= damageAmount;
+
             OnPlayerGotAttacked(damageAmount);
 
             if (_currentHealth <= 0)
@@ -131,7 +151,7 @@ public class Player : MonoBehaviour, IDamageable
         if (Time.timeScale != 0)
         {
 
-            _aimingObject.transform.position = _mousePosition;
+            // _aimingObject.transform.position = _mousePosition;
 
             // try to set up aiming help system
         }
@@ -139,7 +159,10 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ReceiveShootingInput(bool isShooting)
     {
-        _currentWeapon.Shoot(isShooting);
+        if (_currentState == PlayerState.Aiming)
+        {
+            _currentWeapon.Shoot(isShooting);
+        }
     }
 
     private void ReceiveScroolWheelInput(bool input)
@@ -152,7 +175,7 @@ public class Player : MonoBehaviour, IDamageable
         _currentWeapon = weapon;
         OnWeaponChanged(PassWeapon());
         _currentWeapon.OnWeaponReload += ReloadAnimation;
-        SetWeaponAnimation();
+
     }
 
     private void ReloadAnimation(bool isReloading)
@@ -189,10 +212,9 @@ public class Player : MonoBehaviour, IDamageable
     {
         _movementSpeed = speed;
     }
-
-    private void SetWeaponAnimation()
+    private void FinishJumping()
     {
-        _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();        
+        _currentState = PlayerState.Walking;
     }
 
     public void Initialize(IPlayerInput input)
@@ -202,5 +224,54 @@ public class Player : MonoBehaviour, IDamageable
         input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;
+        input.SprintingSwitched += SetSprinting;
+        input.JumpPressed += Evade;
+        input.AimedWeapon += AimWeapon;
     }
+
+    private void GetGrounded()
+    {
+        if (!_cc.isGrounded)
+        {
+            _cc.Move(Physics.gravity);
+        }
+
+    }
+
+    private void SetSprinting(bool value)
+    {
+        _animator.SetBool("isSprinting", value);
+    }
+
+    private void Evade()
+    {
+        if (_currentState != PlayerState.Jumping)
+        {
+            _currentState = PlayerState.Jumping;
+            _animator.SetTrigger("Evade");
+        }
+    }
+
+    private void AimWeapon(bool value)
+    {
+        if (value)
+        {
+            _currentState = PlayerState.Aiming;
+        }
+        else
+        {
+            _currentState = PlayerState.Walking;
+        }
+
+        //  _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+
+        _animator.SetBool("isAiming", value);
+        _aimingRig.weight = Convert.ToInt32(value);
+    }
+
+    public void EquipWeapon(GameObject weapon)
+    {
+        _weaponHolder.EquipWeapon(weapon);
+    }
+
 }
