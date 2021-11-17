@@ -19,8 +19,6 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     private float _attackRange = 1f;
     private Rigidbody[] _ragdoll;
 
-
-
     private CapsuleCollider _capsuleCollider;
     private Animator _animator;
     private AudioSource _audioSource;

@@ -12,7 +12,6 @@ public class ButtonSFX : MonoBehaviour,IPointerEnterHandler
     private AudioSource _audioSource;
     private Button _button;
 
-    // Start is called before the first frame update
     void Start()
     {
         _button = GetComponent<Button>();

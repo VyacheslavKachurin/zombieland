@@ -5,12 +5,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private LevelController _levelControllerPrefab;
-    private LevelController _levelController;
-    // private LevelController _levelController;
-
-    private SaveSystem _saveSystem;
     public static GameManager Instance = null;
+
+    [SerializeField] private LevelController _levelControllerPrefab;
+
+    private LevelController _levelController;
+    private SaveSystem _saveSystem;
+    private AudioManager _audioManager;
+
     private void Awake()
     {
         if (Instance != null)
@@ -23,6 +25,13 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         _saveSystem = new SaveSystem();
+        
+    }
+
+    private void Start()
+    {
+        _audioManager = AudioManager.Instance;
+        _audioManager.PlayMainTheme();
     }
     private IEnumerator LoadGameAsync()
     {
@@ -68,6 +77,7 @@ public class GameManager : MonoBehaviour
     public void LoadMainMenu()
     {
         SceneManager.LoadScene(0);
+        _audioManager.PlayMainTheme();
     }
 
     public void Restart()
