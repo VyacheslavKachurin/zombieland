@@ -143,8 +143,6 @@ public class Player : MonoBehaviour, IDamageable
 
             _cc.enabled = false;
            
-
-
             OnPlayerDeath?.Invoke(_isDead);
             Destroy(this);
         }
