@@ -74,6 +74,10 @@ public class Enemy : MonoBehaviour, IDamageable
                 case EnemyState.Attacking:
                     SetAttackingState();
                     return;
+                
+                case EnemyState.Dead:
+                    SetDeadState();
+                    return;
 
                 default:
                     return;
@@ -156,23 +160,22 @@ public class Enemy : MonoBehaviour, IDamageable
             _currentHealth -= damageAmount;
             if (_currentHealth <= 0)
             {
-                Die();
+                SwitchState(EnemyState.Dead);
             }
             OnEnemyGotAttacked?.Invoke(damageAmount);
         }
         else
         {
-            Die();
+            SwitchState(EnemyState.Dead);
         }
     }
 
-    private void Die()
+    private void SetDeadState()
     {
         _capsuleCollider.enabled = false;
 
-
         ActivateRagdoll();
-        //TODO: set death state?
+        
         _navMeshAgent.speed = 0; // temporary fix TO
 
         Destroy(gameObject, 3f);
