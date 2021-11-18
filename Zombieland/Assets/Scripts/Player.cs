@@ -6,7 +6,6 @@ using UnityEngine.Animations.Rigging;
 
 public class Player : MonoBehaviour, IDamageable
 {
-
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
@@ -46,12 +45,14 @@ public class Player : MonoBehaviour, IDamageable
     private CharacterController _cc;
     private Rigidbody[] _ragdoll;
 
+    private Vector3 _relatedDirection;
+
     private enum PlayerState
     {
-        Aiming, Walking, Dead, Jumping
+        Idle, Aiming, Moving, Dead, Jumping
     }
 
-    private PlayerState _currentState = PlayerState.Walking;
+    private PlayerState _currentState = PlayerState.Moving;
 
     private void Start()
     {
@@ -65,40 +66,121 @@ public class Player : MonoBehaviour, IDamageable
 
         _ragdoll = GetComponentsInChildren<Rigidbody>();
         DeactivateRagdoll();
+
+        SwitchState(PlayerState.Idle);
     }
 
     private void Update()
     {
-        if (_currentState == PlayerState.Aiming)
-        {
-            AimTowardsMouse();       
-        }
         GetGrounded();
         Move();
+
+        if (_currentState == PlayerState.Moving||_currentState==PlayerState.Jumping)
+        {
+            RotateTowardsMovement();
+        }
+        if (_currentState == PlayerState.Aiming)
+        {
+            LookTowardsMouse();
+            ProcessAimingState();
+        }
     }
 
     private void Move()
     {
         _direction = new Vector3(_horizontal, 0, _vertical);
 
-        Vector3 relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
-        relatedDirection.y = 0;
+        _relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
+        _relatedDirection.y = 0;
 
-        //  transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
+        if (_currentState == PlayerState.Aiming)
+            return;
 
-        _velocityZ = Vector3.Dot(relatedDirection.normalized, transform.forward);
-        _velocityX = Vector3.Dot(relatedDirection.normalized, transform.right);
-
-        _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
-        _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
-
-        if (_direction.magnitude != 0 && _currentState != PlayerState.Aiming)
+        if (_relatedDirection.magnitude > 0)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relatedDirection), Time.deltaTime * 10f);// make turn speed
+            SwitchState(PlayerState.Moving);
+         
+        }
+        else
+        {
+            SwitchState(PlayerState.Idle);  
+        }
+        
+    }
+
+    private void RotateTowardsMovement()
+    {
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_relatedDirection), Time.deltaTime * 10f);// make turn speed
+    }
+
+    private void SwitchState(PlayerState state)
+    {
+        if (_currentState == state)
+        {
+            return;
+        }
+
+        _currentState = state;
+        switch (state)
+        {
+            case PlayerState.Idle:
+                SetIdleState();
+                return;
+
+            case PlayerState.Moving:
+                SetMovingState();
+                return;
+
+            case PlayerState.Aiming:
+                SetAimingState();
+                return;
+
+            case PlayerState.Jumping:
+                SetJumpingState();
+                return;
+
+            default:
+                return;
         }
     }
 
-    private void AimTowardsMouse()
+    private void SetIdleState()
+    {
+        _currentState = PlayerState.Idle;
+        _animator.ResetTrigger("isJogging");
+        _animator.SetTrigger("isIdle");
+
+    }
+
+    private void SetMovingState()
+    {
+        _animator.ResetTrigger("isIdle");
+        _animator.ResetTrigger("isAiming");
+        _animator.SetTrigger("isJogging");
+    }
+
+    private void SetAimingState()
+    {
+        _currentState = PlayerState.Aiming;
+        _animator.SetTrigger("isAiming");
+
+    }
+
+    private void SetJumpingState()
+    {
+        _animator.SetTrigger("Evade");
+    }
+
+    private void ProcessAimingState()
+    {
+        _velocityZ = Vector3.Dot(_relatedDirection.normalized, transform.forward);
+        _velocityX = Vector3.Dot(_relatedDirection.normalized, transform.right);
+
+        _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
+        _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
+    }
+
+    private void LookTowardsMouse()
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();
@@ -129,6 +211,7 @@ public class Player : MonoBehaviour, IDamageable
             }
         }
     }
+
     private void Die()
     {
         if (!_isDead)
@@ -137,12 +220,12 @@ public class Player : MonoBehaviour, IDamageable
 
             ActivateRagdoll();
 
-            _aimingRig.enabled = false ;
-            _holdWeaponRig.enabled=false;
-            _handsIK.enabled=false;
+            _aimingRig.enabled = false;
+            _holdWeaponRig.enabled = false;
+            _handsIK.enabled = false;
 
             _cc.enabled = false;
-           
+
             OnPlayerDeath?.Invoke(_isDead);
             Destroy(this);
         }
@@ -219,13 +302,15 @@ public class Player : MonoBehaviour, IDamageable
         _playerStats = GetComponent<PlayerStats>(); //otherwise it gets called earlier than player assign the variable 
         return _playerStats;
     }
+
     private void UpgradeSpeed(float speed)
     {
         _movementSpeed = speed;
     }
+
     private void FinishJumping()
     {
-        _currentState = PlayerState.Walking;
+        SwitchState(PlayerState.Moving);
     }
 
     public void Initialize(IPlayerInput input)
@@ -236,8 +321,8 @@ public class Player : MonoBehaviour, IDamageable
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;
         input.SprintingSwitched += SetSprinting;
-        input.JumpPressed += Evade;
-        input.AimedWeapon += AimWeapon;
+        input.JumpPressed += GetJumpInput;
+        input.AimedWeapon += ReceiveAimingInput;
     }
 
     private void GetGrounded()
@@ -251,32 +336,44 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetSprinting(bool value)
     {
-        _animator.SetBool("isSprinting", value);
-    }
-
-    private void Evade()
-    {
-        if (_currentState != PlayerState.Jumping)
-        {
-            _currentState = PlayerState.Jumping;
-            _animator.SetTrigger("Evade");
-        }
-    }
-
-    private void AimWeapon(bool value)
-    {
         if (value)
         {
-            _currentState = PlayerState.Aiming;
+            SwitchState(PlayerState.Moving);
+
+            _aimingRig.weight = 0;
+            _animator.SetTrigger("isSprinting");
+
+        }
+
+        else if (!value && _relatedDirection.magnitude > 0)
+        {
+            _animator.ResetTrigger("isSprinting");
+            _animator.SetTrigger("isJogging");
         }
         else
         {
-            _currentState = PlayerState.Walking;
+            _animator.ResetTrigger("isSprinting");
+            _animator.SetTrigger("isIdle");
         }
+    }
 
-        //  _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+    private void GetJumpInput()
+    {
+        SwitchState(PlayerState.Jumping);   
+    }
 
-        _animator.SetBool("isAiming", value);
+    private void ReceiveAimingInput(bool value)
+    {
+
+        if (value)
+        {
+            SwitchState(PlayerState.Aiming);
+        }
+        else
+        {
+            SwitchState(PlayerState.Moving);
+
+        }
         _aimingRig.weight = Convert.ToInt32(value);
     }
 
@@ -291,7 +388,7 @@ public class Player : MonoBehaviour, IDamageable
         {
             rb.isKinematic = true;
         }
-       
+
     }
 
     private void ActivateRagdoll()

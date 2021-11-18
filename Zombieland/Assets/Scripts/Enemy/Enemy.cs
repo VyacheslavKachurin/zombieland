@@ -142,7 +142,6 @@ public class Enemy : MonoBehaviour, IDamageable
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * 5f);
     }
 
-
     private IEnumerator Move()
     {
         while (_currentState == EnemyState.Chasing)
