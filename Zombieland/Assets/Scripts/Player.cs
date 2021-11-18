@@ -17,6 +17,8 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private Rig _holdWeaponRig;
     [SerializeField] private Rig _handsIK;
 
+    [SerializeField] private Animator _rigController;
+
     public float CurrentHealth
     {
         get { return _currentHealth; }
