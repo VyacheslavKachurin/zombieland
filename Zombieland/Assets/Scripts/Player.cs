@@ -56,8 +56,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private PlayerState _currentState = PlayerState.Moving;
 
+    private bool _isWeaponHolstered = false;
 
-    private bool _value = false;
     private void Start()
     {
         _camera = Camera.main;
@@ -88,14 +88,7 @@ public class Player : MonoBehaviour, IDamageable
             LookTowardsMouse();
             ProcessAimingState();
         }
-
-
-        ////////////////////////////
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            _value = !_value;
-            _rigController.SetBool("Rifle_holster",_value);
-        }
+ 
 
 
 
@@ -121,6 +114,14 @@ public class Player : MonoBehaviour, IDamageable
             SwitchState(PlayerState.Idle);  
         }
         
+    }
+
+    private void HolsterWeapon()
+    {
+        _isWeaponHolstered = !_isWeaponHolstered;
+        _rigController.SetBool("Rifle_holster", _isWeaponHolstered);
+        
+       
     }
 
     private void RotateTowardsMovement()
@@ -177,26 +178,30 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetAimingState()
     {
-        _currentState = PlayerState.Aiming;
-        _animator.SetTrigger("isAiming");
+            _currentState = PlayerState.Aiming;
+            _animator.SetTrigger("isAiming");
 
-        _rigController.SetBool("Aim", true);
-
+            _rigController.SetBool("Aim", true);
+        
 
     }
 
     private void SetJumpingState()
     {
+        _animator.ResetTrigger("isSprinting");
+        _animator.ResetTrigger("isJogging");
         _animator.SetTrigger("Evade");
     }
 
     private void ProcessAimingState()
     {
-        _velocityZ = Vector3.Dot(_relatedDirection.normalized, transform.forward);
-        _velocityX = Vector3.Dot(_relatedDirection.normalized, transform.right);
+       
+            _velocityZ = Vector3.Dot(_relatedDirection.normalized, transform.forward);
+            _velocityX = Vector3.Dot(_relatedDirection.normalized, transform.right);
 
-        _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
-        _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
+            _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
+            _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
+        
     }
 
     private void LookTowardsMouse()
@@ -280,7 +285,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ReceiveScroolWheelInput(bool input)
     {
-        _weaponHolder.ChangeWeapon(input);
+       // _weaponHolder.ChangeWeapon(input);
     }
 
     private void GetWeapon(IWeapon weapon)
@@ -342,6 +347,7 @@ public class Player : MonoBehaviour, IDamageable
         input.SprintingSwitched += SetSprinting;
         input.JumpPressed += GetJumpInput;
         input.AimedWeapon += ReceiveAimingInput;
+        input.HolsteredWeapon += HolsterWeapon;
     }
 
     private void GetGrounded()
@@ -360,6 +366,7 @@ public class Player : MonoBehaviour, IDamageable
             SwitchState(PlayerState.Moving);
 
             _aimingRig.weight = 0;
+            _animator.ResetTrigger("isJogging");
             _animator.SetTrigger("isSprinting");
 
         }
@@ -399,7 +406,7 @@ public class Player : MonoBehaviour, IDamageable
 
     public void EquipWeapon(GameObject weapon)
     {
-        _weaponHolder.EquipWeapon(weapon);
+        _weaponHolder.PickUpWeapon(weapon);
 
         _rigController.Play("RifleIdle",0);
     }

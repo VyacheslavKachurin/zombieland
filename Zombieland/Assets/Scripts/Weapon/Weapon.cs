@@ -26,9 +26,9 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private AudioClip _shotClip;
     [SerializeField] private AnimationClip _weaponPose;
 
-    [SerializeField] private Transform _leftGrip;
-    [SerializeField] private Transform _rightGrip;
-         
+    [SerializeField] private WeaponTypes.WeaponType _weaponType;
+
+
     private AudioSource _audioSource;
 
     private float _reloadingRate = 1.5f; // switch from hardcode to event/animation event
@@ -86,14 +86,14 @@ public class Weapon : MonoBehaviour, IWeapon
                 _onBulletsAmountChanged?.Invoke(_currentBulletsAmount);
 
                 _shootingModule.CreateShot(_aimPosition, _gunPoint.position);
-               
+
                 if (_currentBulletsAmount == 0)
                 {
-                    
+
                     _reloadingCoroutine = StartCoroutine(Reloading());
                 }
                 yield return new WaitForSeconds(_firingRate);
-              
+
 
             }
             else
@@ -170,19 +170,10 @@ public class Weapon : MonoBehaviour, IWeapon
         _audioSource.PlayOneShot(_shotClip);
     }
 
-    public AnimationClip ReturnIdlePose()
+    public WeaponTypes.WeaponType WeaponType()
     {
-        return _weaponPose;
+        return _weaponType;
     }
 
-    public Transform RightGrip()
-    {
-        return _rightGrip;
 
-    }
-
-    public Transform LeftGrip()
-    {
-        return _leftGrip;
-    }
 }

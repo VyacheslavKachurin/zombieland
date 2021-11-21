@@ -10,4 +10,5 @@ public interface IPlayerInput
     public event Action<bool> SprintingSwitched;
     public event Action JumpPressed;
     public event Action<bool> AimedWeapon;
+    public event Action HolsteredWeapon;
 }
