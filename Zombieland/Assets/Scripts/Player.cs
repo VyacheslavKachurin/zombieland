@@ -56,6 +56,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private PlayerState _currentState = PlayerState.Moving;
 
+
+    private bool _value = false;
     private void Start()
     {
         _camera = Camera.main;
@@ -86,6 +88,17 @@ public class Player : MonoBehaviour, IDamageable
             LookTowardsMouse();
             ProcessAimingState();
         }
+
+
+        ////////////////////////////
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            _value = !_value;
+            _rigController.SetBool("Rifle_holster",_value);
+        }
+
+
+
     }
 
     private void Move()
@@ -156,6 +169,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetMovingState()
     {
+        _rigController.SetBool("Aim", false);
         _animator.ResetTrigger("isIdle");
         _animator.ResetTrigger("isAiming");
         _animator.SetTrigger("isJogging");
@@ -165,6 +179,9 @@ public class Player : MonoBehaviour, IDamageable
     {
         _currentState = PlayerState.Aiming;
         _animator.SetTrigger("isAiming");
+
+        _rigController.SetBool("Aim", true);
+
 
     }
 
@@ -349,6 +366,7 @@ public class Player : MonoBehaviour, IDamageable
 
         else if (!value && _relatedDirection.magnitude > 0)
         {
+            _animator.ResetTrigger("isAiming");
             _animator.ResetTrigger("isSprinting");
             _animator.SetTrigger("isJogging");
         }
@@ -376,12 +394,14 @@ public class Player : MonoBehaviour, IDamageable
             SwitchState(PlayerState.Moving);
 
         }
-        _aimingRig.weight = Convert.ToInt32(value);
+      //  _aimingRig.weight = Convert.ToInt32(value);
     }
 
     public void EquipWeapon(GameObject weapon)
     {
         _weaponHolder.EquipWeapon(weapon);
+
+        _rigController.Play("RifleIdle",0);
     }
 
     private void DeactivateRagdoll()

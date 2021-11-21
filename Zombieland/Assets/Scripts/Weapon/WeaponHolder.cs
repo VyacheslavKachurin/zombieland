@@ -8,8 +8,14 @@ public class WeaponHolder : MonoBehaviour
     public event Action<IWeapon> OnWeaponChanged;
 
     [SerializeField] private List<GameObject> _weapons = new List<GameObject>();
+    [SerializeField] private GameObject _activeWeapon;
 
     private int _selectedWeapon;
+
+    public enum WeaponType
+    {
+        Pistol, Rifle, GrenadeLauncher, Laser
+    }
 
     private void Start()
     {
@@ -18,9 +24,11 @@ public class WeaponHolder : MonoBehaviour
 
     private void Initialize()
     {
+        /*
         _selectedWeapon = 0;
         _weapons[_selectedWeapon].SetActive(true);
         OnWeaponChanged?.Invoke(ChooseWeapon());
+        */
     }
 
     public void ChangeWeapon(bool input)
@@ -62,21 +70,13 @@ public class WeaponHolder : MonoBehaviour
         IWeapon weapon = _weapons[_selectedWeapon].GetComponent<IWeapon>();
         return weapon;
     }
+
     public void EquipWeapon(GameObject weapon)
     {
-        _weapons.Add(weapon);
         var newWeapon = Instantiate(weapon);
-        newWeapon.transform.parent = this.transform;
-        newWeapon.transform.localPosition = Vector3.zero;
+        newWeapon.transform.parent = _activeWeapon.transform;
+        newWeapon.transform.localPosition = new Vector3(0,0, 0.429f);
         newWeapon.transform.localRotation = Quaternion.identity;
-
-        _selectedWeapon = _weapons.Count-1;
-
-        _weapons[_selectedWeapon-1].SetActive(false);
-        _weapons[_selectedWeapon].SetActive(true);
-        
-
-        OnWeaponChanged?.Invoke(ChooseWeapon());
 
     }
 }
