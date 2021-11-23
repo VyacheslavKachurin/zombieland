@@ -19,6 +19,11 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private Animator _rigController;
 
+    public IPlayerInput Input
+    {
+        get { return _input; }
+    }
+
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -49,6 +54,8 @@ public class Player : MonoBehaviour, IDamageable
 
     private Vector3 _relatedDirection;
 
+    private IPlayerInput _input;
+
     private enum PlayerState
     {
         Idle, Aiming, Moving, Dead, Jumping
@@ -69,6 +76,7 @@ public class Player : MonoBehaviour, IDamageable
         _weaponHolder.OnWeaponChanged += GetWeapon;
 
         _ragdoll = GetComponentsInChildren<Rigidbody>();
+
         DeactivateRagdoll();
 
         SwitchState(PlayerState.Idle);
@@ -79,7 +87,7 @@ public class Player : MonoBehaviour, IDamageable
         GetGrounded();
         Move();
 
-        if (_currentState == PlayerState.Moving||_currentState==PlayerState.Jumping)
+        if (_currentState == PlayerState.Moving || _currentState == PlayerState.Jumping)
         {
             RotateTowardsMovement();
         }
@@ -88,7 +96,7 @@ public class Player : MonoBehaviour, IDamageable
             LookTowardsMouse();
             ProcessAimingState();
         }
- 
+
 
 
 
@@ -107,21 +115,21 @@ public class Player : MonoBehaviour, IDamageable
         if (_relatedDirection.magnitude > 0)
         {
             SwitchState(PlayerState.Moving);
-         
+
         }
         else
         {
-            SwitchState(PlayerState.Idle);  
+            SwitchState(PlayerState.Idle);
         }
-        
+
     }
 
     private void HolsterWeapon()
     {
         _isWeaponHolstered = !_isWeaponHolstered;
         _rigController.SetBool("Rifle_holster", _isWeaponHolstered);
-        
-       
+
+
     }
 
     private void RotateTowardsMovement()
@@ -178,11 +186,11 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetAimingState()
     {
-            _currentState = PlayerState.Aiming;
-            _animator.SetTrigger("isAiming");
+        _currentState = PlayerState.Aiming;
+        _animator.SetTrigger("isAiming");
 
-            _rigController.SetBool("Aim", true);
-        
+        _rigController.SetBool("Aim", true);
+
 
     }
 
@@ -195,13 +203,13 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ProcessAimingState()
     {
-       
-            _velocityZ = Vector3.Dot(_relatedDirection.normalized, transform.forward);
-            _velocityX = Vector3.Dot(_relatedDirection.normalized, transform.right);
 
-            _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
-            _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
-        
+        _velocityZ = Vector3.Dot(_relatedDirection.normalized, transform.forward);
+        _velocityX = Vector3.Dot(_relatedDirection.normalized, transform.right);
+
+        _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
+        _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
+
     }
 
     private void LookTowardsMouse()
@@ -240,17 +248,19 @@ public class Player : MonoBehaviour, IDamageable
     {
         if (!_isDead)
         {
-            _isDead = true;
-
-            ActivateRagdoll();
+            _isDead = true;    
 
             _aimingRig.enabled = false;
             _holdWeaponRig.enabled = false;
             _handsIK.enabled = false;
-
+            _rigController.enabled = false;
             _cc.enabled = false;
 
-            OnPlayerDeath?.Invoke(_isDead);
+            ActivateRagdoll();
+
+          
+
+           // OnPlayerDeath?.Invoke(_isDead);
             Destroy(this);
         }
     }
@@ -285,7 +295,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ReceiveScroolWheelInput(bool input)
     {
-       // _weaponHolder.ChangeWeapon(input);
+        // _weaponHolder.ChangeWeapon(input);
     }
 
     private void GetWeapon(IWeapon weapon)
@@ -339,6 +349,7 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Initialize(IPlayerInput input)
     {
+        _input = input;
         input.Moved += ReceiveAxis;
         input.CursorMoved += ReceiveMouse;
         input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
@@ -386,7 +397,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void GetJumpInput()
     {
-        SwitchState(PlayerState.Jumping);   
+        SwitchState(PlayerState.Jumping);
     }
 
     private void ReceiveAimingInput(bool value)
@@ -401,23 +412,22 @@ public class Player : MonoBehaviour, IDamageable
             SwitchState(PlayerState.Moving);
 
         }
-      //  _aimingRig.weight = Convert.ToInt32(value);
+        //  _aimingRig.weight = Convert.ToInt32(value);
     }
 
     public void EquipWeapon(GameObject weapon)
     {
         _weaponHolder.PickUpWeapon(weapon);
 
-        _rigController.Play("RifleIdle",0);
+        _rigController.Play("RifleIdle", 0);
     }
 
     private void DeactivateRagdoll()
     {
         foreach (var rb in _ragdoll)
-        {
+        {     
             rb.isKinematic = true;
         }
-
     }
 
     private void ActivateRagdoll()
@@ -428,5 +438,6 @@ public class Player : MonoBehaviour, IDamageable
         }
         _animator.enabled = false;
     }
+
 
 }

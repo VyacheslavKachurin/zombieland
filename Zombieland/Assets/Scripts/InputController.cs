@@ -16,6 +16,7 @@ public class InputController : MonoBehaviour, IPlayerInput
     public event Action JumpPressed;
     public event Action<bool> AimedWeapon;
     public event Action HolsteredWeapon;
+    public event Action InteractButtonPressed;
 
     private float _horizontal;
     private float _vertical;
@@ -47,6 +48,7 @@ public class InputController : MonoBehaviour, IPlayerInput
             ReadJumpButton();
             ReadAimingInput();
             ReadHolsterButton();
+            ReadInteractButton();
         }
 
         UpgradeButtonInput();
@@ -181,6 +183,14 @@ public class InputController : MonoBehaviour, IPlayerInput
         if (Input.GetKeyDown(KeyCode.X))
         {
             HolsteredWeapon();
+        }
+    }
+
+    private void ReadInteractButton()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            InteractButtonPressed?.Invoke();
         }
     }
 
