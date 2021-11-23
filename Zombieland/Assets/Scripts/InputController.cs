@@ -17,6 +17,7 @@ public class InputController : MonoBehaviour, IPlayerInput
     public event Action<bool> AimedWeapon;
     public event Action HolsteredWeapon;
     public event Action InteractButtonPressed;
+    public event Action InventoryButtonPressed;
 
     private float _horizontal;
     private float _vertical;
@@ -49,6 +50,7 @@ public class InputController : MonoBehaviour, IPlayerInput
             ReadAimingInput();
             ReadHolsterButton();
             ReadInteractButton();
+            ReadInventoryButton();
         }
 
         UpgradeButtonInput();
@@ -142,7 +144,7 @@ public class InputController : MonoBehaviour, IPlayerInput
 
     private void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.U) && !_wasPausePressed)
+        if (Input.GetKeyDown(KeyCode.U) && !_wasPausePressed) //TODO : get rid of bools
         {
             _isPaused = !_isPaused;
             _isUpgradeOn = !_isUpgradeOn;
@@ -191,6 +193,14 @@ public class InputController : MonoBehaviour, IPlayerInput
         if (Input.GetKeyDown(KeyCode.F))
         {
             InteractButtonPressed?.Invoke();
+        }
+    }
+
+    private void ReadInventoryButton()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            InventoryButtonPressed?.Invoke();
         }
     }
 

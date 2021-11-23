@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class ItemPickUp : Interactable
 {
+    [SerializeField] Item item;
+    private InventoryModel _inventoryModel;
     public override void Interact()
     {
-        Debug.Log("Interacted");
         Unsubscribe();
         PickUp();
     }
 
     private void PickUp()
     {
-        Destroy(gameObject);
+        _inventoryModel = _player.InventoryModel;
+
+        bool wasAdded = _inventoryModel.Add(item);
+
+        if (wasAdded)
+        {
+            Destroy(gameObject);
+        }
     }
 }

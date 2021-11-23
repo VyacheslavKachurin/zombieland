@@ -24,6 +24,14 @@ public class Player : MonoBehaviour, IDamageable
         get { return _input; }
     }
 
+    public InventoryModel InventoryModel
+    {
+        get => _inventoryModel;
+        set { _inventoryModel = value; } // i dont remember the nice syntax;
+    }
+
+    private InventoryModel _inventoryModel;
+
     public float CurrentHealth
     {
         get { return _currentHealth; }
@@ -248,7 +256,7 @@ public class Player : MonoBehaviour, IDamageable
     {
         if (!_isDead)
         {
-            _isDead = true;    
+            _isDead = true;
 
             _aimingRig.enabled = false;
             _holdWeaponRig.enabled = false;
@@ -258,9 +266,9 @@ public class Player : MonoBehaviour, IDamageable
 
             ActivateRagdoll();
 
-          
 
-           // OnPlayerDeath?.Invoke(_isDead);
+
+            // OnPlayerDeath?.Invoke(_isDead);
             Destroy(this);
         }
     }
@@ -425,7 +433,7 @@ public class Player : MonoBehaviour, IDamageable
     private void DeactivateRagdoll()
     {
         foreach (var rb in _ragdoll)
-        {     
+        {
             rb.isKinematic = true;
         }
     }

@@ -3,36 +3,37 @@ using UnityEngine;
 public abstract class Interactable : MonoBehaviour
 {
     [SerializeField] public float _radius = 3f;
+
+    protected Player _player;
     private IPlayerInput _input;
+    private InventoryModel _inventoryModel;
 
     public abstract void Interact();
 
     public void ShowMessage()
     {
         Debug.Log("Press F to interact");
-
     }
 
     public void HideMessage()
     {
-        Debug.Log("dont press f");
+        
     }
 
     public void Subscribe()
     {
         _input.InteractButtonPressed += Interact;
-        Debug.Log("subscribed");
     }
 
     public void Unsubscribe()
     {
         _input.InteractButtonPressed -= Interact;
-        Debug.Log("unsubcribed");
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        _input = other.gameObject.GetComponent<Player>().Input;
+        _player = other.gameObject.GetComponent<Player>();
+        _input = _player.Input;
 
         ShowMessage();
         Subscribe();

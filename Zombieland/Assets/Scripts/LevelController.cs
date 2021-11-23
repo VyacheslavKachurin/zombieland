@@ -19,6 +19,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private UpgradeMenu _upgradeMenu;
     [SerializeField] private PauseMenu _pauseMenu;
     [SerializeField] private GameObject _aimingLayer;
+    [SerializeField] private InventoryModel _inventoryModel;
 
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
@@ -35,6 +36,7 @@ public class LevelController : MonoBehaviour
 
     private void Initialize()
     {
+        _inventoryModel=Instantiate(_inventoryModel);
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
         _pauseMenu = Instantiate(_pauseMenu);
         _isGamePaused = false;
@@ -53,6 +55,7 @@ public class LevelController : MonoBehaviour
         _cameraFollow.SetCrosshairPosition(_crosshair.transform);
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
+        _player.InventoryModel = _inventoryModel;
 
         _cameraFollow.SetTarget(_player.transform);
 
@@ -140,6 +143,8 @@ public class LevelController : MonoBehaviour
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
         _enemySpawner.SetExperienceSystem(_experienceSystem);
+
+        _inputController.InventoryButtonPressed += _inventoryModel.TogglePanel;
     }
 
     private void SaveGame()

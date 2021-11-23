@@ -6,5 +6,10 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
     public string Name = "New Item";
-    public Sprite Icone = null;
+    public Sprite Icon = null;
+
+    public virtual void Use()
+    {
+        Debug.Log("Using" + Name);
+    }
 }
