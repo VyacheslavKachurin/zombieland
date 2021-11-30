@@ -52,9 +52,17 @@ public class InventorySlot : MonoBehaviour
     {
         if (Item != null)
         {
-            Item.Use();
+         
+
+            EquipmentManager.Instance.Equip(Item);
+            ClearSlot();
         }
     }
 
+    public void Disable()
+    {
+        _itemButton.interactable = false;
+        _removeButton.interactable = false;
+    }
 
 }

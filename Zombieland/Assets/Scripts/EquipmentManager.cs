@@ -7,6 +7,8 @@ public class EquipmentManager : MonoBehaviour
     public Equipment[] _currentEquipment;
     public static EquipmentManager Instance;
 
+    private EquipmentView _view;
+
     void Start()
     {
         Instance = this;
@@ -15,12 +17,13 @@ public class EquipmentManager : MonoBehaviour
         _currentEquipment = new Equipment[numofSlots];
     }
 
-    public void Equip(Equipment newItem)
+    public void Equip(Item newItem)
     {
-        int slotIndex = (int)newItem.EquipSlot;
+        _view.EquipItem(newItem);
+    }
 
-        _currentEquipment[slotIndex] = newItem;
-
-        Debug.Log($"{newItem} equipped");
+    public void GetEquipmentView(EquipmentView view)
+    {
+        _view = view;
     }
 }

@@ -11,6 +11,9 @@ public class Item : ScriptableObject
     public string Name = "New Item";
     public Sprite Icon = null;
 
+    public EquipmentSlot EquipSlot;
+
+
 
 
     public virtual void Use()
@@ -18,4 +21,7 @@ public class Item : ScriptableObject
         Debug.Log("Using" + Name);
     }
 
+  
+
 }
+public enum EquipmentSlot { Weapon, Helmet, Chest, AidKit, Grenade }

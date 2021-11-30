@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="New Equipment", menuName ="Equipment")]
 public class Equipment : Item
 {
-    public EquipmentSlot EquipSlot;
     public int ArmorModifier;
 
     public override void Use()
@@ -16,4 +15,4 @@ public class Equipment : Item
     }
 }
 
-public enum EquipmentSlot { Head,Chest,Legs,Weapon,Feet}
+
