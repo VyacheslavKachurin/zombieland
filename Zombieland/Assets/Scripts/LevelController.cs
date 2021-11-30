@@ -45,6 +45,7 @@ public class LevelController : MonoBehaviour
        
 
         _equipmentManager.GetEquipmentView(_equipmentView);
+       
 
         _inventoryModel=Instantiate(_inventoryModel);
 
@@ -83,6 +84,8 @@ public class LevelController : MonoBehaviour
         _inputController.OnGamePaused += TogglePause;
 
         _player.Initialize(_inputController);
+
+        _equipmentManager.GetPlayer(_player);
 
         _HUD = Instantiate(_HUD);
         _inputController.OnGamePaused += _pauseMenu.ShowPanel;

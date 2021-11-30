@@ -8,6 +8,7 @@ public class EquipmentManager : MonoBehaviour
     public static EquipmentManager Instance;
 
     private EquipmentView _view;
+    private Player _player;
 
     void Start()
     {
@@ -20,10 +21,32 @@ public class EquipmentManager : MonoBehaviour
     public void Equip(Item newItem)
     {
         _view.EquipItem(newItem);
+        if (newItem.EquipSlot == EquipmentSlot.Weapon)
+        {
+            _player.EquipWeapon(newItem.ItemObject);
+            return;
+        }
+
+        if (newItem.EquipSlot == EquipmentSlot.Helmet)
+        {
+            _player.EquipHelmet(newItem.ItemObject);
+            return;
+        }
+
+        if (newItem.EquipSlot == EquipmentSlot.Vest)
+        {
+            _player.EquipVest(newItem.ItemObject);
+            return;
+        }
     }
 
     public void GetEquipmentView(EquipmentView view)
     {
         _view = view;
+    }
+
+    public void GetPlayer(Player player)
+    {
+        _player = player;
     }
 }

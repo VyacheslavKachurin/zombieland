@@ -52,8 +52,6 @@ public class InventorySlot : MonoBehaviour
     {
         if (Item != null)
         {
-         
-
             EquipmentManager.Instance.Equip(Item);
             ClearSlot();
         }

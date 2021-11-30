@@ -12,6 +12,7 @@ public class Item : ScriptableObject
     public Sprite Icon = null;
 
     public EquipmentSlot EquipSlot;
+    public GameObject ItemObject;
 
 
 
@@ -24,4 +25,4 @@ public class Item : ScriptableObject
   
 
 }
-public enum EquipmentSlot { Weapon, Helmet, Chest, AidKit, Grenade }
+public enum EquipmentSlot { Weapon, Helmet, Vest, AidKit, Grenade }

@@ -11,6 +11,8 @@ public class Player : MonoBehaviour, IDamageable
     public event Action<IWeapon> OnWeaponChanged;
 
     [SerializeField] private WeaponHolder _weaponHolder;
+    [SerializeField] private Transform _helmetHolder;
+    [SerializeField] private Transform _vestHolder;
     [SerializeField] private GameObject _aimingObject;
 
     [SerializeField] private Rig _aimingRig;
@@ -22,6 +24,7 @@ public class Player : MonoBehaviour, IDamageable
     public IPlayerInput Input
     {
         get { return _input; }
+
     }
 
     public InventoryModel InventoryModel
@@ -54,6 +57,8 @@ public class Player : MonoBehaviour, IDamageable
     private float _movementSpeed;
 
     private IWeapon _currentWeapon;
+    private GameObject _currentHelmet;
+    private GameObject _currentVest;
 
     private Camera _camera;
 
@@ -445,6 +450,35 @@ public class Player : MonoBehaviour, IDamageable
             rb.isKinematic = false;
         }
         _animator.enabled = false;
+    }
+
+    public void EquipHelmet(GameObject helmet)
+    {
+        var newHelmet = Instantiate(helmet);
+        if (_currentHelmet != null)
+        {
+            Destroy(_currentHelmet);
+        }
+        _currentVest = newHelmet;
+
+        newHelmet.transform.parent = _helmetHolder;
+        newHelmet.transform.localPosition = Vector3.zero;
+        newHelmet.transform.localRotation = Quaternion.Euler(-90,0,0);
+    }
+
+    public void EquipVest(GameObject vest)
+    {
+        var newVest = Instantiate(vest);
+
+        if (_currentVest != null)
+        {
+            Destroy(_currentVest);
+        }
+        _currentVest = newVest;
+
+        newVest.transform.parent = _vestHolder;
+        newVest.transform.localPosition = Vector3.zero;
+        newVest.transform.localRotation = Quaternion.Euler(-90, 0, 0);
     }
 
 

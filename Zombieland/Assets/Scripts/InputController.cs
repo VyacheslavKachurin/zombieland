@@ -50,9 +50,10 @@ public class InputController : MonoBehaviour, IPlayerInput
             ReadAimingInput();
             ReadHolsterButton();
             ReadInteractButton();
-            ReadInventoryButton();
+            
         }
 
+        ReadInventoryButton();
         UpgradeButtonInput();
         ReadPauseInput();
     }
