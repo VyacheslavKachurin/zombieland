@@ -2,8 +2,6 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
-    [SerializeField] public float _radius = 3f;
-
     protected Player _player;
     private IPlayerInput _input;
     private InventoryModel _inventoryModel;

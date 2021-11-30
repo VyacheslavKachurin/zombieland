@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class InventorySlot : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private Image _icon;
     [SerializeField] private Button _removeButton;
     [SerializeField] private Button _itemButton;
+    [SerializeField] private TextMeshProUGUI _itemAmountText;
 
  
     public void AddItem(Item newItem)
@@ -23,7 +25,9 @@ public class InventorySlot : MonoBehaviour
         _removeButton.onClick.AddListener(RemoveButtonClicked);
 
         _itemButton.interactable = true;
-        _itemButton.onClick.AddListener(UseItem);
+        _itemButton.onClick.AddListener(EquipItem);
+
+       
     }
 
     public void ClearSlot()
@@ -44,7 +48,7 @@ public class InventorySlot : MonoBehaviour
         ItemRemoved?.Invoke(Item);
     }
 
-    private void UseItem()
+    private void EquipItem()
     {
         if (Item != null)
         {

@@ -18,16 +18,16 @@ public class InventoryModel : MonoBehaviour
         TogglePanel();
     }
 
-    public bool Add(Item item)
-    {       
+    public bool Add(Item newItem)
+    {
         if (_items.Count >= Capacity)
         {
             Debug.Log("not enough space");
             return false;
         }
 
-        _items.Add(item);
-        ItemAdded?.Invoke(item);
+        _items.Add(newItem);
+        ItemAdded?.Invoke(newItem);
 
         return true;
     }

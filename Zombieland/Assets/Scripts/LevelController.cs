@@ -20,6 +20,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private PauseMenu _pauseMenu;
     [SerializeField] private GameObject _aimingLayer;
     [SerializeField] private InventoryModel _inventoryModel;
+    [SerializeField] private EquipmentManager _equipmentManager;
 
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
@@ -36,7 +37,11 @@ public class LevelController : MonoBehaviour
 
     private void Initialize()
     {
+        _equipmentManager = Instantiate(_equipmentManager);
+
         _inventoryModel=Instantiate(_inventoryModel);
+    
+
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
         _pauseMenu = Instantiate(_pauseMenu);
         _isGamePaused = false;
