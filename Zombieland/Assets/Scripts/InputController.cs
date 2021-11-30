@@ -31,14 +31,19 @@ public class InputController : MonoBehaviour, IPlayerInput
     private bool _isUpgradeOn = false;
     private bool _wasPausePressed = false;
 
+    private enum InputState { Playing, Paused, Upgrading, Inventory };
+
+    private InputState _currentState;
+
     private void Start()
     {
         _camera = Camera.main;
+        _currentState = InputState.Playing;
     }
 
     private void Update()
     {
-        if (!_isPaused)
+        if (_currentState == InputState.Playing)
         {
             ReadSprintButton();
             ReadAxisInput();
@@ -50,7 +55,7 @@ public class InputController : MonoBehaviour, IPlayerInput
             ReadAimingInput();
             ReadHolsterButton();
             ReadInteractButton();
-            
+
         }
 
         ReadInventoryButton();
@@ -60,12 +65,19 @@ public class InputController : MonoBehaviour, IPlayerInput
 
     private void ReadPauseInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !_isUpgradeOn)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            _wasPausePressed = !_wasPausePressed;
-            _isPaused = !_isPaused;
-            OnGamePaused(_isPaused);
+            if (_currentState == InputState.Playing || _currentState == InputState.Paused)
+            {
+                _isPaused = !_isPaused;
+
+                _currentState = _currentState == InputState.Playing ? InputState.Paused : InputState.Playing;
+
+                OnGamePaused(_isPaused);
+            }
         }
+
+
     }
 
     private void ReadAxisInput()
@@ -79,7 +91,7 @@ public class InputController : MonoBehaviour, IPlayerInput
     private void ReadCursorInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _layerMask))
         {
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           
@@ -92,12 +104,13 @@ public class InputController : MonoBehaviour, IPlayerInput
         if (Input.GetButtonDown("Fire2"))
         {
             AimedWeapon(true);
-         
-        } if (Input.GetButtonUp("Fire2"))
+
+        }
+        if (Input.GetButtonUp("Fire2"))
         {
             AimedWeapon(false);
         }
-        
+
     }
 
     private void ReadShootInput()
@@ -145,13 +158,16 @@ public class InputController : MonoBehaviour, IPlayerInput
 
     private void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.U) && !_wasPausePressed) //TODO : get rid of bools
+        if (Input.GetKeyDown(KeyCode.U)) //TODO : get rid of bools
         {
-            _isPaused = !_isPaused;
-            _isUpgradeOn = !_isUpgradeOn;
-            OnUpgradeButtonPressed(_isPaused);
+            if (_currentState == InputState.Playing || _currentState == InputState.Upgrading)
+            {
+                _isPaused = !_isPaused;
 
+                _currentState = _currentState == InputState.Playing ? InputState.Upgrading : InputState.Playing;
 
+                OnUpgradeButtonPressed(_isPaused);
+            }
         }
     }
 
@@ -161,13 +177,13 @@ public class InputController : MonoBehaviour, IPlayerInput
         _wasPausePressed = false;
 
     }
-    
+
     private void ReadSprintButton()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             SprintingSwitched(true);
-        } 
+        }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             SprintingSwitched(false);
@@ -201,7 +217,13 @@ public class InputController : MonoBehaviour, IPlayerInput
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
-            InventoryButtonPressed?.Invoke();
+            if (_currentState == InputState.Playing || _currentState == InputState.Inventory)
+            {
+                _isPaused = !_isPaused;
+
+                _currentState = _currentState == InputState.Playing ? InputState.Inventory : InputState.Playing;
+                InventoryButtonPressed?.Invoke();
+            }
         }
     }
 
