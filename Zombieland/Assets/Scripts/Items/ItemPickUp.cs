@@ -13,7 +13,7 @@ public class ItemPickUp : Interactable
         var createdItem=Instantiate(item.ItemObject);
         createdItem.transform.parent = transform;      
         createdItem.transform.localPosition = Vector3.zero;
-        createdItem.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+       // createdItem.transform.localRotation = Quaternion.Euler(-90, 0, 0);
 
 
     }

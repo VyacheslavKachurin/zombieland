@@ -455,11 +455,12 @@ public class Player : MonoBehaviour, IDamageable
     public void EquipHelmet(GameObject helmet)
     {
         var newHelmet = Instantiate(helmet);
+
         if (_currentHelmet != null)
         {
             Destroy(_currentHelmet);
         }
-        _currentVest = newHelmet;
+        _currentHelmet = newHelmet;
 
         newHelmet.transform.parent = _helmetHolder;
         newHelmet.transform.localPosition = Vector3.zero;

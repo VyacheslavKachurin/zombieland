@@ -175,5 +175,10 @@ public class Weapon : MonoBehaviour, IWeapon
         return _weaponType;
     }
 
+    public void Unequip()
+    {
+        Destroy(gameObject);
+    }
+
 
 }

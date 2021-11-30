@@ -13,6 +13,10 @@ public class WeaponHolder : MonoBehaviour
 
     public void PickUpWeapon(GameObject weapon)
     {
+        if (_currentWeapon != null)
+        {
+            _currentWeapon.Unequip();
+        }
         var newWeapon = Instantiate(weapon);
         newWeapon.transform.parent = _activeWeapon.transform;
         newWeapon.transform.localPosition = new Vector3(0,0, 0.429f);

@@ -21,4 +21,6 @@ public interface IWeapon
 
     public WeaponType WeaponType();
 
+    public void Unequip();
+
 }
