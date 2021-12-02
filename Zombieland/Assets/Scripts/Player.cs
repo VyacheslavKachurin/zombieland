@@ -479,5 +479,6 @@ public class Player : MonoBehaviour, IDamageable
         newVest.transform.parent = _vestHolder;
         newVest.transform.localPosition = Vector3.zero;
         newVest.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
     }
 }
