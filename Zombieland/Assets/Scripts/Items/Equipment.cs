@@ -6,13 +6,6 @@ using UnityEngine;
 public class Equipment : Item
 {
     public int ArmorModifier;
-
-    public override void Use()
-    {
-        base.Use();
-        EquipmentManager.Instance.Equip(this);
-        
-    }
 }
 
 

@@ -39,8 +39,6 @@ public class EquipmentView : MonoBehaviour
         }
 
         slot.AddItem(item);
-
-        // slot.Disable();
     }
 
     public void GetInventoryModel(InventoryModel model)
@@ -48,14 +46,4 @@ public class EquipmentView : MonoBehaviour
         _inventoryModel = model;
     }
 
-    public void ToggleButtons()
-    {
-        foreach (var slot in _slots)
-        {
-            if (slot.Item != null)
-            {
-                slot.ToggleRemoveButton();
-            }
-        }
-    }
 }

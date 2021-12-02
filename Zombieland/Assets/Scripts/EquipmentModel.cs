@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentManager : MonoBehaviour
+public class EquipmentModel : MonoBehaviour
 {
     public Equipment[] _currentEquipment;
-    public static EquipmentManager Instance;
+    public static EquipmentModel Instance;
 
     private EquipmentView _view;
     private Player _player;
-    private InventoryModel _inventoryModel;
 
     void Start()
     {
-        Instance = this;
 
         int numofSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
         _currentEquipment = new Equipment[numofSlots];
@@ -51,8 +49,5 @@ public class EquipmentManager : MonoBehaviour
         _player = player;
     }
 
-    public void GetInventoryModel(InventoryModel model)
-    {
-        _inventoryModel = model;
-    }
+
 }

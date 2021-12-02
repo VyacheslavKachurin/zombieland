@@ -24,7 +24,6 @@ public class Player : MonoBehaviour, IDamageable
     public IPlayerInput Input
     {
         get { return _input; }
-
     }
 
     public InventoryModel InventoryModel

@@ -28,8 +28,6 @@ public class InputController : MonoBehaviour, IPlayerInput
 
     private bool _isPaused = false;
 
-    private bool _isUpgradeOn = false;
-    private bool _wasPausePressed = false;
 
     private enum InputState { Playing, Paused, Upgrading, Inventory };
 
@@ -174,7 +172,8 @@ public class InputController : MonoBehaviour, IPlayerInput
     public void Continue()
     {
         _isPaused = false;
-        _wasPausePressed = false;
+        _currentState = InputState.Playing;
+        OnGamePaused(_isPaused);
 
     }
 

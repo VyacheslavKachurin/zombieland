@@ -6,6 +6,7 @@ using TMPro;
 public class InventorySlot : MonoBehaviour
 {
     public event Action<Item> ItemRemoved;
+    public event Action<Item> ItemEquipped;
 
     public Item Item = null;
     [SerializeField] private Image _icon;
@@ -13,7 +14,7 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private Button _itemButton;
     [SerializeField] private TextMeshProUGUI _itemAmountText;
 
- 
+
     public void AddItem(Item newItem)
     {
 
@@ -23,10 +24,16 @@ public class InventorySlot : MonoBehaviour
 
         ToggleRemoveButton();
 
-        _removeButton.onClick.AddListener(RemoveButtonClicked);
+        if (_removeButton != null)
+        {
+            _removeButton.onClick.AddListener(RemoveButtonClicked);
+        }
 
-        _itemButton.interactable = true;
-        _itemButton.onClick.AddListener(EquipItem);       
+        if (_itemButton != null)
+        {
+            _itemButton.interactable = true;
+            _itemButton.onClick.AddListener(EquipItem);
+        }
     }
 
     public void ClearSlot()
@@ -34,16 +41,19 @@ public class InventorySlot : MonoBehaviour
         Item = null;
         _icon.sprite = null;
         _icon.enabled = false;
-        _removeButton.interactable = false;
-        _removeButton.onClick.RemoveAllListeners();
-
-        _itemButton.interactable = false;
-        _itemButton.onClick.RemoveAllListeners();
 
         if (_removeButton != null)
         {
+            _removeButton.interactable = false;
             _removeButton.onClick.RemoveAllListeners();
         }
+
+        if (_itemButton != null)
+        {
+            _itemButton.interactable = false;
+            _itemButton.onClick.RemoveAllListeners();
+        }
+
     }
 
     private void RemoveButtonClicked()
@@ -56,7 +66,7 @@ public class InventorySlot : MonoBehaviour
     {
         if (Item != null)
         {
-            EquipmentManager.Instance.Equip(Item);
+            ItemEquipped?.Invoke(Item);
             ClearSlot();
         }
     }
@@ -69,7 +79,8 @@ public class InventorySlot : MonoBehaviour
 
     public void ToggleRemoveButton()
     {
-        _removeButton.interactable = !_removeButton.interactable;     
+        if (_removeButton != null)
+            _removeButton.interactable = !_removeButton.interactable;
     }
 
 

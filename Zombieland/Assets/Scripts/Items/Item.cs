@@ -14,15 +14,6 @@ public class Item : ScriptableObject
     public EquipmentSlot EquipSlot;
     public GameObject ItemObject;
 
-
-
-
-    public virtual void Use()
-    {
-        Debug.Log("Using" + Name);
-    }
-
-  
-
 }
+
 public enum EquipmentSlot { Weapon, Helmet, Vest, AidKit, Grenade }

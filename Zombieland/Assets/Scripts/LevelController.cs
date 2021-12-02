@@ -20,8 +20,10 @@ public class LevelController : MonoBehaviour
     [SerializeField] private PauseMenu _pauseMenu;
     [SerializeField] private GameObject _aimingLayer;
     [SerializeField] private InventoryModel _inventoryModel;
-    [SerializeField] private EquipmentManager _equipmentManager;
+    [SerializeField] private EquipmentModel _equipmentModel;
     [SerializeField] private EquipmentView _equipmentView;
+
+    private InventoryView _inventoryView;
     
 
     private ExperienceSystem _experienceSystem;
@@ -39,18 +41,20 @@ public class LevelController : MonoBehaviour
 
     private void Initialize()
     {
-        _equipmentManager = Instantiate(_equipmentManager);
+        _equipmentModel = Instantiate(_equipmentModel);
 
         _equipmentView = Instantiate(_equipmentView);
        
-
-        _equipmentManager.GetEquipmentView(_equipmentView);
        
+        _equipmentModel.GetEquipmentView(_equipmentView);
+    
 
         _inventoryModel=Instantiate(_inventoryModel);
-        _equipmentManager.GetInventoryModel(_inventoryModel);
-
         _equipmentView.GetInventoryModel(_inventoryModel);
+
+        _inventoryView = _inventoryModel.GetComponent<InventoryView>();
+        _inventoryView.GetEquipmentModel(_equipmentModel);
+
 
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
         _pauseMenu = Instantiate(_pauseMenu);
@@ -86,10 +90,7 @@ public class LevelController : MonoBehaviour
 
         _player.Initialize(_inputController);
 
-        _equipmentManager.GetPlayer(_player);
-
-
-        _inputController.InventoryButtonPressed += _equipmentView.ToggleButtons;
+        _equipmentModel.GetPlayer(_player);
 
         _HUD = Instantiate(_HUD);
         _inputController.OnGamePaused += _pauseMenu.ShowPanel;
