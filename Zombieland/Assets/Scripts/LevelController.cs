@@ -21,11 +21,10 @@ public class LevelController : MonoBehaviour
     [SerializeField] private GameObject _aimingLayer;
     [SerializeField] private InventoryModel _inventoryModel;
     [SerializeField] private EquipmentModel _equipmentModel;
-    [SerializeField] private EquipmentView _equipmentView;
 
+    private EquipmentView _equipmentView;
     private InventoryView _inventoryView;
     
-
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
 
@@ -43,13 +42,11 @@ public class LevelController : MonoBehaviour
     {
         _equipmentModel = Instantiate(_equipmentModel);
 
-        _equipmentView = Instantiate(_equipmentView);
-       
-       
-        _equipmentModel.GetEquipmentView(_equipmentView);
+        _equipmentView = _equipmentModel.GetComponent<EquipmentView>();
     
 
         _inventoryModel=Instantiate(_inventoryModel);
+
         _equipmentView.GetInventoryModel(_inventoryModel);
 
         _inventoryView = _inventoryModel.GetComponent<InventoryView>();
