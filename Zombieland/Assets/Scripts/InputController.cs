@@ -219,10 +219,10 @@ public class InputController : MonoBehaviour, IPlayerInput
         {
             if (_currentState == InputState.Playing || _currentState == InputState.Inventory)
             {
-                _isPaused = !_isPaused;
-
+              
                 _currentState = _currentState == InputState.Playing ? InputState.Inventory : InputState.Playing;
                 InventoryButtonPressed?.Invoke();
+                
             }
         }
     }

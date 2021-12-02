@@ -464,7 +464,7 @@ public class Player : MonoBehaviour, IDamageable
 
         newHelmet.transform.parent = _helmetHolder;
         newHelmet.transform.localPosition = Vector3.zero;
-        newHelmet.transform.localRotation = Quaternion.Euler(-90,0,0);
+        newHelmet.transform.localRotation = Quaternion.Euler(-90, 0, 0);
     }
 
     public void EquipVest(GameObject vest)
@@ -481,6 +481,4 @@ public class Player : MonoBehaviour, IDamageable
         newVest.transform.localPosition = Vector3.zero;
         newVest.transform.localRotation = Quaternion.Euler(-90, 0, 0);
     }
-
-
 }

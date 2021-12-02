@@ -23,9 +23,8 @@ public class EquipmentView : MonoBehaviour
     private void CreateSlot()
     {
         var slot = Instantiate(_slot, _slotParent);
-      
+
         _slots.Add(slot);
-        // slot.ItemRemoved += _inventoryModel.Remove;
     }
 
     public void EquipItem(Item item)
@@ -35,18 +34,28 @@ public class EquipmentView : MonoBehaviour
         var slot = _slots[slotIndex];
         if (slot.Item != null)
         {
-           
             _inventoryModel.Add(slot.Item);
             slot.ClearSlot();
         }
 
         slot.AddItem(item);
 
-        slot.Disable();
+        // slot.Disable();
     }
 
     public void GetInventoryModel(InventoryModel model)
     {
         _inventoryModel = model;
+    }
+
+    public void ToggleButtons()
+    {
+        foreach (var slot in _slots)
+        {
+            if (slot.Item != null)
+            {
+                slot.ToggleRemoveButton();
+            }
+        }
     }
 }

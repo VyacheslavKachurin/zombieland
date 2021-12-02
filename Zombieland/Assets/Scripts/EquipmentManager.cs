@@ -9,6 +9,7 @@ public class EquipmentManager : MonoBehaviour
 
     private EquipmentView _view;
     private Player _player;
+    private InventoryModel _inventoryModel;
 
     void Start()
     {
@@ -48,5 +49,10 @@ public class EquipmentManager : MonoBehaviour
     public void GetPlayer(Player player)
     {
         _player = player;
+    }
+
+    public void GetInventoryModel(InventoryModel model)
+    {
+        _inventoryModel = model;
     }
 }

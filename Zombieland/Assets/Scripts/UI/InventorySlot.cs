@@ -21,13 +21,12 @@ public class InventorySlot : MonoBehaviour
         _icon.sprite = Item.Icon;
         _icon.enabled = true;
 
-        _removeButton.interactable = true;
+        ToggleRemoveButton();
+
         _removeButton.onClick.AddListener(RemoveButtonClicked);
 
         _itemButton.interactable = true;
-        _itemButton.onClick.AddListener(EquipItem);
-
-       
+        _itemButton.onClick.AddListener(EquipItem);       
     }
 
     public void ClearSlot()
@@ -40,6 +39,11 @@ public class InventorySlot : MonoBehaviour
 
         _itemButton.interactable = false;
         _itemButton.onClick.RemoveAllListeners();
+
+        if (_removeButton != null)
+        {
+            _removeButton.onClick.RemoveAllListeners();
+        }
     }
 
     private void RemoveButtonClicked()
@@ -60,7 +64,13 @@ public class InventorySlot : MonoBehaviour
     public void Disable()
     {
         _itemButton.interactable = false;
-        _removeButton.interactable = false;
+        ToggleRemoveButton();
     }
+
+    public void ToggleRemoveButton()
+    {
+        _removeButton.interactable = !_removeButton.interactable;     
+    }
+
 
 }

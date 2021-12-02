@@ -48,6 +48,7 @@ public class LevelController : MonoBehaviour
        
 
         _inventoryModel=Instantiate(_inventoryModel);
+        _equipmentManager.GetInventoryModel(_inventoryModel);
 
         _equipmentView.GetInventoryModel(_inventoryModel);
 
@@ -86,6 +87,9 @@ public class LevelController : MonoBehaviour
         _player.Initialize(_inputController);
 
         _equipmentManager.GetPlayer(_player);
+
+
+        _inputController.InventoryButtonPressed += _equipmentView.ToggleButtons;
 
         _HUD = Instantiate(_HUD);
         _inputController.OnGamePaused += _pauseMenu.ShowPanel;
