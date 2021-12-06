@@ -73,7 +73,7 @@ public class Player : MonoBehaviour, IDamageable
         Idle, Aiming, Moving, Dead, Jumping
     }
 
-    private PlayerState _currentState = PlayerState.Moving;
+    private PlayerState _currentState;
 
     private bool _isWeaponHolstered = false;
 

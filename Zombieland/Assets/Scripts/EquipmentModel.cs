@@ -10,11 +10,16 @@ public class EquipmentModel : MonoBehaviour
     private EquipmentView _view;
     private Player _player;
 
-    void Start()
+   //void Start()
+   // {
+   //     _view = GetComponent<EquipmentView>();
+   //     int numofSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
+   //     _currentEquipment = new Equipment[numofSlots];
+   // }
+
+    public EquipmentModel(EquipmentView view)
     {
-        _view = GetComponent<EquipmentView>();
-        int numofSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
-        _currentEquipment = new Equipment[numofSlots];
+        _view = view;
     }
 
     public void Equip(Item newItem)

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class FollowingCamera : MonoBehaviour
 {
     [Range(0f, 10f)] [SerializeField] private float _smoothSpeed;
     [Range(0f, 10f)] [SerializeField] private float _radius;

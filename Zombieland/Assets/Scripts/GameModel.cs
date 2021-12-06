@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class LevelController : MonoBehaviour
+public class GameModel : MonoBehaviour
 {
     public Player Player
     { get { return _player; } }
@@ -11,20 +11,26 @@ public class LevelController : MonoBehaviour
     { get { return _experienceSystem; } }
 
     [SerializeField] private Player _player;
-    [SerializeField] private InputController _inputController;
-    [SerializeField] private CameraFollow _cameraFollow;
-    [SerializeField] private Crosshair _crosshair;
-    [SerializeField] private EnemySpawner _enemySpawner;
+    [SerializeField] private GameObject _aimingLayer;
+
+    //TODO: move to uiroot;
     [SerializeField] private HUD _HUD;
     [SerializeField] private UpgradeMenu _upgradeMenu;
     [SerializeField] private PauseMenu _pauseMenu;
-    [SerializeField] private GameObject _aimingLayer;
     [SerializeField] private InventoryModel _inventoryModel;
     [SerializeField] private EquipmentModel _equipmentModel;
 
+    private FollowingCamera _followingCamera;
+    private InputController _inputController;
+    private Crosshair _crosshair;
+    private EnemySpawner _enemySpawner;
+    
+
+    private IResourceManager _iresourceManager;
+
     private EquipmentView _equipmentView;
     private InventoryView _inventoryView;
-    
+
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
 
@@ -37,15 +43,18 @@ public class LevelController : MonoBehaviour
         _audioManager.PlayGameTheme();
 
     }
-
     private void Initialize()
     {
+        _iresourceManager = gameObject.AddComponent<ResourceManager>(); // is it okay?
+
+        _iresourceManager.CreateEnvironment(Environment.Environment1);
+
         _equipmentModel = Instantiate(_equipmentModel);
 
         _equipmentView = _equipmentModel.GetComponent<EquipmentView>();
-    
 
-        _inventoryModel=Instantiate(_inventoryModel);
+
+        _inventoryModel = Instantiate(_inventoryModel);
 
         _equipmentView.GetInventoryModel(_inventoryModel);
 
@@ -59,27 +68,30 @@ public class LevelController : MonoBehaviour
         Time.timeScale = 1;
 
 
-        _enemySpawner = Instantiate(_enemySpawner, Vector3.zero, Quaternion.identity);
 
 
-        _cameraFollow = Instantiate(
-            _cameraFollow,
-            _cameraFollow.transform.position,
-            _cameraFollow.transform.rotation);
+        _enemySpawner = _iresourceManager.CreatePrefabInstance<EnemySpawner>(Objects.EnemySpawner);
 
-        _crosshair = Instantiate(_crosshair, Vector3.zero, Quaternion.identity);
-        _cameraFollow.SetCrosshairPosition(_crosshair.transform);
+        _followingCamera = _iresourceManager.CreatePrefabInstance<FollowingCamera>(Objects.FollowingCamera);
+
+        
+
+        _crosshair = _iresourceManager.CreatePrefabInstance<Crosshair>(Objects.Crosshair);
+        _followingCamera.SetCrosshairPosition(_crosshair.transform);
 
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
+
+
         _player.InventoryModel = _inventoryModel;
 
-        _cameraFollow.SetTarget(_player.transform);
+        _followingCamera.SetTarget(_player.transform);
 
 
 
         _enemySpawner.SetTarget(_player.transform);
 
-        _inputController = Instantiate(_inputController, Vector3.zero, Quaternion.identity);
+        _inputController = _iresourceManager.CreatePrefabInstance<InputController>(Objects.InputController);
+
         _inputController.CursorMoved += _crosshair.Aim;
         _inputController.OnGamePaused += _crosshair.PauseCursor;
 

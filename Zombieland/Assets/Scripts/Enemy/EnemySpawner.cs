@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour,IEnemySpawner
 {
     [SerializeField] private Enemy _enemy;
     [SerializeField] private Canvas _enemyCanvas;
