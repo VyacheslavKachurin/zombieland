@@ -15,10 +15,11 @@ public class GameModel : MonoBehaviour
 
     private IUIRoot _UIRoot;
     private IViewFactory _viewFactory;
+
     //TODO: move to uiroot;
-    [SerializeField] private HUD _HUD;
-    [SerializeField] private UpgradeMenu _upgradeMenu;
-    [SerializeField] private PauseMenu _pauseMenu;
+    private HUD _HUD;
+    private UpgradeMenu _upgradeMenu;
+    private PauseMenu _pauseMenu;
 
     private InventoryModel _inventoryModel;
     private EquipmentModel _equipmentModel;
@@ -27,7 +28,6 @@ public class GameModel : MonoBehaviour
     private InputController _inputController;
     private Crosshair _crosshair;
     private EnemySpawner _enemySpawner;
-
 
     private IResourceManager _resourceManager;
 
@@ -59,7 +59,7 @@ public class GameModel : MonoBehaviour
         _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
 
         _equipmentView = _viewFactory.CreateView<EquipmentView>(Eview.EquipmentView);
-        _equipmentModel = new EquipmentModel(_equipmentView,_player);
+        _equipmentModel = new EquipmentModel(_equipmentView, _player);
 
 
         _equipmentView.GetInventoryModel(_inventoryModel);
@@ -67,13 +67,13 @@ public class GameModel : MonoBehaviour
         _inventoryView = _viewFactory.CreateView<InventoryView>(Eview.InventoryView);
         _inventoryModel = new InventoryModel(_inventoryView);
         _inventoryView.GetInventoryModel(_inventoryModel);
-       
+
         _inventoryView.GetEquipmentModel(_equipmentModel);
 
         _player.InventoryModel = _inventoryModel;
 
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
-        _pauseMenu = Instantiate(_pauseMenu);
+        _pauseMenu = _viewFactory.CreateView<PauseMenu>(Eview.PauseMenu);
         _isGamePaused = false;
         Time.timeScale = 1;
 
@@ -89,10 +89,10 @@ public class GameModel : MonoBehaviour
         _crosshair = _resourceManager.CreatePrefabInstance<Crosshair>(Objects.Crosshair);
         _followingCamera.SetCrosshairPosition(_crosshair.transform);
 
-        
 
 
-        
+
+
 
         _followingCamera.SetTarget(_player.transform);
 
@@ -111,7 +111,7 @@ public class GameModel : MonoBehaviour
 
         _equipmentModel.SetPlayer(_player);
 
-        _HUD = Instantiate(_HUD);
+        _HUD = _viewFactory.CreateView<HUD>(Eview.HUD);
         _inputController.OnGamePaused += _pauseMenu.ShowPanel;
 
         _pauseMenu.ContinueButton.onClick.AddListener(Continue);
@@ -123,7 +123,8 @@ public class GameModel : MonoBehaviour
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
-        _upgradeMenu = Instantiate(_upgradeMenu);
+
+        _upgradeMenu = _viewFactory.CreateView<UpgradeMenu>(Eview.UpgradeMenu);
 
         _inputController.OnUpgradeButtonPressed += _upgradeMenu.ToggleUpgradePanel;
         _inputController.OnUpgradeButtonPressed += TogglePause;

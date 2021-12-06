@@ -20,4 +20,4 @@ public class ViewFactory : IViewFactory
     }
 }
 
-public enum Eview { EquipmentView, InventoryView }
+public enum Eview { EquipmentView, InventoryView,UpgradeMenu,PauseMenu,HUD }
