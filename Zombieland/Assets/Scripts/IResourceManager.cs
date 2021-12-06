@@ -8,6 +8,8 @@ public interface IResourceManager
 
     public void CreateEnvironment(Environment environment);
 
+    public IUIRoot CreateUIRoot();
+
 }
 
 

@@ -24,7 +24,7 @@ public class GameModel : MonoBehaviour
     private InputController _inputController;
     private Crosshair _crosshair;
     private EnemySpawner _enemySpawner;
-    
+    private IUIRoot _IUIRoot;
 
     private IResourceManager _iresourceManager;
 
@@ -49,7 +49,9 @@ public class GameModel : MonoBehaviour
 
         _iresourceManager.CreateEnvironment(Environment.Environment1);
 
-        _equipmentModel = Instantiate(_equipmentModel);
+        _IUIRoot = _iresourceManager.CreateUIRoot();
+
+       _equipmentModel = Instantiate(_equipmentModel);
 
         _equipmentView = _equipmentModel.GetComponent<EquipmentView>();
 
@@ -95,7 +97,7 @@ public class GameModel : MonoBehaviour
         _inputController.CursorMoved += _crosshair.Aim;
         _inputController.OnGamePaused += _crosshair.PauseCursor;
 
-        _inputController.OnGamePaused += TogglePause;
+      _inputController.OnGamePaused += TogglePause;
 
         _player.Initialize(_inputController);
 
@@ -111,14 +113,14 @@ public class GameModel : MonoBehaviour
 
         _player.OnPlayerDeath += GameOver;
         _player.OnWeaponChanged += AssignWeapon;
-        _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
+       _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
         _upgradeMenu = Instantiate(_upgradeMenu);
 
         _inputController.OnUpgradeButtonPressed += _upgradeMenu.ToggleUpgradePanel;
-        _inputController.OnUpgradeButtonPressed += TogglePause;
+       _inputController.OnUpgradeButtonPressed += TogglePause;
 
-        SetExperienceSystem();
+       SetExperienceSystem();
     }
 
     private void Continue()
