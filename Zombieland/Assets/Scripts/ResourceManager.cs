@@ -6,7 +6,9 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 {
     private const string _prefabsPath = "Prefabs/";
     private const string _environmentsPath = "Environments/";
-    private const string _UIRoot = "UI/UIRoot";
+    private const string _UIRootPath = "UI/UIRoot";
+
+    private UIRoot _root;
     public T CreatePrefabInstance<T>(Objects name)
     {
         var obj = Instantiate(Resources.Load<GameObject>(_prefabsPath + name.ToString()));
@@ -21,12 +23,17 @@ public class ResourceManager : MonoBehaviour, IResourceManager
 
     public IUIRoot CreateUIRoot()
     {
-        var UIRoot = Instantiate(Resources.Load<UIRoot>(_UIRoot));
+        _root = Instantiate(Resources.Load<UIRoot>(_UIRootPath));
 
-        return UIRoot;
+        return _root;
     }
 
-
+    public T CreateView<T>(string path, Eview eview)
+    {
+        var view = Instantiate(Resources.Load<GameObject>(path + eview));
+        view.transform.SetParent(_root.transform);
+        return view.GetComponent<T>();
+    }
 }
 public enum Objects { InputController, EnemySpawner, Crosshair, FollowingCamera, UIRoot }
 

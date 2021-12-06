@@ -10,6 +10,8 @@ public interface IResourceManager
 
     public IUIRoot CreateUIRoot();
 
+    public T CreateView<T>(string path,Eview eview);
+
 }
 
 

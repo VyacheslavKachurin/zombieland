@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class InventoryModel : MonoBehaviour
+public class InventoryModel 
 {
     public event Action<Item> ItemAdded;
 
-    private InventoryView _inventoryView;
+    private IInventoryView _inventoryView;
 
     private List<Item> _items = new List<Item>();
     public int Capacity = 20;
 
-    private void Start()
+    public InventoryModel(IInventoryView view)
     {
-        _inventoryView = GetComponent<InventoryView>();
+        _inventoryView = view;
         TogglePanel();
     }
 

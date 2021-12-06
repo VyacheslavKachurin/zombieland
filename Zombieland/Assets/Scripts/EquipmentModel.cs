@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentModel : MonoBehaviour
+public class EquipmentModel
 {
     public Equipment[] _currentEquipment;
-    public static EquipmentModel Instance;
 
-    private EquipmentView _view;
+    private IEquipmentView _view;
     private Player _player;
 
-   //void Start()
-   // {
-   //     _view = GetComponent<EquipmentView>();
-   //     int numofSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
-   //     _currentEquipment = new Equipment[numofSlots];
-   // }
+    public EquipmentModel(IEquipmentView view,Player player)
+    {
+        _view = view;
+        int numofSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
+        _currentEquipment = new Equipment[numofSlots];
+        _player = player;
+    }
 
     public EquipmentModel(EquipmentView view)
     {
@@ -44,7 +44,7 @@ public class EquipmentModel : MonoBehaviour
         }
     }
 
-    public void GetPlayer(Player player)
+    public void SetPlayer(Player player)
     {
         _player = player;
     }

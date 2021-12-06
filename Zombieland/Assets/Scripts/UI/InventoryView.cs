@@ -1,13 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class InventoryView : MonoBehaviour
+public class InventoryView : MonoBehaviour, IInventoryView
 {
-    [SerializeField] private InventoryModel _inventoryModel;
     [SerializeField] private Transform _itemsParent;
     [SerializeField] private InventorySlot _slot;
 
-    private EquipmentModel _equipmentManager;
+    private InventoryModel _inventoryModel;
+
+    private EquipmentModel _equipmentModel;
     private List<InventorySlot> _slots = new List<InventorySlot>();
 
     void Start()
@@ -40,7 +41,7 @@ public class InventoryView : MonoBehaviour
         var slot = Instantiate(_slot, _itemsParent);
         _slots.Add(slot);
         slot.ItemRemoved += _inventoryModel.Remove;
-        slot.ItemEquipped += _equipmentManager.Equip;
+        slot.ItemEquipped += _equipmentModel.Equip;
     }
 
     public void TogglePanel()
@@ -48,9 +49,14 @@ public class InventoryView : MonoBehaviour
         gameObject.SetActive(!gameObject.activeInHierarchy);
     }
 
-    public void GetEquipmentModel(EquipmentModel manager)
+    public void GetEquipmentModel(EquipmentModel model)
     {
-        _equipmentManager = manager;
+        _equipmentModel = model;
+    }
+
+    public void GetInventoryModel(InventoryModel model)
+    {
+        _inventoryModel = model;
     }
 
 }
