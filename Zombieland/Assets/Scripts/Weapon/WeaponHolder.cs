@@ -7,76 +7,22 @@ public class WeaponHolder : MonoBehaviour
 {
     public event Action<IWeapon> OnWeaponChanged;
 
-    [SerializeField] private List<GameObject> _weapons = new List<GameObject>();
+    [SerializeField] private GameObject _activeWeapon;
 
-    private int _selectedWeapon;
+    private IWeapon _currentWeapon;
 
-    private void Start()
+    public void PickUpWeapon(GameObject weapon)
     {
-        Initialize();
-    }
-
-    private void Initialize()
-    {
-        _selectedWeapon = 0;
-        _weapons[_selectedWeapon].SetActive(true);
-        OnWeaponChanged?.Invoke(ChooseWeapon());
-    }
-
-    public void ChangeWeapon(bool input)
-    {
-        int previousSelectedWeapon = _selectedWeapon;
-        if (input)
+        if (_currentWeapon != null)
         {
-            if (_selectedWeapon >= _weapons.Count - 1)
-                _selectedWeapon = 0;
-            else
-            {
-                _selectedWeapon++;
-            }
-
+            _currentWeapon.Unequip();
         }
-        else
-        {
-            if (_selectedWeapon <= 0)
-            {
-                _selectedWeapon = _weapons.Count - 1;
-            }
-            else
-            {
-                _selectedWeapon--;
-            }
-        }
-        if (previousSelectedWeapon != _selectedWeapon)
-        {
-            _weapons[previousSelectedWeapon].SetActive(false);
-            _weapons[_selectedWeapon].SetActive(true);
-
-        }
-        OnWeaponChanged?.Invoke(ChooseWeapon());
-        //add weapon change animation event
-    }
-
-    private IWeapon ChooseWeapon()
-    {
-        IWeapon weapon = _weapons[_selectedWeapon].GetComponent<IWeapon>();
-        return weapon;
-    }
-    public void EquipWeapon(GameObject weapon)
-    {
-        _weapons.Add(weapon);
         var newWeapon = Instantiate(weapon);
-        newWeapon.transform.parent = this.transform;
-        newWeapon.transform.localPosition = Vector3.zero;
+        newWeapon.transform.parent = _activeWeapon.transform;
+        newWeapon.transform.localPosition = new Vector3(0,0, 0.429f);
         newWeapon.transform.localRotation = Quaternion.identity;
 
-        _selectedWeapon = _weapons.Count-1;
-
-        _weapons[_selectedWeapon-1].SetActive(false);
-        _weapons[_selectedWeapon].SetActive(true);
-        
-
-        OnWeaponChanged?.Invoke(ChooseWeapon());
-
+        _currentWeapon = newWeapon.GetComponent<IWeapon>();
+        OnWeaponChanged(_currentWeapon);
     }
 }

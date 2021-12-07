@@ -6,14 +6,33 @@ using UnityEngine.Animations.Rigging;
 
 public class Player : MonoBehaviour, IDamageable
 {
-
     public event Action<bool> OnPlayerDeath;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
     [SerializeField] private WeaponHolder _weaponHolder;
+    [SerializeField] private Transform _helmetHolder;
+    [SerializeField] private Transform _vestHolder;
     [SerializeField] private GameObject _aimingObject;
-    [SerializeField] private Rig _aimingRig;   
+
+    [SerializeField] private Rig _aimingRig;
+    [SerializeField] private Rig _holdWeaponRig;
+    [SerializeField] private Rig _handsIK;
+
+    [SerializeField] private Animator _rigController;
+
+    public IPlayerInput Input
+    {
+        get { return _input; }
+    }
+
+    public InventoryModel InventoryModel
+    {
+        get => _inventoryModel;
+        set { _inventoryModel = value; } // i dont remember the nice syntax;
+    }
+
+    private InventoryModel _inventoryModel;
 
     public float CurrentHealth
     {
@@ -37,17 +56,26 @@ public class Player : MonoBehaviour, IDamageable
     private float _movementSpeed;
 
     private IWeapon _currentWeapon;
+    private GameObject _currentHelmet;
+    private GameObject _currentVest;
 
     private Camera _camera;
 
     private CharacterController _cc;
+    private Rigidbody[] _ragdoll;
+
+    private Vector3 _relatedDirection;
+
+    private IPlayerInput _input;
 
     private enum PlayerState
     {
-        Aiming, Walking, Dead, Jumping
+        Idle, Aiming, Moving, Dead, Jumping
     }
 
-    private PlayerState _currentState = PlayerState.Walking;
+    private PlayerState _currentState = PlayerState.Moving;
+
+    private bool _isWeaponHolstered = false;
 
     private void Start()
     {
@@ -59,17 +87,29 @@ public class Player : MonoBehaviour, IDamageable
 
         _weaponHolder.OnWeaponChanged += GetWeapon;
 
+        _ragdoll = GetComponentsInChildren<Rigidbody>();
+
+        DeactivateRagdoll();
+
+        SwitchState(PlayerState.Idle);
     }
 
     private void Update()
     {
-        if (_currentState == PlayerState.Aiming)
-        {
-            AimTowardsMouse();       
-        }
-
         GetGrounded();
         Move();
+
+        if (_currentState == PlayerState.Moving || _currentState == PlayerState.Jumping)
+        {
+            RotateTowardsMovement();
+        }
+        if (_currentState == PlayerState.Aiming)
+        {
+            LookTowardsMouse();
+            ProcessAimingState();
+        }
+
+
 
 
     }
@@ -78,24 +118,113 @@ public class Player : MonoBehaviour, IDamageable
     {
         _direction = new Vector3(_horizontal, 0, _vertical);
 
-        Vector3 relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
-        relatedDirection.y = 0;
+        _relatedDirection = _camera.transform.TransformDirection(_direction);//change direction according to camera rotation
+        _relatedDirection.y = 0;
 
-        //  transform.Translate(relatedDirection.normalized * _movementSpeed * Time.deltaTime, Space.World);
+        if (_currentState == PlayerState.Aiming)
+            return;
 
-        _velocityZ = Vector3.Dot(relatedDirection.normalized, transform.forward);
-        _velocityX = Vector3.Dot(relatedDirection.normalized, transform.right);
+        if (_relatedDirection.magnitude > 0)
+        {
+            SwitchState(PlayerState.Moving);
+
+        }
+        else
+        {
+            SwitchState(PlayerState.Idle);
+        }
+
+    }
+
+    private void HolsterWeapon()
+    {
+        _isWeaponHolstered = !_isWeaponHolstered;
+        _rigController.SetBool("Rifle_holster", _isWeaponHolstered);
+
+
+    }
+
+    private void RotateTowardsMovement()
+    {
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_relatedDirection), Time.deltaTime * 10f);// make turn speed
+    }
+
+    private void SwitchState(PlayerState state)
+    {
+        if (_currentState == state)
+        {
+            return;
+        }
+
+        _currentState = state;
+        switch (state)
+        {
+            case PlayerState.Idle:
+                SetIdleState();
+                return;
+
+            case PlayerState.Moving:
+                SetMovingState();
+                return;
+
+            case PlayerState.Aiming:
+                SetAimingState();
+                return;
+
+            case PlayerState.Jumping:
+                SetJumpingState();
+                return;
+
+            default:
+                return;
+        }
+    }
+
+    private void SetIdleState()
+    {
+        _currentState = PlayerState.Idle;
+        _animator.ResetTrigger("isJogging");
+        _animator.SetTrigger("isIdle");
+
+    }
+
+    private void SetMovingState()
+    {
+        _rigController.SetBool("Aim", false);
+        _animator.ResetTrigger("isIdle");
+        _animator.ResetTrigger("isAiming");
+        _animator.SetTrigger("isJogging");
+    }
+
+    private void SetAimingState()
+    {
+        _currentState = PlayerState.Aiming;
+        _animator.SetTrigger("isAiming");
+
+        _rigController.SetBool("Aim", true);
+
+
+    }
+
+    private void SetJumpingState()
+    {
+        _animator.ResetTrigger("isSprinting");
+        _animator.ResetTrigger("isJogging");
+        _animator.SetTrigger("Evade");
+    }
+
+    private void ProcessAimingState()
+    {
+
+        _velocityZ = Vector3.Dot(_relatedDirection.normalized, transform.forward);
+        _velocityX = Vector3.Dot(_relatedDirection.normalized, transform.right);
 
         _animator.SetFloat("VelocityZ", _velocityZ, _dampTime, Time.deltaTime);
         _animator.SetFloat("VelocityX", _velocityX, _dampTime, Time.deltaTime);
 
-        if (_direction.magnitude != 0 && _currentState != PlayerState.Aiming)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(relatedDirection), Time.deltaTime * 10f);// make turn speed
-        }
     }
 
-    private void AimTowardsMouse()
+    private void LookTowardsMouse()
     {
         Vector3 lookDirection = _mousePosition - transform.position;
         lookDirection.Normalize();
@@ -126,14 +255,25 @@ public class Player : MonoBehaviour, IDamageable
             }
         }
     }
+
     private void Die()
     {
         if (!_isDead)
         {
             _isDead = true;
-            _animator.SetTrigger("Die");
 
-            OnPlayerDeath?.Invoke(_isDead);
+            _aimingRig.enabled = false;
+            _holdWeaponRig.enabled = false;
+            _handsIK.enabled = false;
+            _rigController.enabled = false;
+            _cc.enabled = false;
+
+            ActivateRagdoll();
+
+
+
+            // OnPlayerDeath?.Invoke(_isDead);
+            Destroy(this);
         }
     }
 
@@ -167,7 +307,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void ReceiveScroolWheelInput(bool input)
     {
-        _weaponHolder.ChangeWeapon(input);
+        // _weaponHolder.ChangeWeapon(input);
     }
 
     private void GetWeapon(IWeapon weapon)
@@ -208,25 +348,29 @@ public class Player : MonoBehaviour, IDamageable
         _playerStats = GetComponent<PlayerStats>(); //otherwise it gets called earlier than player assign the variable 
         return _playerStats;
     }
+
     private void UpgradeSpeed(float speed)
     {
         _movementSpeed = speed;
     }
+
     private void FinishJumping()
     {
-        _currentState = PlayerState.Walking;
+        SwitchState(PlayerState.Moving);
     }
 
     public void Initialize(IPlayerInput input)
     {
+        _input = input;
         input.Moved += ReceiveAxis;
         input.CursorMoved += ReceiveMouse;
         input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;
         input.SprintingSwitched += SetSprinting;
-        input.JumpPressed += Evade;
-        input.AimedWeapon += AimWeapon;
+        input.JumpPressed += GetJumpInput;
+        input.AimedWeapon += ReceiveAimingInput;
+        input.HolsteredWeapon += HolsterWeapon;
     }
 
     private void GetGrounded()
@@ -240,38 +384,101 @@ public class Player : MonoBehaviour, IDamageable
 
     private void SetSprinting(bool value)
     {
-        _animator.SetBool("isSprinting", value);
-    }
-
-    private void Evade()
-    {
-        if (_currentState != PlayerState.Jumping)
-        {
-            _currentState = PlayerState.Jumping;
-            _animator.SetTrigger("Evade");
-        }
-    }
-
-    private void AimWeapon(bool value)
-    {
         if (value)
         {
-            _currentState = PlayerState.Aiming;
+            SwitchState(PlayerState.Moving);
+
+            _aimingRig.weight = 0;
+            _animator.ResetTrigger("isJogging");
+            _animator.SetTrigger("isSprinting");
+
+        }
+
+        else if (!value && _relatedDirection.magnitude > 0)
+        {
+            _animator.ResetTrigger("isAiming");
+            _animator.ResetTrigger("isSprinting");
+            _animator.SetTrigger("isJogging");
         }
         else
         {
-            _currentState = PlayerState.Walking;
+            _animator.ResetTrigger("isSprinting");
+            _animator.SetTrigger("isIdle");
         }
+    }
 
-        //  _animatorOverride["Weapon_Empty"] = _currentWeapon.ReturnWeaponAnimation();
+    private void GetJumpInput()
+    {
+        SwitchState(PlayerState.Jumping);
+    }
 
-        _animator.SetBool("isAiming", value);
-        _aimingRig.weight = Convert.ToInt32(value);
+    private void ReceiveAimingInput(bool value)
+    {
+
+        if (value)
+        {
+            SwitchState(PlayerState.Aiming);
+        }
+        else
+        {
+            SwitchState(PlayerState.Moving);
+
+        }
+        //  _aimingRig.weight = Convert.ToInt32(value);
     }
 
     public void EquipWeapon(GameObject weapon)
     {
-        _weaponHolder.EquipWeapon(weapon);
+        _weaponHolder.PickUpWeapon(weapon);
+
+        _rigController.Play("RifleIdle", 0);
     }
 
+    private void DeactivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = true;
+        }
+    }
+
+    private void ActivateRagdoll()
+    {
+        foreach (var rb in _ragdoll)
+        {
+            rb.isKinematic = false;
+        }
+        _animator.enabled = false;
+    }
+
+    public void EquipHelmet(GameObject helmet)
+    {
+        var newHelmet = Instantiate(helmet);
+
+        if (_currentHelmet != null)
+        {
+            Destroy(_currentHelmet);
+        }
+        _currentHelmet = newHelmet;
+
+        newHelmet.transform.parent = _helmetHolder;
+        newHelmet.transform.localPosition = Vector3.zero;
+        newHelmet.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+    }
+
+    public void EquipVest(GameObject vest)
+    {
+        var newVest = Instantiate(vest);
+
+        if (_currentVest != null)
+        {
+            Destroy(_currentVest);
+        }
+        _currentVest = newVest;
+
+        newVest.transform.parent = _vestHolder;
+        newVest.transform.localPosition = Vector3.zero;
+        newVest.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
+    }
 }

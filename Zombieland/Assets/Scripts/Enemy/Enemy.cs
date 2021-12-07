@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using System;
 using Random = UnityEngine.Random;
 
-public class Enemy : MonoBehaviour, IDamageable, IEnemy
+public class Enemy : MonoBehaviour, IDamageable
 {
     public event Action<float> OnEnemyGotAttacked;
     public event Action<int> EnemyDied;
@@ -16,7 +16,6 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
     private NavMeshAgent _navMeshAgent;
     private float _currentHealth;
 
-    private float _attackRange = 1f;
     private Rigidbody[] _ragdoll;
 
     private CapsuleCollider _capsuleCollider;
@@ -28,8 +27,18 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
 
     private Transform _targetTransform;
 
-    private int experience = 20; //move to stats??
+    private int _experience = 20; //move to stats??
+    private float _visibleDistance = 10f;
+    private float _visibleAngle = 70f;
+    private float _attackRange = 1f;
 
+    private bool _isAttacking = false;
+    private enum EnemyState
+    {
+        Idle, Chasing, Attacking, Dead
+    }
+
+    private EnemyState _currentState;
 
     private void Start()
     {
@@ -41,24 +50,105 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
 
         DeactivateRagdoll();
         AssignStats();
+
+        SwitchState(EnemyState.Idle);
     }
 
     private void Update()
     {
         UpdateHealthBarPosition();
+
+        if (_currentState == EnemyState.Chasing)
+        {
+            RotateTowardsTarget();
+        }
+        CheckForTarget(IsTargetVisible(),IsTargetAttackable());
     }
 
-    public void Move()
+    private void SwitchState(EnemyState state)
     {
+        if (_currentState != state)
+        {
+            _currentState = state;
 
-        _navMeshAgent.SetDestination(_targetTransform.position);
+            switch (state)
+            {
+                case EnemyState.Idle:
+                    SetIdleState();
+                    return;
+
+                case EnemyState.Chasing:
+                    SetChasingState();
+                    return;
+
+                case EnemyState.Attacking:
+                    SetAttackingState();
+                    return;
+                
+                case EnemyState.Dead:
+                    SetDeadState();
+                    return;
+
+                default:
+                    return;
+            }
+        }
     }
 
-    public void Attack()
+    private bool IsTargetVisible()
     {
-        _animator.ResetTrigger("isChasing");
-        _animator.SetTrigger("Attack");
-        _navMeshAgent.enabled = false;
+        Vector3 direction = _targetTransform.position - transform.position;
+        float angle = Vector3.Angle(direction, transform.forward);
+
+        if (direction.magnitude < _visibleDistance && angle < _visibleAngle)
+            return true;
+        else
+            return false;
+
+
+    }
+
+    private bool IsTargetAttackable()
+    {
+        if (Vector3.Distance(transform.position, _targetTransform.position) <= _attackRange)
+            return true;
+        else
+            return false;
+    }
+
+    private void CheckForTarget(bool isVisible,bool isAttackable)
+    {
+        if (!_isAttacking)
+        {
+            if (isVisible && isAttackable)
+            {
+                SwitchState(EnemyState.Attacking);
+            }
+            else if (isVisible)
+            {
+                SwitchState(EnemyState.Chasing);
+            }
+            else
+            {
+                SwitchState(EnemyState.Idle);
+            }
+        }
+    }
+
+    private void RotateTowardsTarget()
+    {
+        Vector3 direction = _targetTransform.position - transform.position;
+        Quaternion desiredRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * 5f);
+    }
+
+    private IEnumerator Move()
+    {
+        while (_currentState == EnemyState.Chasing)
+        {
+            _navMeshAgent.SetDestination(_targetTransform.position);
+            yield return new WaitForSeconds(0.2f);
+        }
     }
 
     public void TakeDamage(float damageAmount)
@@ -68,34 +158,34 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
             _currentHealth -= damageAmount;
             if (_currentHealth <= 0)
             {
-                Die();
+                SwitchState(EnemyState.Dead);
             }
             OnEnemyGotAttacked?.Invoke(damageAmount);
         }
         else
         {
-            Die();
+            SwitchState(EnemyState.Dead);
         }
     }
 
-    private void Die()
+    private void SetDeadState()
     {
         _capsuleCollider.enabled = false;
 
-
         ActivateRagdoll();
-        //TODO: set death state?
+        
         _navMeshAgent.speed = 0; // temporary fix TO
 
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
 
-        EnemyDied?.Invoke(experience);
+        EnemyDied?.Invoke(_experience);
     }
 
-    private void AttackComplete()
+    private void AttackComplete() //animation event calls it
     {
-        _navMeshAgent.enabled = true;
+        _isAttacking = false;
+        _visibleAngle = 180;
     }
 
     public void GetHealthBar(GameObject enemyHealthBar)
@@ -133,29 +223,33 @@ public class Enemy : MonoBehaviour, IDamageable, IEnemy
 
     }
 
-    public void SetIdleState()
+    private void SetIdleState()
     {
         _animator.SetTrigger("isIdle");
         _navMeshAgent.enabled = false;
     }
-    public Transform GetTarget()
-    {
-        return _targetTransform;
-    }
-    public float GetAttackRange()
-    {
-        return _attackRange;
-    }
 
-    public void SetChasingState()
+    private void SetChasingState()
     {
         _animator.ResetTrigger("Attack");
         _animator.SetTrigger("isChasing");
 
-        PlayChasingSound();  
+        PlayChasingSound();
 
         _navMeshAgent.enabled = true;
+
+        StartCoroutine(Move());
     }
+
+    private void SetAttackingState()
+    {
+        _animator.ResetTrigger("isChasing");
+        _animator.SetTrigger("Attack");
+
+        _navMeshAgent.enabled = false;
+        _isAttacking = true;
+    }
+
     private void PlayChasingSound()
     {
         int random = Random.Range(0, _chasingSounds.Length);

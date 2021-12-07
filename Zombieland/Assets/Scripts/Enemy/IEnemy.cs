@@ -4,7 +4,6 @@ using UnityEngine;
 
 public interface IEnemy
 {
-
     public void SetIdleState();
     public Transform GetTarget();
 
