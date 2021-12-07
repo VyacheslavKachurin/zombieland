@@ -10,8 +10,6 @@ public class HUD : MonoBehaviour
 { 
     [SerializeField] private Slider _HPSlider;
     [SerializeField] private Slider _XPSlider;
-    [SerializeField] private Slider _armorSlider;
-
     [SerializeField] private TextMeshProUGUI _currentXPText;
     [SerializeField] private TextMeshProUGUI _maxXPText;
 
@@ -95,11 +93,6 @@ public class HUD : MonoBehaviour
                 yield break;
             }
         }
-    }
-
-    public void UpdateArmorSlider(int value)
-    {
-        _armorSlider.value = value;
     }
 }
 

@@ -13,11 +13,14 @@ public class HitCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
         var idamageable = other.GetComponent<IDamageable>();
 
         if (idamageable != null)
         {
             idamageable.TakeDamage(_damageAmount);
         }
+
+
     }
 }

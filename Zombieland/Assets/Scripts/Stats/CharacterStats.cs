@@ -14,9 +14,4 @@ public class CharacterStats : MonoBehaviour
         receivedDamage = Mathf.Clamp(receivedDamage, 0, int.MaxValue);
         return receivedDamage;
     }
-
-    public void UpdateArmor(int value)
-    {
-        Armor.IncreaseValue();
-    }
 }

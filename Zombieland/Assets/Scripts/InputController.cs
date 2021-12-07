@@ -15,9 +15,6 @@ public class InputController : MonoBehaviour, IPlayerInput
     public event Action<bool> SprintingSwitched;
     public event Action JumpPressed;
     public event Action<bool> AimedWeapon;
-    public event Action HolsteredWeapon;
-    public event Action InteractButtonPressed;
-    public event Action InventoryButtonPressed;
 
     private float _horizontal;
     private float _vertical;
@@ -28,20 +25,17 @@ public class InputController : MonoBehaviour, IPlayerInput
 
     private bool _isPaused = false;
 
-
-    private enum InputState { Playing, Paused, Upgrading, Inventory };
-
-    private InputState _currentState;
+    private bool _isUpgradeOn = false;
+    private bool _wasPausePressed = false;
 
     private void Start()
     {
         _camera = Camera.main;
-        _currentState = InputState.Playing;
     }
 
     private void Update()
     {
-        if (_currentState == InputState.Playing)
+        if (!_isPaused)
         {
             ReadSprintButton();
             ReadAxisInput();
@@ -51,31 +45,20 @@ public class InputController : MonoBehaviour, IPlayerInput
             ReloadInput();
             ReadJumpButton();
             ReadAimingInput();
-            ReadHolsterButton();
-            ReadInteractButton();
-
         }
 
-        ReadInventoryButton();
         UpgradeButtonInput();
         ReadPauseInput();
     }
 
     private void ReadPauseInput()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !_isUpgradeOn)
         {
-            if (_currentState == InputState.Playing || _currentState == InputState.Paused)
-            {
-                _isPaused = !_isPaused;
-
-                _currentState = _currentState == InputState.Playing ? InputState.Paused : InputState.Playing;
-
-                OnGamePaused(_isPaused);
-            }
+            _wasPausePressed = !_wasPausePressed;
+            _isPaused = !_isPaused;
+            OnGamePaused(_isPaused);
         }
-
-
     }
 
     private void ReadAxisInput()
@@ -89,7 +72,7 @@ public class InputController : MonoBehaviour, IPlayerInput
     private void ReadCursorInput()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, _layerMask))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity,_layerMask))
         {
             _destination = hitInfo.point;
             //  _destination.y = transform.position.y; leave it for future           
@@ -102,13 +85,12 @@ public class InputController : MonoBehaviour, IPlayerInput
         if (Input.GetButtonDown("Fire2"))
         {
             AimedWeapon(true);
-
-        }
-        if (Input.GetButtonUp("Fire2"))
+         
+        } if (Input.GetButtonUp("Fire2"))
         {
             AimedWeapon(false);
         }
-
+        
     }
 
     private void ReadShootInput()
@@ -156,33 +138,29 @@ public class InputController : MonoBehaviour, IPlayerInput
 
     private void UpgradeButtonInput()
     {
-        if (Input.GetKeyDown(KeyCode.U)) //TODO : get rid of bools
+        if (Input.GetKeyDown(KeyCode.U) && !_wasPausePressed)
         {
-            if (_currentState == InputState.Playing || _currentState == InputState.Upgrading)
-            {
-                _isPaused = !_isPaused;
+            _isPaused = !_isPaused;
+            _isUpgradeOn = !_isUpgradeOn;
+            OnUpgradeButtonPressed(_isPaused);
 
-                _currentState = _currentState == InputState.Playing ? InputState.Upgrading : InputState.Playing;
 
-                OnUpgradeButtonPressed(_isPaused);
-            }
         }
     }
 
     public void Continue()
     {
         _isPaused = false;
-        _currentState = InputState.Playing;
-        OnGamePaused(_isPaused);
+        _wasPausePressed = false;
 
     }
-
+    
     private void ReadSprintButton()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             SprintingSwitched(true);
-        }
+        } 
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             SprintingSwitched(false);
@@ -193,36 +171,6 @@ public class InputController : MonoBehaviour, IPlayerInput
         if (Input.GetKeyDown(KeyCode.Space))
         {
             JumpPressed();
-        }
-    }
-
-    private void ReadHolsterButton()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            HolsteredWeapon();
-        }
-    }
-
-    private void ReadInteractButton()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            InteractButtonPressed?.Invoke();
-        }
-    }
-
-    private void ReadInventoryButton()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (_currentState == InputState.Playing || _currentState == InputState.Inventory)
-            {
-              
-                _currentState = _currentState == InputState.Playing ? InputState.Inventory : InputState.Playing;
-                InventoryButtonPressed?.Invoke();
-                
-            }
         }
     }
 

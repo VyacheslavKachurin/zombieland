@@ -1,12 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using System;
-using static WeaponTypes;
 
 public interface IWeapon
 {
     public event Action<int> OnBulletsAmountChanged;
     public event Action<bool> OnWeaponReload;
-
     void Shoot(bool isShooting);
 
     void Reload();
@@ -17,10 +17,11 @@ public interface IWeapon
 
     public int ReturnBulletsAmount();
 
+    public AnimationClip ReturnWeaponAnimation();
+
+    public AnimationClip ReturnIdlePose();
     public float SetOffset();
 
-    public WeaponType WeaponType();
-
-    public void Unequip();
-
+    public Transform RightGrip();
+    public Transform LeftGrip();
 }
