@@ -18,7 +18,6 @@ public class PauseMenuView : MonoBehaviour
     [SerializeField] private Button _continueButton;
     [SerializeField] private Button _saveButton;
 
-    [SerializeField] private Button _restartButton;
     [SerializeField] private Button _mainMenuButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private Animator _animator;
@@ -30,7 +29,6 @@ public class PauseMenuView : MonoBehaviour
     }
     public void AssignButtons()
     {
-        _restartButton.onClick.AddListener(Restart);
         _mainMenuButton.onClick.AddListener(MainMenuButton);
         _exitButton.onClick.AddListener(ExitButton);
         _saveButton.onClick.AddListener(SaveButton);
@@ -50,15 +48,10 @@ public class PauseMenuView : MonoBehaviour
         }  
     }
 
-    public void GameOver(bool value) //TODO: change name
+    public void ShowGameOver(bool value) //TODO: change name
     {
         _continueButton.interactable = false;
         ShowPanel(value);
-    }
-
-    public void Restart()
-    {
-        GameManager.Instance.Restart();
     }
 
     private void ExitButton()

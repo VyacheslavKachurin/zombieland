@@ -192,7 +192,7 @@ public class GameModel : MonoBehaviour
     private IEnumerator TogglePauseAfterDeath()
     {
         yield return new WaitForSeconds(2f);
-        _pauseMenuView.GameOver(true);
+        _pauseMenuModel.SetGameOver();
         TogglePause(true);
     }
 

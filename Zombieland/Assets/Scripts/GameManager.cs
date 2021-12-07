@@ -80,11 +80,6 @@ public class GameManager : MonoBehaviour
         _audioManager.PlayMainTheme();
     }
 
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     public void SaveGame()
     {
         int sceneName=SceneManager.GetActiveScene().buildIndex;

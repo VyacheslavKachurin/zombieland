@@ -51,5 +51,12 @@ public class PauseMenuModel
         _view.ShowPanel(value);
     }
 
+    public void SetGameOver()
+    {
+        _view.ShowGameOver(true);
+    }
+
+    
+
 
 }
