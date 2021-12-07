@@ -16,7 +16,6 @@ public class GameModel : MonoBehaviour
     private IUIRoot _UIRoot;
     private IViewFactory _viewFactory;
 
-    //TODO: move to uiroot;
     private HUD _HUD;
     private UpgradeMenu _upgradeMenu;
     private PauseMenu _pauseMenu;
@@ -65,10 +64,8 @@ public class GameModel : MonoBehaviour
         _equipmentView.GetInventoryModel(_inventoryModel);
 
         _inventoryView = _viewFactory.CreateView<InventoryView>(Eview.InventoryView);
-        _inventoryModel = new InventoryModel(_inventoryView);
-        _inventoryView.GetInventoryModel(_inventoryModel);
-
         _inventoryView.GetEquipmentModel(_equipmentModel);
+        _inventoryModel = new InventoryModel(_inventoryView);
 
         _player.InventoryModel = _inventoryModel;
 
@@ -78,21 +75,12 @@ public class GameModel : MonoBehaviour
         Time.timeScale = 1;
 
 
-
-
         _enemySpawner = _resourceManager.CreatePrefabInstance<EnemySpawner>(Objects.EnemySpawner);
 
         _followingCamera = _resourceManager.CreatePrefabInstance<FollowingCamera>(Objects.FollowingCamera);
 
-
-
         _crosshair = _resourceManager.CreatePrefabInstance<Crosshair>(Objects.Crosshair);
         _followingCamera.SetCrosshairPosition(_crosshair.transform);
-
-
-
-
-
 
         _followingCamera.SetTarget(_player.transform);
 

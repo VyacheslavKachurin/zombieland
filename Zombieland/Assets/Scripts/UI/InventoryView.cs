@@ -11,10 +11,9 @@ public class InventoryView : MonoBehaviour, IInventoryView
     private EquipmentModel _equipmentModel;
     private List<InventorySlot> _slots = new List<InventorySlot>();
 
-    void Start()
+    private void CreateSlots()
     {
-        _inventoryModel.ItemAdded += AddItemToUI;
-
+       
         for (int i = 0; i < _inventoryModel.Capacity; i++)
         {
             CreateSlot();
@@ -57,6 +56,8 @@ public class InventoryView : MonoBehaviour, IInventoryView
     public void GetInventoryModel(InventoryModel model)
     {
         _inventoryModel = model;
+        _inventoryModel.ItemAdded += AddItemToUI;
+        CreateSlots();
     }
 
 }

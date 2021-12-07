@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class InventoryModel 
+public class InventoryModel
 {
     public event Action<Item> ItemAdded;
 
@@ -15,6 +15,7 @@ public class InventoryModel
     public InventoryModel(IInventoryView view)
     {
         _inventoryView = view;
+        _inventoryView.GetInventoryModel(this);
         TogglePanel();
     }
 

@@ -26,7 +26,7 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private AudioClip _shotClip;
     [SerializeField] private AnimationClip _weaponPose;
 
-    [SerializeField] private WeaponTypes.WeaponType _weaponType;
+    [SerializeField] private WeaponType _weaponType;
 
 
     private AudioSource _audioSource;
@@ -170,7 +170,7 @@ public class Weapon : MonoBehaviour, IWeapon
         _audioSource.PlayOneShot(_shotClip);
     }
 
-    public WeaponTypes.WeaponType WeaponType()
+    public WeaponType WeaponType()
     {
         return _weaponType;
     }
@@ -181,4 +181,9 @@ public class Weapon : MonoBehaviour, IWeapon
     }
 
 
+}
+
+public enum WeaponType
+{
+    Pistol, AK74, Shotgun, GrenadeLauncher, Laser
 }
