@@ -18,10 +18,11 @@ public class GameModel : MonoBehaviour
 
     private HUD _HUD;
     private UpgradeMenu _upgradeMenu;
-    private PauseMenu _pauseMenu;
+    private PauseMenuView _pauseMenuView;
 
     private InventoryModel _inventoryModel;
     private EquipmentModel _equipmentModel;
+    private PauseMenuModel _pauseMenuModel;
 
     private FollowingCamera _followingCamera;
     private InputController _inputController;
@@ -70,7 +71,10 @@ public class GameModel : MonoBehaviour
         _player.InventoryModel = _inventoryModel;
 
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
-        _pauseMenu = _viewFactory.CreateView<PauseMenu>(Eview.PauseMenu);
+
+        _pauseMenuView = _viewFactory.CreateView<PauseMenuView>(Eview.PauseMenuView);
+        _pauseMenuModel = new PauseMenuModel(_pauseMenuView,this);
+
         _isGamePaused = false;
         Time.timeScale = 1;
 
@@ -100,11 +104,8 @@ public class GameModel : MonoBehaviour
         _equipmentModel.SetPlayer(_player);
 
         _HUD = _viewFactory.CreateView<HUD>(Eview.HUD);
-        _inputController.OnGamePaused += _pauseMenu.ShowPanel;
+        _inputController.OnGamePaused += _pauseMenuModel.TogglePausePanel;
 
-        _pauseMenu.ContinueButton.onClick.AddListener(Continue);
-        _pauseMenu.SaveButton.onClick.AddListener(SaveGame);
-        _pauseMenu.LoadButton.onClick.AddListener(GameManager.Instance.LoadGame); // doesnt work
 
 
         _player.OnPlayerDeath += GameOver;
@@ -120,10 +121,9 @@ public class GameModel : MonoBehaviour
         SetExperienceSystem();
     }
 
-    private void Continue()
+    public void Continue()
     {
         TogglePause(false);
-        _pauseMenu.ShowPanel(false);
         _inputController.Continue();
         _crosshair.PauseCursor(false);
 
@@ -176,10 +176,7 @@ public class GameModel : MonoBehaviour
         _inputController.InventoryButtonPressed += _inventoryModel.TogglePanel;
     }
 
-    private void SaveGame()
-    {
-        GameManager.Instance.SaveGame();
-    }
+
 
     public void LoadGame()
     {
@@ -195,7 +192,7 @@ public class GameModel : MonoBehaviour
     private IEnumerator TogglePauseAfterDeath()
     {
         yield return new WaitForSeconds(2f);
-        _pauseMenu.GameOver(true);
+        _pauseMenuView.GameOver(true);
         TogglePause(true);
     }
 
