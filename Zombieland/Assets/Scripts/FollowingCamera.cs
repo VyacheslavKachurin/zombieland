@@ -27,20 +27,17 @@ public class FollowingCamera : MonoBehaviour
             );
         Vector3 middle = (targetPosition + clampedTarget) / 2;
         Vector3 wantedPosition = middle + _offset;
-     //   Vector3 smoothedPosition = Vector3.Lerp(transform.position, wantedPosition, SmoothSpeed * Time.deltaTime);
-        Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position,wantedPosition,ref velocity,_smoothSpeed);
+        Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, wantedPosition, ref velocity, _smoothSpeed);
 
         transform.position = smoothedPosition;
-
-
-
-
     }
 
     public void SetTarget(Transform targetTransform)
     {
         _targetTransform = targetTransform;
+        transform.position = targetTransform.position;
         _offset = transform.position - targetTransform.position;
+
     }
 
     public void SetCrosshairPosition(Transform crosshairTransform)

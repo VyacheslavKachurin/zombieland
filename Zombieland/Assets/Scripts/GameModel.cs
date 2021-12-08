@@ -37,6 +37,7 @@ public class GameModel : MonoBehaviour
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
     private PointHolder _pointHolder;
+    private GameLogic _gameLogic;
 
     private bool _isGamePaused;
 
@@ -125,7 +126,9 @@ public class GameModel : MonoBehaviour
 
         _enemySpawner.SetExperienceSystem(_experienceSystem);
 
-        _enemySpawner.SpawnEnemy(EnemyType.Walker, _player.transform, 5);
+        _gameLogic = new GameLogic(_pointHolder, _enemySpawner, _resourceManager);
+        _gameLogic.Initialize();
+        
     }
 
     public void Continue()

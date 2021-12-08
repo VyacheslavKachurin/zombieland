@@ -17,8 +17,9 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         return obj.GetComponent<T>();
     }
 
-    public Enemy CreateEnemy(EnemyType type, Vector3 position)
+    public Enemy SpawnEnemy(EnemyType type, Vector3 position)
     {
+        var place = new Vector3(position.x, 0.5f, position.y);
         var enemy = Instantiate(Resources.Load<GameObject>(_enemyPath + type), position, Quaternion.identity);
         return enemy.GetComponent<Enemy>();
     }

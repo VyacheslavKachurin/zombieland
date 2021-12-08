@@ -25,12 +25,12 @@ public class EnemySpawner : IEnemySpawner
         _enemyCanvas = _viewFactory.CreateView<Canvas>(Eview.EnemyCanvas);
     }
 
-    public void SpawnEnemy(EnemyType type, Transform transform,int count)
+    public void CreateEnemy(EnemyType type, Vector3 position,int count)
     {
         for (int i = 0; i < count; i++)
         {
 
-            Enemy enemy = _resourceManager.CreateEnemy(EnemyType.Walker, transform.position);
+            Enemy enemy = _resourceManager.SpawnEnemy(EnemyType.Walker,position);
             var healthBar = _resourceManager.CreateHealthBar(_enemyCanvas.transform);
 
             enemy.GetHealthBar(healthBar.gameObject);

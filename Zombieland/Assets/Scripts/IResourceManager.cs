@@ -12,7 +12,7 @@ public interface IResourceManager
 
     public T CreateView<T>(string path,Eview eview);
 
-    public Enemy CreateEnemy(EnemyType type, Vector3 position);
+    public Enemy SpawnEnemy(EnemyType type, Vector3 position);
 
     public EnemyHealthBar CreateHealthBar(Transform canvas);
 }
