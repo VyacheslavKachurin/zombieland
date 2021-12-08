@@ -27,7 +27,7 @@ public class GameModel : MonoBehaviour
     private FollowingCamera _followingCamera;
     private InputController _inputController;
     private Crosshair _crosshair;
-    private EnemySpawner _enemySpawner;
+    private IEnemySpawner _enemySpawner;
 
     private IResourceManager _resourceManager;
 
@@ -79,20 +79,20 @@ public class GameModel : MonoBehaviour
         Time.timeScale = 1;
 
 
-        _enemySpawner = _resourceManager.CreatePrefabInstance<EnemySpawner>(Objects.EnemySpawner);
+        _enemySpawner = _resourceManager.CreateGameObject<EnemySpawner>(Objects.EnemySpawner);
 
-        _followingCamera = _resourceManager.CreatePrefabInstance<FollowingCamera>(Objects.FollowingCamera);
+        _followingCamera = _resourceManager.CreateGameObject<FollowingCamera>(Objects.FollowingCamera);
 
-        _crosshair = _resourceManager.CreatePrefabInstance<Crosshair>(Objects.Crosshair);
+        _crosshair = _resourceManager.CreateGameObject<Crosshair>(Objects.Crosshair);
         _followingCamera.SetCrosshairPosition(_crosshair.transform);
 
         _followingCamera.SetTarget(_player.transform);
 
 
 
-        _enemySpawner.SetTarget(_player.transform);
+        _enemySpawner.StoreTarget(_player.transform);
 
-        _inputController = _resourceManager.CreatePrefabInstance<InputController>(Objects.InputController);
+        _inputController = _resourceManager.CreateGameObject<InputController>(Objects.InputController);
 
         _inputController.CursorMoved += _crosshair.Aim;
         _inputController.OnGamePaused += _crosshair.PauseCursor;
@@ -171,7 +171,7 @@ public class GameModel : MonoBehaviour
 
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
-        _enemySpawner.SetExperienceSystem(_experienceSystem);
+       // _enemySpawner.SetExperienceSystem(_experienceSystem);
 
         _inputController.InventoryButtonPressed += _inventoryModel.TogglePanel;
     }
@@ -185,7 +185,6 @@ public class GameModel : MonoBehaviour
 
     private void GameOver(bool value)
     {
-        _enemySpawner.StopSpawning(value); //TODO : take care of bool
         StartCoroutine(TogglePauseAfterDeath());
     }
 

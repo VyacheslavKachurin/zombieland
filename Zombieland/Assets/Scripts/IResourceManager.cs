@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IResourceManager
 {
-    public T CreatePrefabInstance<T>(Objects name);
+    public T CreateGameObject<T>(Objects name);
 
     public void CreateEnvironment(Environment environment);
 
@@ -12,6 +12,9 @@ public interface IResourceManager
 
     public T CreateView<T>(string path,Eview eview);
 
+    public Enemy CreateEnemy(EnemyType type, Vector3 position);
+
+    public EnemyHealthBar CreateHealthBar(Transform canvas);
 }
 
 

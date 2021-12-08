@@ -7,4 +7,5 @@ public interface IEquipmentView
     public void EquipItem(Item newItem);
 
     public void GetInventoryModel(InventoryModel model);
+
 }

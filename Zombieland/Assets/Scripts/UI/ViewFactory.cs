@@ -14,10 +14,16 @@ public class ViewFactory : IViewFactory
 
     public T CreateView<T>(Eview eview)
     {
-        var view=_resourceManager.CreateView<T>(_viewPath,eview);
-        
+        var view = _resourceManager.CreateView<T>(_viewPath, eview);
+
+        return view;
+    }
+
+    public GameObject CreateEnemyCanvas()
+    {
+        var view = _resourceManager.CreateView<GameObject>(_viewPath, Eview.EnemyCanvas);
         return view;
     }
 }
 
-public enum Eview { EquipmentView, InventoryView,UpgradeMenu,PauseMenuView,HUD }
+public enum Eview { EquipmentView, InventoryView, UpgradeMenu, PauseMenuView, HUD, EnemyCanvas }
