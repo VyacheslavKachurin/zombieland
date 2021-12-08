@@ -73,13 +73,18 @@ public class GameModel : MonoBehaviour
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
 
         _pauseMenuView = _viewFactory.CreateView<PauseMenuView>(Eview.PauseMenuView);
-        _pauseMenuModel = new PauseMenuModel(_pauseMenuView,this);
+        _pauseMenuModel = new PauseMenuModel(_pauseMenuView, this);
 
         _isGamePaused = false;
         Time.timeScale = 1;
 
 
-        _enemySpawner = _resourceManager.CreateGameObject<EnemySpawner>(Objects.EnemySpawner);
+        _enemySpawner = new EnemySpawner(_resourceManager, _viewFactory);
+        _enemySpawner.StoreTarget(_player.transform);
+        _enemySpawner.GetCanvas();
+
+
+       
 
         _followingCamera = _resourceManager.CreateGameObject<FollowingCamera>(Objects.FollowingCamera);
 
@@ -90,7 +95,6 @@ public class GameModel : MonoBehaviour
 
 
 
-        _enemySpawner.StoreTarget(_player.transform);
 
         _inputController = _resourceManager.CreateGameObject<InputController>(Objects.InputController);
 
@@ -119,6 +123,10 @@ public class GameModel : MonoBehaviour
         _inputController.OnUpgradeButtonPressed += TogglePause;
 
         SetExperienceSystem();
+
+        _enemySpawner.SetExperienceSystem(_experienceSystem);
+
+        _enemySpawner.SpawnEnemy(EnemyType.Walker, _player.transform, 5);
     }
 
     public void Continue()
@@ -171,9 +179,7 @@ public class GameModel : MonoBehaviour
 
         playerStats.MaxHealth.OnValueChanged += _HUD.UpgradeMaxHealthValue;
 
-       // _enemySpawner.SetExperienceSystem(_experienceSystem);
-
-        _inputController.InventoryButtonPressed += _inventoryModel.TogglePanel;
+        _inputController.InventoryButtonPressed += _inventoryModel.TogglePanel; // should be here?
     }
 
 

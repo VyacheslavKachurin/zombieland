@@ -188,10 +188,10 @@ public class Enemy : MonoBehaviour, IDamageable
         _visibleAngle = 180;
     }
 
-    //public void GetHealthBar(GameObject enemyHealthBar)
-    //{
-    //   _enemyHealthBar = enemyHealthBar;
-    //}
+    public void GetHealthBar(GameObject enemyHealthBar)
+    {
+       _enemyHealthBar = enemyHealthBar;
+    }
 
     private void UpdateHealthBarPosition()
     {

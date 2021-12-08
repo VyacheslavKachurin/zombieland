@@ -4,7 +4,7 @@ public class EnemySpawner : IEnemySpawner
 {
     private IResourceManager _resourceManager;
     private IViewFactory _viewFactory;
-    private GameObject _enemyCanvas;
+    private Canvas _enemyCanvas;
 
     private float _spawnRate;
     private float _spawnDistance = 20f;
@@ -14,34 +14,34 @@ public class EnemySpawner : IEnemySpawner
     private Transform _targetTransform;
     private ExperienceSystem _experienceSystem;
 
-    public EnemySpawner(IResourceManager manager, IViewFactory factory)
+    public EnemySpawner(IResourceManager manager, IViewFactory viewFactory)
     {
         _resourceManager = manager;
-        _viewFactory = factory;      
+        _viewFactory = viewFactory;      
     }
 
-    public void CreateCanvas()
+    public void GetCanvas()
     {
-        _enemyCanvas = _viewFactory.CreateEnemyCanvas();
+        _enemyCanvas = _viewFactory.CreateView<Canvas>(Eview.EnemyCanvas);
     }
 
-    public void SpawnEnemy(EnemyType type, Transform transform)
+    public void SpawnEnemy(EnemyType type, Transform transform,int count)
     {
-        Enemy enemy = _resourceManager.CreateEnemy(EnemyType.Walker, transform.position);
-        var healthBar=CreateHealthBar(_enemyCanvas.transform, enemy);
+        for (int i = 0; i < count; i++)
+        {
 
-        enemy.OnEnemyGotAttacked += healthBar.UpdateHealth;
-        enemy.SetTarget(_targetTransform);
-        enemy.EnemyDied += _experienceSystem.AddExperience;
+            Enemy enemy = _resourceManager.CreateEnemy(EnemyType.Walker, transform.position);
+            var healthBar = _resourceManager.CreateHealthBar(_enemyCanvas.transform);
+
+            enemy.GetHealthBar(healthBar.gameObject);
+
+            enemy.OnEnemyGotAttacked += healthBar.UpdateHealth;
+            enemy.SetTarget(_targetTransform);
+            enemy.EnemyDied += _experienceSystem.AddExperience;
+        }
     }
 
-    private EnemyHealthBar CreateHealthBar(Transform EnemyCanvas,Enemy enemy)
-    {
-        var healthBar = _resourceManager.CreateHealthBar(EnemyCanvas);
 
-        return healthBar;
-        
-    }
 
     private Vector3 GetRandomPosition()
     {
@@ -83,10 +83,10 @@ public class EnemySpawner : IEnemySpawner
         return _spawnRate;
 
     }
-    public void SetExperienceSystem(ExperienceSystem XPSystem)
+    public void SetExperienceSystem(ExperienceSystem system)
     {
-        _experienceSystem = XPSystem;
+        _experienceSystem = system;
     }
 
 }
-public enum EnemyType { Walker,Runner,Destructor };
+public enum EnemyType { Walker,Runner,Exploder,Destructor };

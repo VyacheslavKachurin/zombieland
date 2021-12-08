@@ -12,14 +12,14 @@ public class ResourceManager : MonoBehaviour, IResourceManager
     private UIRoot _root;
     public T CreateGameObject<T>(Objects name)
     {
-        var obj = Instantiate(Resources.Load<GameObject>(_prefabsPath + name.ToString()));
+        var obj = Instantiate(Resources.Load<GameObject>(_prefabsPath + name));
 
         return obj.GetComponent<T>();
     }
 
     public Enemy CreateEnemy(EnemyType type, Vector3 position)
     {
-        var enemy = Instantiate(Resources.Load<GameObject>(_enemyPath + type.ToString()), position, Quaternion.identity);
+        var enemy = Instantiate(Resources.Load<GameObject>(_enemyPath + type), position, Quaternion.identity);
         return enemy.GetComponent<Enemy>();
     }
 
@@ -51,7 +51,7 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         return view.GetComponent<T>();
     }
 }
-public enum Objects { InputController, EnemySpawner, Crosshair, FollowingCamera, UIRoot }
+public enum Objects { InputController, Crosshair, FollowingCamera, UIRoot }
 
 public enum Environment { Environment1 }
 

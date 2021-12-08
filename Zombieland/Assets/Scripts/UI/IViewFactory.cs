@@ -5,5 +5,4 @@ using UnityEngine;
 public interface IViewFactory 
 {
     public T CreateView<T>(Eview eview);
-    public GameObject CreateEnemyCanvas();
 }

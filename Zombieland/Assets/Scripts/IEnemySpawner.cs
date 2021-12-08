@@ -4,9 +4,11 @@ using UnityEngine;
 
 public interface IEnemySpawner 
 {
-    public void CreateCanvas();
+    public void GetCanvas();
 
-    public void SpawnEnemy(EnemyType type, Transform position);
+    public void SpawnEnemy(EnemyType type, Transform position,int count);
 
     public void StoreTarget(Transform target);
+
+    public void SetExperienceSystem(ExperienceSystem system);
 }
