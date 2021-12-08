@@ -36,6 +36,7 @@ public class GameModel : MonoBehaviour
 
     private ExperienceSystem _experienceSystem;
     private AudioManager _audioManager;
+    private PointHolder _pointHolder;
 
     private bool _isGamePaused;
 
@@ -50,13 +51,13 @@ public class GameModel : MonoBehaviour
     {
         _resourceManager = gameObject.AddComponent<ResourceManager>(); // is it okay?
 
-        _resourceManager.CreateEnvironment(Environment.Environment1);
+        _pointHolder = _resourceManager.CreateEnvironment(Environment.Environment1);
 
         _UIRoot = _resourceManager.CreateUIRoot();
 
         _viewFactory = new ViewFactory(_resourceManager);
 
-        _player = Instantiate(_player, Vector3.zero, Quaternion.identity);
+        _player = Instantiate(_player, _pointHolder.GetPlayerSpawnPoint(), Quaternion.identity);
 
         _equipmentView = _viewFactory.CreateView<EquipmentView>(Eview.EquipmentView);
         _equipmentModel = new EquipmentModel(_equipmentView, _player);
@@ -83,8 +84,6 @@ public class GameModel : MonoBehaviour
         _enemySpawner.StoreTarget(_player.transform);
         _enemySpawner.GetCanvas();
 
-
-       
 
         _followingCamera = _resourceManager.CreateGameObject<FollowingCamera>(Objects.FollowingCamera);
 

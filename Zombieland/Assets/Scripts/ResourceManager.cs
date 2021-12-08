@@ -32,9 +32,10 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         return healthBar.GetComponent<EnemyHealthBar>();
     }
 
-    public void CreateEnvironment(Environment environment)
+    public PointHolder CreateEnvironment(Environment environment)
     {
-        Instantiate(Resources.Load<GameObject>(_environmentsPath + environment.ToString()), Vector3.zero, Quaternion.identity);
+        var pointHolder=Instantiate(Resources.Load<GameObject>(_environmentsPath + environment.ToString()), Vector3.zero, Quaternion.identity);
+        return pointHolder.GetComponent<PointHolder>();
     }
 
     public IUIRoot CreateUIRoot()

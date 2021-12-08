@@ -6,7 +6,7 @@ public interface IResourceManager
 {
     public T CreateGameObject<T>(Objects name);
 
-    public void CreateEnvironment(Environment environment);
+    public PointHolder CreateEnvironment(Environment environment);
 
     public IUIRoot CreateUIRoot();
 
