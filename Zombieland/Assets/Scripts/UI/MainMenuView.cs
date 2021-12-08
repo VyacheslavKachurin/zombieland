@@ -32,11 +32,6 @@ public class MainMenuView : MonoBehaviour
         _settingsPanel.gameObject.SetActive(true);
     }
 
-    private void ShowLevels()
-    {
-        Debug.Log("Show levels");
-    }
-
     private void NewGame()
     {
         NewGameStarted();        

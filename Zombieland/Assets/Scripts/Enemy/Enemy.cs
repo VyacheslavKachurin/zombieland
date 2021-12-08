@@ -190,7 +190,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void GetHealthBar(GameObject enemyHealthBar)
     {
-        _enemyHealthBar = enemyHealthBar;
+       _enemyHealthBar = enemyHealthBar;
     }
 
     private void UpdateHealthBarPosition()

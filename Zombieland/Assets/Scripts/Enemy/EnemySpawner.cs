@@ -1,50 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-using Random = UnityEngine.Random;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemySpawner : IEnemySpawner
 {
-    [SerializeField] private Enemy _enemy;
-    [SerializeField] private Canvas _enemyCanvas;
-    [SerializeField] private GameObject _enemyHealthBar;
+    private IResourceManager _resourceManager;
+    private IViewFactory _viewFactory;
+    private Canvas _enemyCanvas;
 
     private float _spawnRate;
     private float _spawnDistance = 20f;
     private float _range;
     private Vector3 _spawnPosition;
-    private GameObject _plane;
 
     private Transform _targetTransform;
     private ExperienceSystem _experienceSystem;
 
-    private void Awake()
+    public EnemySpawner(IResourceManager manager, IViewFactory viewFactory)
     {
-        // TODO 
-        // ground is hardcoded, change it to something else 
-        // will assign different Transform positions and store them in a list to randomly spawn
-
-        _enemyCanvas = Instantiate(_enemyCanvas);
-     
-
-        _plane = GameObject.Find("street");
-        _range = _plane.GetComponent<MeshCollider>().bounds.size.x / 2;
-
-       // InvokeRepeating(nameof(SpawnEnemy), 0.1f, SetDifficulty());
+        _resourceManager = manager;
+        _viewFactory = viewFactory;      
     }
 
-    private void SpawnEnemy()
+    public void GetCanvas()
     {
-        Enemy enemyInstance = Instantiate(_enemy, GetRandomPosition(), Quaternion.identity);
-        GameObject enemyHealthBarInstance = Instantiate(_enemyHealthBar);
-        enemyHealthBarInstance.SetActive(false);
-        enemyHealthBarInstance.transform.SetParent(_enemyCanvas.transform, false);
-        enemyInstance.GetHealthBar(enemyHealthBarInstance);
-        enemyInstance.OnEnemyGotAttacked += enemyHealthBarInstance.GetComponent<EnemyHealthBar>().UpdateHealth;
-        enemyInstance.SetTarget(_targetTransform);
-        enemyInstance.EnemyDied += _experienceSystem.AddExperience;
+        _enemyCanvas = _viewFactory.CreateView<Canvas>(Eview.EnemyCanvas);
     }
+
+    public void SpawnEnemy(EnemyType type, Transform transform,int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+
+            Enemy enemy = _resourceManager.CreateEnemy(EnemyType.Walker, transform.position);
+            var healthBar = _resourceManager.CreateHealthBar(_enemyCanvas.transform);
+
+            enemy.GetHealthBar(healthBar.gameObject);
+
+            enemy.OnEnemyGotAttacked += healthBar.UpdateHealth;
+            enemy.SetTarget(_targetTransform);
+            enemy.EnemyDied += _experienceSystem.AddExperience;
+        }
+    }
+
+
 
     private Vector3 GetRandomPosition()
     {
@@ -61,12 +58,8 @@ public class EnemySpawner : MonoBehaviour
             return GetRandomPosition();
         }
     }
-    public void StopSpawning(bool value) //this method will be changed in future builds 
-    {
-        CancelInvoke(nameof(SpawnEnemy));
-    }
 
-    public void SetTarget(Transform position)
+    public void StoreTarget(Transform position)
     {
         _targetTransform = position;
     }
@@ -90,9 +83,10 @@ public class EnemySpawner : MonoBehaviour
         return _spawnRate;
 
     }
-    public void SetExperienceSystem(ExperienceSystem XPSystem)
+    public void SetExperienceSystem(ExperienceSystem system)
     {
-        _experienceSystem = XPSystem;
+        _experienceSystem = system;
     }
 
 }
+public enum EnemyType { Walker,Runner,Exploder,Destructor };
