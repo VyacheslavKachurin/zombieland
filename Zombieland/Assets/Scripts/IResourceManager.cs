@@ -16,6 +16,8 @@ public interface IResourceManager
 
     public EnemyHealthBar CreateHealthBar(Transform canvas);
 
+    public Coroutine StartCoroutine(IEnumerator coroutine);
+
 }
 
 

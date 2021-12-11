@@ -52,6 +52,7 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         view.transform.SetParent(_root.transform);
         return view.GetComponent<T>();
     }
+
 }
 public enum ESceneObjects { InputController, Crosshair, FollowingCamera, UIRoot }
 

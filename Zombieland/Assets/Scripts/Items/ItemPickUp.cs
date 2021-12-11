@@ -7,7 +7,7 @@ public class ItemPickUp : Interactable
     [SerializeField] private Item _item;
     private InventoryModel _inventoryModel;
 
-    private void Initialize()
+    private void Start()
     {
         var createdItem = Instantiate(_item.ItemObject);
         createdItem.transform.parent = transform;
@@ -30,12 +30,5 @@ public class ItemPickUp : Interactable
         {
             Destroy(gameObject);
         }
-    }
-
-    public void SetItem(Item item)
-    {
-        _item = item;
-
-        Initialize();
     }
 }

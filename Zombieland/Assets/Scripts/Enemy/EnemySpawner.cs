@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemySpawner : IEnemySpawner
@@ -6,13 +7,15 @@ public class EnemySpawner : IEnemySpawner
     private IViewFactory _viewFactory;
     private Canvas _enemyCanvas;
 
-    private float _spawnRate;
+    private float _spawnRate=1f;
     private float _spawnDistance = 20f;
     private float _range=2f;
     private Vector3 _spawnPosition;
 
     private Transform _targetTransform;
     private ExperienceSystem _experienceSystem;
+
+
 
     public EnemySpawner(IResourceManager manager, IViewFactory viewFactory)
     {
@@ -41,8 +44,6 @@ public class EnemySpawner : IEnemySpawner
         }
     }
 
-
-
     private Vector3 GetRandomPosition(Vector3 position)
     {
         var randomPosition = position + Random.insideUnitSphere;
@@ -53,30 +54,23 @@ public class EnemySpawner : IEnemySpawner
     {
         _targetTransform = position;
     }
-    private float SetDifficulty()
-    {
-        int difficulty = SettingsSystem.GetDifficulty();
-
-        switch (difficulty)
-        {
-            case 0:
-                _spawnRate = 2f;
-                break;
-            case 1:
-                _spawnRate = 1.5f;
-                break;
-            case 2:
-                _spawnRate = 1f;
-                break;
-
-        }
-        return _spawnRate;
-
-    }
     public void SetExperienceSystem(ExperienceSystem system)
     {
         _experienceSystem = system;
     }
 
+    public void StartConstantSpawning(EEnemyType type, Vector3 position, float delay)
+    {
+        _resourceManager.StartCoroutine(ConstantSpawning(EEnemyType.Walker, position, delay));
+    }
+
+    private IEnumerator ConstantSpawning(EEnemyType type,Vector3 position,float delay)
+    {
+        while (true)
+        {
+            CreateEnemy(EEnemyType.Walker, position, 1);
+            yield return new WaitForSeconds(delay);
+        }
+    }
 }
 public enum EEnemyType { Walker,Runner,Exploder,Destructor };

@@ -11,4 +11,6 @@ public interface IEnemySpawner
     public void StoreTarget(Transform target);
 
     public void SetExperienceSystem(ExperienceSystem system);
+
+    public void StartConstantSpawning(EEnemyType type, Vector3 position,float delay);
 }
