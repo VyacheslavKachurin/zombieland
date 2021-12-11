@@ -86,9 +86,9 @@ public class GameModel : MonoBehaviour
         _enemySpawner.GetCanvas();
 
 
-        _followingCamera = _resourceManager.CreateGameObject<FollowingCamera>(Objects.FollowingCamera);
+        _followingCamera = _resourceManager.CreateGameObject<FollowingCamera>(ESceneObjects.FollowingCamera);
 
-        _crosshair = _resourceManager.CreateGameObject<Crosshair>(Objects.Crosshair);
+        _crosshair = _resourceManager.CreateGameObject<Crosshair>(ESceneObjects.Crosshair);
         _followingCamera.SetCrosshairPosition(_crosshair.transform);
 
         _followingCamera.SetTarget(_player.transform);
@@ -96,7 +96,7 @@ public class GameModel : MonoBehaviour
 
 
 
-        _inputController = _resourceManager.CreateGameObject<InputController>(Objects.InputController);
+        _inputController = _resourceManager.CreateGameObject<InputController>(ESceneObjects.InputController);
 
         _inputController.CursorMoved += _crosshair.Aim;
         _inputController.OnGamePaused += _crosshair.PauseCursor;

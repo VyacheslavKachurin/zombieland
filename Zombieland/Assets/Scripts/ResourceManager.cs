@@ -10,17 +10,17 @@ public class ResourceManager : MonoBehaviour, IResourceManager
     private const string _enemyPath = "Enemies/";
 
     private UIRoot _root;
-    public T CreateGameObject<T>(Objects name)
+    public T CreateGameObject<T>(ESceneObjects name)
     {
         var obj = Instantiate(Resources.Load<GameObject>(_prefabsPath + name));
 
         return obj.GetComponent<T>();
     }
 
-    public Enemy SpawnEnemy(EnemyType type, Vector3 position)
+    public Enemy SpawnEnemy(EEnemyType type, Vector3 position)
     {
         var place = new Vector3(position.x, 0.5f, position.y);
-        var enemy = Instantiate(Resources.Load<GameObject>(_enemyPath + type), position, Quaternion.identity);
+        var enemy = Instantiate(Resources.Load<GameObject>(_enemyPath + type), position, Random.rotation);
         return enemy.GetComponent<Enemy>();
     }
 
@@ -28,14 +28,14 @@ public class ResourceManager : MonoBehaviour, IResourceManager
     {
         var healthBar = Instantiate(Resources.Load<GameObject>("UI/EnemyHealthBar"));
         healthBar.SetActive(false);
-        healthBar.transform.SetParent(canvas,false);
+        healthBar.transform.SetParent(canvas, false);
 
         return healthBar.GetComponent<EnemyHealthBar>();
     }
 
     public PointHolder CreateEnvironment(Environment environment)
     {
-        var pointHolder=Instantiate(Resources.Load<GameObject>(_environmentsPath + environment.ToString()), Vector3.zero, Quaternion.identity);
+        var pointHolder = Instantiate(Resources.Load<GameObject>(_environmentsPath + environment.ToString()), Vector3.zero, Quaternion.identity);
         return pointHolder.GetComponent<PointHolder>();
     }
 
@@ -53,8 +53,10 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         return view.GetComponent<T>();
     }
 }
-public enum Objects { InputController, Crosshair, FollowingCamera, UIRoot }
+public enum ESceneObjects { InputController, Crosshair, FollowingCamera, UIRoot }
 
 public enum Environment { Environment1 }
+
+public enum EItem { AK74, HelmetBlack, HelmetYellow, Laser, VestRed, VestStandart, VestYellow }
 
 

@@ -8,7 +8,7 @@ public class EnemySpawner : IEnemySpawner
 
     private float _spawnRate;
     private float _spawnDistance = 20f;
-    private float _range;
+    private float _range=2f;
     private Vector3 _spawnPosition;
 
     private Transform _targetTransform;
@@ -25,12 +25,12 @@ public class EnemySpawner : IEnemySpawner
         _enemyCanvas = _viewFactory.CreateView<Canvas>(Eview.EnemyCanvas);
     }
 
-    public void CreateEnemy(EnemyType type, Vector3 position,int count)
+    public void CreateEnemy(EEnemyType type, Vector3 position,int amount)
     {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < amount; i++)
         {
-
-            Enemy enemy = _resourceManager.SpawnEnemy(EnemyType.Walker,position);
+            var randomPosition = GetRandomPosition(position);
+            Enemy enemy = _resourceManager.SpawnEnemy(EEnemyType.Walker,randomPosition);
             var healthBar = _resourceManager.CreateHealthBar(_enemyCanvas.transform);
 
             enemy.GetHealthBar(healthBar.gameObject);
@@ -43,20 +43,10 @@ public class EnemySpawner : IEnemySpawner
 
 
 
-    private Vector3 GetRandomPosition()
+    private Vector3 GetRandomPosition(Vector3 position)
     {
-        _spawnPosition = new Vector3(
-            Random.Range(-_range, _range),
-            0,
-            Random.Range(-_range, _range));
-        if (Vector3.Distance(_targetTransform.position, _spawnPosition) >= _spawnDistance)
-        {
-            return _spawnPosition;
-        }
-        else
-        {
-            return GetRandomPosition();
-        }
+        var randomPosition = position + Random.insideUnitSphere;
+        return randomPosition;
     }
 
     public void StoreTarget(Transform position)
@@ -89,4 +79,4 @@ public class EnemySpawner : IEnemySpawner
     }
 
 }
-public enum EnemyType { Walker,Runner,Exploder,Destructor };
+public enum EEnemyType { Walker,Runner,Exploder,Destructor };

@@ -27,8 +27,14 @@ public class GameLogic
         foreach (var point in points)
         {
            
-            _enemySpawner.CreateEnemy(EnemyType.Walker,point, 1);
+            _enemySpawner.CreateEnemy(EEnemyType.Walker,point, GetRandomAmount());
         }
+    }
+
+    private int GetRandomAmount()
+    {
+        var number = Random.Range(5, 7);
+        return number;
     }
 
 

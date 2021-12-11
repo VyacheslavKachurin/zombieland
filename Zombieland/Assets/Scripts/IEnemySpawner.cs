@@ -6,7 +6,7 @@ public interface IEnemySpawner
 {
     public void GetCanvas();
 
-    public void CreateEnemy(EnemyType type, Vector3 position,int count);
+    public void CreateEnemy(EEnemyType type, Vector3 position,int amount);
 
     public void StoreTarget(Transform target);
 
