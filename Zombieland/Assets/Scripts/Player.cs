@@ -305,11 +305,6 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    private void ReceiveScroolWheelInput(bool input)
-    {
-        // _weaponHolder.ChangeWeapon(input);
-    }
-
     private void GetWeapon(IWeapon weapon)
     {
         _currentWeapon = weapon;
@@ -364,7 +359,6 @@ public class Player : MonoBehaviour, IDamageable
         _input = input;
         input.Moved += ReceiveAxis;
         input.CursorMoved += ReceiveMouse;
-        input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;
         input.SprintingSwitched += SetSprinting;

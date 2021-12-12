@@ -8,7 +8,6 @@ public class InputController : MonoBehaviour, IPlayerInput
     public event Action<Vector3> CursorMoved;
     public event Action<float, float> Moved;
     public event Action<bool> OnShootingInput;
-    public event Action<bool> OnScrollWheelSwitched;
     public event Action OnReloadPressed;
     public event Action<bool> OnUpgradeButtonPressed;
     public event Action<bool> OnGamePaused;
@@ -47,7 +46,6 @@ public class InputController : MonoBehaviour, IPlayerInput
             ReadAxisInput();
             ReadCursorInput();
             ReadShootInput();
-            SwitchWeaponInput();
             ReloadInput();
             ReadJumpButton();
             ReadAimingInput();
@@ -122,22 +120,6 @@ public class InputController : MonoBehaviour, IPlayerInput
         {
             _isShooting = false;
             OnShootingInput?.Invoke(_isShooting);
-        }
-    }
-
-    private void SwitchWeaponInput()
-    {
-        if (_isReloading)
-        {
-            return;
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            OnScrollWheelSwitched?.Invoke(true);
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            OnScrollWheelSwitched?.Invoke(false);
         }
     }
 
