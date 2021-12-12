@@ -8,9 +8,8 @@ public class GameLogic
     private IResourceManager _resourceManager;
     private PointHolder _pointHolder;
 
-    private float _delay = 1f;
+    private float _delay = 3f;
 
-    private IEnumerator _endlessSpawn;
 
     public GameLogic(PointHolder holder, IEnemySpawner spawner, IResourceManager manager)
     {
@@ -46,8 +45,8 @@ public class GameLogic
 
     private void StartConstantSpawn()
     {
-        var position = _pointHolder.GetGameLogicTrigger().transform.position;
+        var position = _pointHolder.GetEndlessEnemySpawnPoint();
 
-       _enemySpawner.StartConstantSpawning(EEnemyType.Walker, position,2f);
+       _enemySpawner.StartConstantSpawning(EEnemyType.Exploder, position,_delay);
     }
 }

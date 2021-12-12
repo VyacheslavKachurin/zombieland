@@ -10,37 +10,42 @@ public class Enemy : MonoBehaviour, IDamageable
     public event Action<float> OnEnemyGotAttacked;
     public event Action<int> EnemyDied;
 
-    [SerializeField] private HitCollider _hitCollider;
-    [SerializeField] private AudioClip[] _chasingSounds;
+    [SerializeField] protected HitCollider _hitCollider;
+    [SerializeField] protected AudioClip[] _chasingSounds;
 
-    private NavMeshAgent _navMeshAgent;
-    private float _currentHealth;
+    protected NavMeshAgent _navMeshAgent;
+    protected float _currentHealth;
 
-    private Rigidbody[] _ragdoll;
+    protected Rigidbody[] _ragdoll;
 
-    private CapsuleCollider _capsuleCollider;
-    private Animator _animator;
-    private AudioSource _audioSource;
-    private GameObject _enemyHealthBar;
-    private EnemyStats _enemyStats;
-    private Vector3 _offset = new Vector3(0f, 2.46f, 0f);
+    protected CapsuleCollider _capsuleCollider;
+    protected Animator _animator;
+    protected AudioSource _audioSource;
+    protected GameObject _enemyHealthBar;
+    protected EnemyStats _enemyStats;
+    protected Vector3 _offset = new Vector3(0f, 2.46f, 0f);
 
-    private Transform _targetTransform;
+    protected Transform _targetTransform;
 
-    private int _experience = 20; //move to stats??
-    private float _visibleDistance = 10f;
-    private float _visibleAngle = 70f;
-    private float _attackRange = 1f;
+    protected int _experience = 20; //move to stats??
+    protected float _visibleDistance = 10f;
+    protected float _visibleAngle = 70f;
+    protected float _attackRange = 1f;
 
-    private bool _isAttacking = false;
-    private enum EnemyState
+    protected bool _isAttacking = false;
+    protected enum EnemyState
     {
         Idle, Chasing, Attacking, Dead
     }
 
-    private EnemyState _currentState;
+    protected EnemyState _currentState;
 
-    private void Start()
+    protected void Start()
+    {
+        Initialize();
+    }
+
+    protected void Initialize()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -54,7 +59,7 @@ public class Enemy : MonoBehaviour, IDamageable
         SwitchState(EnemyState.Idle);
     }
 
-    private void Update()
+    protected void Update()
     {
         UpdateHealthBarPosition();
 
@@ -62,10 +67,10 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             RotateTowardsTarget();
         }
-        CheckForTarget(IsTargetVisible(),IsTargetAttackable());
+        CheckForTarget(IsTargetVisible(), IsTargetAttackable());
     }
 
-    private void SwitchState(EnemyState state)
+    protected void SwitchState(EnemyState state)
     {
         if (_currentState != state)
         {
@@ -84,7 +89,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 case EnemyState.Attacking:
                     SetAttackingState();
                     return;
-                
+
                 case EnemyState.Dead:
                     SetDeadState();
                     return;
@@ -95,7 +100,7 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    private bool IsTargetVisible()
+    protected virtual bool IsTargetVisible()
     {
         Vector3 direction = _targetTransform.position - transform.position;
         float angle = Vector3.Angle(direction, transform.forward);
@@ -108,7 +113,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     }
 
-    private bool IsTargetAttackable()
+    protected bool IsTargetAttackable()
     {
         if (Vector3.Distance(transform.position, _targetTransform.position) <= _attackRange)
             return true;
@@ -116,7 +121,7 @@ public class Enemy : MonoBehaviour, IDamageable
             return false;
     }
 
-    private void CheckForTarget(bool isVisible,bool isAttackable)
+    protected void CheckForTarget(bool isVisible, bool isAttackable)
     {
         if (!_isAttacking)
         {
@@ -135,14 +140,14 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    private void RotateTowardsTarget()
+    protected void RotateTowardsTarget()
     {
         Vector3 direction = _targetTransform.position - transform.position;
         Quaternion desiredRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * 5f);
     }
 
-    private IEnumerator Move()
+    protected IEnumerator Move()
     {
         while (_currentState == EnemyState.Chasing)
         {
@@ -168,12 +173,12 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    private void SetDeadState()
+    protected virtual void SetDeadState()
     {
         _capsuleCollider.enabled = false;
 
         ActivateRagdoll();
-        
+
         _navMeshAgent.speed = 0; // temporary fix TO
 
         Destroy(gameObject, 3f);
@@ -182,7 +187,7 @@ public class Enemy : MonoBehaviour, IDamageable
         EnemyDied?.Invoke(_experience);
     }
 
-    private void AttackComplete() //animation event calls it
+    protected void AttackComplete() //animation event calls it
     {
         _isAttacking = false;
         _visibleAngle = 180;
@@ -190,10 +195,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void GetHealthBar(GameObject enemyHealthBar)
     {
-       _enemyHealthBar = enemyHealthBar;
+        _enemyHealthBar = enemyHealthBar;
     }
 
-    private void UpdateHealthBarPosition()
+    protected void UpdateHealthBarPosition()
     {
         if (_enemyHealthBar != null)
         {
@@ -213,23 +218,28 @@ public class Enemy : MonoBehaviour, IDamageable
         _targetTransform = position;
     }
 
-    private void AssignStats()
+    protected void AssignStats()
     {
         _enemyStats = GetComponent<EnemyStats>();
 
         _navMeshAgent.speed = _enemyStats.Speed.GetValue();
-        _hitCollider.GetComponent<HitCollider>().DamageAmount = _enemyStats.Damage.GetValue();
+       
+        if (_hitCollider != null)
+        {
+            var collider = _hitCollider.GetComponent<HitCollider>();
+            collider.DamageAmount = _enemyStats.Damage.GetValue();
+        }
         _currentHealth = _enemyStats.MaxHealth.GetValue();
 
     }
 
-    private void SetIdleState()
+    protected void SetIdleState()
     {
         _animator.SetTrigger("isIdle");
         _navMeshAgent.enabled = false;
     }
 
-    private void SetChasingState()
+    protected void SetChasingState()
     {
         _animator.ResetTrigger("Attack");
         _animator.SetTrigger("isChasing");
@@ -241,7 +251,7 @@ public class Enemy : MonoBehaviour, IDamageable
         StartCoroutine(Move());
     }
 
-    private void SetAttackingState()
+    protected virtual void SetAttackingState()
     {
         _animator.ResetTrigger("isChasing");
         _animator.SetTrigger("Attack");
@@ -250,14 +260,14 @@ public class Enemy : MonoBehaviour, IDamageable
         _isAttacking = true;
     }
 
-    private void PlayChasingSound()
+    protected void PlayChasingSound()
     {
         int random = Random.Range(0, _chasingSounds.Length);
 
         _audioSource.PlayOneShot(_chasingSounds[random]);
     }
 
-    private void ActivateRagdoll()
+    protected void ActivateRagdoll()
     {
         foreach (var rb in _ragdoll)
         {
@@ -266,7 +276,7 @@ public class Enemy : MonoBehaviour, IDamageable
         _animator.enabled = false;
     }
 
-    private void DeactivateRagdoll()
+    protected void DeactivateRagdoll()
     {
         foreach (var rb in _ragdoll)
         {

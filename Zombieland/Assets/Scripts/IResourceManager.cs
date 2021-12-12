@@ -18,6 +18,8 @@ public interface IResourceManager
 
     public Coroutine StartCoroutine(IEnumerator coroutine);
 
+    public void StopCoroutine(Coroutine coroutine);
+
 }
 
 

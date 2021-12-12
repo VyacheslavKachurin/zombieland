@@ -7,20 +7,20 @@ public class EnemySpawner : IEnemySpawner
     private IViewFactory _viewFactory;
     private Canvas _enemyCanvas;
 
-    private float _spawnRate=1f;
+    private float _spawnRate = 1f;
     private float _spawnDistance = 20f;
-    private float _range=2f;
+    private float _range = 2f;
     private Vector3 _spawnPosition;
 
     private Transform _targetTransform;
     private ExperienceSystem _experienceSystem;
 
-
+    private Coroutine _spawningCoroutine;
 
     public EnemySpawner(IResourceManager manager, IViewFactory viewFactory)
     {
         _resourceManager = manager;
-        _viewFactory = viewFactory;      
+        _viewFactory = viewFactory;
     }
 
     public void GetCanvas()
@@ -28,12 +28,12 @@ public class EnemySpawner : IEnemySpawner
         _enemyCanvas = _viewFactory.CreateView<Canvas>(Eview.EnemyCanvas);
     }
 
-    public void CreateEnemy(EEnemyType type, Vector3 position,int amount)
+    public void CreateEnemy(EEnemyType type, Vector3 position, int amount)
     {
         for (int i = 0; i < amount; i++)
         {
             var randomPosition = GetRandomPosition(position);
-            Enemy enemy = _resourceManager.SpawnEnemy(EEnemyType.Walker,randomPosition);
+            Enemy enemy = _resourceManager.SpawnEnemy(type, randomPosition);
             var healthBar = _resourceManager.CreateHealthBar(_enemyCanvas.transform);
 
             enemy.GetHealthBar(healthBar.gameObject);
@@ -61,16 +61,21 @@ public class EnemySpawner : IEnemySpawner
 
     public void StartConstantSpawning(EEnemyType type, Vector3 position, float delay)
     {
-        _resourceManager.StartCoroutine(ConstantSpawning(EEnemyType.Walker, position, delay));
+        _spawningCoroutine = _resourceManager.StartCoroutine(ConstantSpawning(type, position, delay));
     }
 
-    private IEnumerator ConstantSpawning(EEnemyType type,Vector3 position,float delay)
+    public void StopConstantSpawning()
+    {
+        _resourceManager.StopCoroutine(_spawningCoroutine);
+    }
+
+    private IEnumerator ConstantSpawning(EEnemyType type, Vector3 position, float delay)
     {
         while (true)
         {
-            CreateEnemy(EEnemyType.Walker, position, 1);
+            CreateEnemy(type, position, 1);
             yield return new WaitForSeconds(delay);
         }
     }
 }
-public enum EEnemyType { Walker,Runner,Exploder,Destructor };
+public enum EEnemyType { Walker, Runner, Exploder, Destructor };
