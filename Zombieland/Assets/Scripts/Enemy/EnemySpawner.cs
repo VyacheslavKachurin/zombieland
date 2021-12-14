@@ -36,6 +36,8 @@ public class EnemySpawner : IEnemySpawner
             Enemy enemy = _resourceManager.SpawnEnemy(type, randomPosition);
             var healthBar = _resourceManager.CreateHealthBar(_enemyCanvas.transform);
 
+            healthBar.Initialize();
+
             enemy.GetHealthBar(healthBar.gameObject);
 
             enemy.OnEnemyGotAttacked += healthBar.UpdateHealth;

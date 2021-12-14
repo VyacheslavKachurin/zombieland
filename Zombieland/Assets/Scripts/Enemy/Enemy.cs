@@ -47,6 +47,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     protected void Initialize()
     {
+       
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
@@ -54,6 +55,7 @@ public class Enemy : MonoBehaviour, IDamageable
         _audioSource = GetComponent<AudioSource>();
 
         DeactivateRagdoll();
+
         AssignStats();
 
         SwitchState(EnemyState.Idle);
@@ -228,13 +230,16 @@ public class Enemy : MonoBehaviour, IDamageable
         _enemyStats = GetComponent<EnemyStats>();
 
         _navMeshAgent.speed = _enemyStats.Speed.GetValue();
-       
+
         if (_hitCollider != null)
         {
             var collider = _hitCollider.GetComponent<HitCollider>();
             collider.DamageAmount = _enemyStats.Damage.GetValue();
         }
-        _currentHealth = _enemyStats.MaxHealth.GetValue();
+        var health = _enemyStats.MaxHealth.GetValue();
+
+        _currentHealth = health;
+        _enemyHealthBar.GetComponent<EnemyHealthBar>().SetMaxValue((int)health); 
 
     }
 

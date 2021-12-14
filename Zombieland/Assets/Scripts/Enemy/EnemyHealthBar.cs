@@ -7,7 +7,7 @@ public class EnemyHealthBar : MonoBehaviour
 {
     private Slider _slider;
 
-    private void Start()
+    public void Initialize()
     {
         _slider = GetComponent<Slider>();
     }
@@ -15,5 +15,11 @@ public class EnemyHealthBar : MonoBehaviour
     public void UpdateHealth(float damageAmount)
     {
         _slider.value -= damageAmount;
+    }
+
+    public void SetMaxValue(int value)
+    {
+        _slider.maxValue = value;
+        _slider.value = value;
     }
 }
