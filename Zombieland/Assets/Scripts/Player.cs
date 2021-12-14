@@ -21,6 +21,9 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField] private Animator _rigController;
 
+    private float _oldHelmetModifier = 0;
+    private float _oldVestModifier = 0;
+
     public IPlayerInput Input
     {
         get { return _input; }
@@ -443,28 +446,33 @@ public class Player : MonoBehaviour, IDamageable
         _animator.enabled = false;
     }
 
-    public void EquipHelmet(GameObject helmet)
+    public void EquipHelmet(GameObject helmet, int armorModifier)
     {
         var newHelmet = Instantiate(helmet);
 
         if (_currentHelmet != null)
         {
             Destroy(_currentHelmet);
+            UpgradeArmorStats(-(int)_oldHelmetModifier);
         }
         _currentHelmet = newHelmet;
 
         newHelmet.transform.parent = _helmetHolder;
         newHelmet.transform.localPosition = Vector3.zero;
         newHelmet.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
+        UpgradeArmorStats(armorModifier);
+        _oldHelmetModifier = armorModifier;
     }
 
-    public void EquipVest(GameObject vest)
+    public void EquipVest(GameObject vest, int armorModifier)
     {
         var newVest = Instantiate(vest);
 
         if (_currentVest != null)
         {
             Destroy(_currentVest);
+            UpgradeArmorStats(-(int)_oldVestModifier);
         }
         _currentVest = newVest;
 
@@ -472,5 +480,13 @@ public class Player : MonoBehaviour, IDamageable
         newVest.transform.localPosition = Vector3.zero;
         newVest.transform.localRotation = Quaternion.Euler(-90, 0, 0);
 
+        _oldVestModifier = armorModifier;
+        UpgradeArmorStats(armorModifier);
+
+    }
+
+    private void UpgradeArmorStats(int value)
+    {
+        _playerStats.UpdateArmor(value);
     }
 }

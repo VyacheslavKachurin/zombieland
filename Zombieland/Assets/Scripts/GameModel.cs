@@ -64,13 +64,14 @@ public class GameModel : MonoBehaviour
         _equipmentModel = new EquipmentModel(_equipmentView, _player);
 
 
-        _equipmentView.GetInventoryModel(_inventoryModel);
+
 
         _inventoryView = _viewFactory.CreateView<InventoryView>(Eview.InventoryView);
         _inventoryView.GetEquipmentModel(_equipmentModel);
         _inventoryModel = new InventoryModel(_inventoryView);
 
         _player.InventoryModel = _inventoryModel;
+        _equipmentView.GetInventoryModel(_inventoryModel);
 
         Instantiate(_aimingLayer, _aimingLayer.transform.position, Quaternion.identity);
 
@@ -129,7 +130,8 @@ public class GameModel : MonoBehaviour
         _gameLogic = new GameLogic(_pointHolder, _enemySpawner, _resourceManager);
         _gameLogic.Initialize();
         _player.PlayerDied += _gameLogic.StopConstantSpawn;
-        
+        _player.ReturnPlayerStats().Armor.OnValueChanged += _HUD.UpdateArmorSlider;
+
     }
 
     public void Continue()

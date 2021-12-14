@@ -28,9 +28,15 @@ public class Stat
         OnValueChanged(_baseValue);
     }
 
-    public void DecreaseValue(float value) //if i decide to add minus button to ui
+    public void IncreaseValue(float value)
     {
-        _baseValue-=_valueChanger;
+        _baseValue +=value;
+        OnValueChanged(_baseValue);
+    }
+
+    public void DecreaseValue(float value)
+    {
+        _baseValue+=value;
         OnValueChanged(_baseValue);
     }
 

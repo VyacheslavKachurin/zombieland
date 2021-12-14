@@ -33,13 +33,15 @@ public class EquipmentModel
 
         if (newItem.EquipSlot == EquipmentSlot.Helmet)
         {
-            _player.EquipHelmet(newItem.ItemObject);
+           var equipment=(Equipment)newItem; 
+            _player.EquipHelmet(newItem.ItemObject,equipment.ArmorModifier);
             return;
         }
 
         if (newItem.EquipSlot == EquipmentSlot.Vest)
         {
-            _player.EquipVest(newItem.ItemObject);
+            var equipment = (Equipment)newItem;
+            _player.EquipVest(newItem.ItemObject,equipment.ArmorModifier);
             return;
         }
     }
