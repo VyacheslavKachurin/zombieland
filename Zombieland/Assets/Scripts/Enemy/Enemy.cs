@@ -184,7 +184,12 @@ public class Enemy : MonoBehaviour, IDamageable
         Destroy(gameObject, 3f);
         Destroy(_enemyHealthBar);
 
-        EnemyDied?.Invoke(_experience);
+        TriggerDeathEvent(_experience);
+    }
+
+    protected void TriggerDeathEvent(int xp)
+    {
+        EnemyDied?.Invoke(xp);
     }
 
     protected void AttackComplete() //animation event calls it

@@ -47,6 +47,12 @@ public class GameLogic
     {
         var position = _pointHolder.GetEndlessEnemySpawnPoint();
 
-       _enemySpawner.StartConstantSpawning(EEnemyType.Exploder, position,_delay);
+       _enemySpawner.StartConstantSpawning(EEnemyType.Destructor, position,_delay);
+    }
+
+    public void StopConstantSpawn(bool value)
+    {
+        _enemySpawner.StopConstantSpawning();
+        Debug.Log("game logic get called");
     }
 }

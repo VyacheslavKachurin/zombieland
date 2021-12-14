@@ -51,6 +51,7 @@ public class PauseMenuView : MonoBehaviour
     public void ShowGameOver(bool value) //TODO: change name
     {
         _continueButton.interactable = false;
+        _saveButton.interactable = false;
         ShowPanel(value);
     }
 

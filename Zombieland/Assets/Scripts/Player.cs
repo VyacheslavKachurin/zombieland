@@ -6,7 +6,7 @@ using UnityEngine.Animations.Rigging;
 
 public class Player : MonoBehaviour, IDamageable
 {
-    public event Action<bool> OnPlayerDeath;
+    public event Action<bool> PlayerDied;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
@@ -270,9 +270,7 @@ public class Player : MonoBehaviour, IDamageable
 
             ActivateRagdoll();
 
-
-
-            // OnPlayerDeath?.Invoke(_isDead);
+            PlayerDied?.Invoke(_isDead);
             Destroy(this);
         }
     }

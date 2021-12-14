@@ -66,7 +66,7 @@ public class EnemySpawner : IEnemySpawner
 
     public void StopConstantSpawning()
     {
-        _resourceManager.StopCoroutine(_spawningCoroutine);
+        _resourceManager.StopConstantSpawning(_spawningCoroutine);
     }
 
     private IEnumerator ConstantSpawning(EEnemyType type, Vector3 position, float delay)

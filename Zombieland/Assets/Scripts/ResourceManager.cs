@@ -53,6 +53,11 @@ public class ResourceManager : MonoBehaviour, IResourceManager
         return view.GetComponent<T>();
     }
 
+    public void StopConstantSpawning(Coroutine coroutine)
+    {
+        Debug.Log(coroutine != null);
+        StopCoroutine(coroutine);
+    }
 }
 public enum ESceneObjects { InputController, Crosshair, FollowingCamera, UIRoot }
 

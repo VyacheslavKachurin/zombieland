@@ -112,7 +112,7 @@ public class GameModel : MonoBehaviour
 
 
 
-        _player.OnPlayerDeath += GameOver;
+        _player.PlayerDied += GameOver;
         _player.OnWeaponChanged += AssignWeapon;
         _player.OnPlayerGotAttacked += _HUD.UpdateHealth;
 
@@ -128,6 +128,7 @@ public class GameModel : MonoBehaviour
 
         _gameLogic = new GameLogic(_pointHolder, _enemySpawner, _resourceManager);
         _gameLogic.Initialize();
+        _player.PlayerDied += _gameLogic.StopConstantSpawn;
         
     }
 
