@@ -7,9 +7,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance = null;
 
-    [SerializeField] private LevelController _levelControllerPrefab;
+    [SerializeField] private GameModel _gameModelPrefab;
 
-    private LevelController _levelController;
+    private GameModel _gameModel;
     private SaveSystem _saveSystem;
     private AudioManager _audioManager;
 
@@ -45,9 +45,9 @@ public class GameManager : MonoBehaviour
         }
         yield return new WaitForEndOfFrame();
 
-        _levelController = Instantiate(_levelControllerPrefab);
+        _gameModel = Instantiate(_gameModelPrefab);
 
-        _saveSystem.InsertValues(_levelController.ExperienceSystem, _levelController.Player); 
+        _saveSystem.InsertValues(_gameModel.ExperienceSystem, _gameModel.Player); 
         //is it okay?
 
     }
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         }
         yield return new WaitForEndOfFrame();
 
-        _levelController = Instantiate(_levelControllerPrefab);
+        _gameModel = Instantiate(_gameModelPrefab);
     }
 
     public void NewGame()
@@ -80,18 +80,13 @@ public class GameManager : MonoBehaviour
         _audioManager.PlayMainTheme();
     }
 
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     public void SaveGame()
     {
         int sceneName=SceneManager.GetActiveScene().buildIndex;
 
         Scenes scene = (Scenes)sceneName;       
       
-        _saveSystem.SaveGame(_levelController.ExperienceSystem, _levelController.Player,scene);
+        _saveSystem.SaveGame(_gameModel.ExperienceSystem, _gameModel.Player,scene);
     }
 
     public void NextLevel()
@@ -108,7 +103,7 @@ public class GameManager : MonoBehaviour
         }
         yield return new WaitForEndOfFrame();
 
-        _levelController = Instantiate(_levelControllerPrefab);
+        _gameModel = Instantiate(_gameModelPrefab);
     }
 
 }

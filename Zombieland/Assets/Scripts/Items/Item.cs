@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[CreateAssetMenu(fileName = "New Item", menuName ="Item")]
+[CreateAssetMenu(fileName = "New Item", menuName = "Item")]
 public class Item : ScriptableObject
 {
     public event Action CurrentAmountUpdated;
@@ -16,4 +16,4 @@ public class Item : ScriptableObject
 
 }
 
-public enum EquipmentSlot { Weapon, Helmet, Vest, AidKit, Grenade }
+public enum EquipmentSlot { Weapon, Helmet, Vest, AidKit, Interactive }

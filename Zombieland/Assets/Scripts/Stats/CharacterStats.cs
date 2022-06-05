@@ -17,6 +17,14 @@ public class CharacterStats : MonoBehaviour
 
     public void UpdateArmor(int value)
     {
-        Armor.IncreaseValue();
+        if (value > 0)
+            Armor.IncreaseValue(value);
+        else
+        {
+            Armor.DecreaseValue(value);
+        }
+        
+
     }
+
 }

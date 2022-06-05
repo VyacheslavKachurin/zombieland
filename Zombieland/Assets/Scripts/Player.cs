@@ -6,7 +6,7 @@ using UnityEngine.Animations.Rigging;
 
 public class Player : MonoBehaviour, IDamageable
 {
-    public event Action<bool> OnPlayerDeath;
+    public event Action<bool> PlayerDied;
     public event Action<float> OnPlayerGotAttacked;
     public event Action<IWeapon> OnWeaponChanged;
 
@@ -20,6 +20,9 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private Rig _handsIK;
 
     [SerializeField] private Animator _rigController;
+
+    private float _oldHelmetModifier = 0;
+    private float _oldVestModifier = 0;
 
     public IPlayerInput Input
     {
@@ -73,7 +76,7 @@ public class Player : MonoBehaviour, IDamageable
         Idle, Aiming, Moving, Dead, Jumping
     }
 
-    private PlayerState _currentState = PlayerState.Moving;
+    private PlayerState _currentState;
 
     private bool _isWeaponHolstered = false;
 
@@ -270,9 +273,7 @@ public class Player : MonoBehaviour, IDamageable
 
             ActivateRagdoll();
 
-
-
-            // OnPlayerDeath?.Invoke(_isDead);
+            PlayerDied?.Invoke(_isDead);
             Destroy(this);
         }
     }
@@ -303,11 +304,6 @@ public class Player : MonoBehaviour, IDamageable
         {
             _currentWeapon.Shoot(isShooting);
         }
-    }
-
-    private void ReceiveScroolWheelInput(bool input)
-    {
-        // _weaponHolder.ChangeWeapon(input);
     }
 
     private void GetWeapon(IWeapon weapon)
@@ -364,7 +360,6 @@ public class Player : MonoBehaviour, IDamageable
         _input = input;
         input.Moved += ReceiveAxis;
         input.CursorMoved += ReceiveMouse;
-        input.OnScrollWheelSwitched += ReceiveScroolWheelInput;
         input.OnShootingInput += ReceiveShootingInput;
         input.OnReloadPressed += ReceiveReloadInput;
         input.SprintingSwitched += SetSprinting;
@@ -451,28 +446,33 @@ public class Player : MonoBehaviour, IDamageable
         _animator.enabled = false;
     }
 
-    public void EquipHelmet(GameObject helmet)
+    public void EquipHelmet(GameObject helmet, int armorModifier)
     {
         var newHelmet = Instantiate(helmet);
 
         if (_currentHelmet != null)
         {
             Destroy(_currentHelmet);
+            UpgradeArmorStats(-(int)_oldHelmetModifier);
         }
         _currentHelmet = newHelmet;
 
         newHelmet.transform.parent = _helmetHolder;
         newHelmet.transform.localPosition = Vector3.zero;
         newHelmet.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+
+        UpgradeArmorStats(armorModifier);
+        _oldHelmetModifier = armorModifier;
     }
 
-    public void EquipVest(GameObject vest)
+    public void EquipVest(GameObject vest, int armorModifier)
     {
         var newVest = Instantiate(vest);
 
         if (_currentVest != null)
         {
             Destroy(_currentVest);
+            UpgradeArmorStats(-(int)_oldVestModifier);
         }
         _currentVest = newVest;
 
@@ -480,5 +480,13 @@ public class Player : MonoBehaviour, IDamageable
         newVest.transform.localPosition = Vector3.zero;
         newVest.transform.localRotation = Quaternion.Euler(-90, 0, 0);
 
+        _oldVestModifier = armorModifier;
+        UpgradeArmorStats(armorModifier);
+
+    }
+
+    private void UpgradeArmorStats(int value)
+    {
+        _playerStats.UpdateArmor(value);
     }
 }

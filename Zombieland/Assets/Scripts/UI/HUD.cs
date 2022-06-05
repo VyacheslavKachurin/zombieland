@@ -97,9 +97,10 @@ public class HUD : MonoBehaviour
         }
     }
 
-    public void UpdateArmorSlider(int value)
+    public void UpdateArmorSlider(float value)
     {
         _armorSlider.value = value;
+      
     }
 }
 

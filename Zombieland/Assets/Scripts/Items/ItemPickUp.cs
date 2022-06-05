@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class ItemPickUp : Interactable
 {
-    [SerializeField] Item item;
+    [SerializeField] private Item _item;
     private InventoryModel _inventoryModel;
-
 
     private void Start()
     {
-        var createdItem=Instantiate(item.ItemObject);
-        createdItem.transform.parent = transform;      
+        var createdItem = Instantiate(_item.ItemObject);
+        createdItem.transform.parent = transform;
         createdItem.transform.localPosition = Vector3.zero;
-       // createdItem.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-
-
     }
+
     public override void Interact()
     {
         Unsubscribe();
@@ -27,7 +24,7 @@ public class ItemPickUp : Interactable
     {
         _inventoryModel = _player.InventoryModel;
 
-        bool wasAdded = _inventoryModel.Add(item);
+        bool wasAdded = _inventoryModel.Add(_item);
 
         if (wasAdded)
         {

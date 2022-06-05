@@ -20,13 +20,11 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private Transform _gunPoint;
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private Sprite _weaponIcon;
-    [SerializeField] private AnimationClip _weaponAnimation;
     [SerializeField] private int _maxBulletAmount;
     [SerializeField] private float _firingRate = 0.1f;
     [SerializeField] private AudioClip _shotClip;
-    [SerializeField] private AnimationClip _weaponPose;
 
-    [SerializeField] private WeaponTypes.WeaponType _weaponType;
+    [SerializeField] private WeaponType _weaponType;
 
 
     private AudioSource _audioSource;
@@ -79,7 +77,6 @@ public class Weapon : MonoBehaviour, IWeapon
             {
                 PlayShootSound(); //TODO: turn into 1 method
                 _muzzleFlash.Play(); // move to ishooting module, resize particle system for different weapons and colors
-                //Invoke Recoil animation event 
 
                 _currentBulletsAmount--;
 
@@ -155,11 +152,6 @@ public class Weapon : MonoBehaviour, IWeapon
         return _currentBulletsAmount;
     }
 
-    public AnimationClip ReturnWeaponAnimation()
-    {
-        return _weaponAnimation;
-    }
-
     public float SetOffset()
     {
         return _gunPoint.position.y;
@@ -170,7 +162,7 @@ public class Weapon : MonoBehaviour, IWeapon
         _audioSource.PlayOneShot(_shotClip);
     }
 
-    public WeaponTypes.WeaponType WeaponType()
+    public WeaponType WeaponType()
     {
         return _weaponType;
     }
@@ -181,4 +173,9 @@ public class Weapon : MonoBehaviour, IWeapon
     }
 
 
+}
+
+public enum WeaponType
+{
+    Pistol, AK74, Shotgun, GrenadeLauncher, Laser
 }

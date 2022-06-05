@@ -6,7 +6,7 @@ public class GrenadeLauncher : MonoBehaviour, IShootingType
 {
     //TODO: visualization must work all the time. not only during CreateShot();
 
-    [SerializeField] private Projectile _projectile;
+    [SerializeField] private Grenade _projectile;
 
     private LineRenderer _lineRenderer;
 
@@ -51,7 +51,7 @@ public class GrenadeLauncher : MonoBehaviour, IShootingType
 
         transform.rotation = Quaternion.LookRotation(velocity); //  move to animation rigging
 
-        Projectile projectile = Instantiate(_projectile, origin, Quaternion.identity);
+        Grenade projectile = Instantiate(_projectile, origin, Quaternion.identity);
         projectile.SetVelocity(velocity);
     }
 

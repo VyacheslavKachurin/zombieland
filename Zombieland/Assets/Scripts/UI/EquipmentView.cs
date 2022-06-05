@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentView : MonoBehaviour
+public class EquipmentView : MonoBehaviour,IEquipmentView
 {
     [SerializeField] private InventorySlot _slot;
     [SerializeField] private RectTransform _slotParent;

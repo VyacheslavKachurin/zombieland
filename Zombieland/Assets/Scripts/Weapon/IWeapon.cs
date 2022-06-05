@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using static WeaponTypes;
 
 public interface IWeapon
 {
